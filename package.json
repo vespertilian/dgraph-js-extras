@@ -3,6 +3,26 @@
   "version": "0.1.0",
   "description": "Functions to use with dgraph",
   "main": "lib/index.js",
+  "scripts": {
+    "build": "./node_modules/.bin/tsc -p build.tsconfig.json",
+    "test": "ts-node node_modules/.bin/jasmine JASMINE_CONFIG_PATH=jasmine.json"
+  },
+  "typings": "lib/index.d.ts",
+  "devDependencies": {
+    "@types/jasmine": "^2.8.4",
+    "@types/node": "^9.3.0",
+    "install-peers": "^1.0.2",
+    "jasmine": "^2.9.0",
+    "rimraf": "^2.6.2",
+    "ts-node": "^4.1.0",
+    "typescript": "^2.6.2",
+    "dgraph-js": "1.1.0",
+    "grpc": "1.8.4"
+  },
+  "peerDependencies": {
+    "dgraph-js": "1.1.0",
+    "grpc": "1.8.4"
+  },
   "repository": "https://github.com/helperific/dgraph-js-extras",
   "author": "<vespertilian@gmail.com>",
   "license": "MIT",
