@@ -1,0 +1,10 @@
+{
+  "name": "@helperific/dgraph-js-extras",
+  "version": "0.1.0",
+  "description": "Functions to use with dgraph",
+  "main": "lib/index.js",
+  "repository": "https://github.com/helperific/dgraph-js-extras",
+  "author": "<vespertilian@gmail.com>",
+  "license": "MIT",
+  "private": true
+}

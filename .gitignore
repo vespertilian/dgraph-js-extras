@@ -1,0 +1,21 @@
+# Dependencies
+node_modules/
+
+# Node files
+npm-debug.log
+yarn-error.log
+.env
+
+# Optional npm cache directory
+.npm
+
+# JetBrains IDEs
+.idea/
+/*.iml
+
+# Misc
+.DS_Store
+Thumbs.db
+
+# Dependencies
+node_modules/
