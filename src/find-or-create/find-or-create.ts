@@ -2,20 +2,53 @@ import * as dgraph from 'dgraph-js'
 import {XSetJs} from '../js-set/js-set';
 
 
-export async function XUpsertNow(keyPredicate: string, value: object, dgraphClient: dgraph.DgraphClient, _dgraph=dgraph): Promise<any> {
-    return XFindOrCreateObject(keyPredicate, value, dgraphClient, _dgraph)
+export async function XUpsertNow(keyPredicate: string, data: object, dgraphClient: dgraph.DgraphClient, _dgraph=dgraph): Promise<void> {
+    if(Array.isArray(data)) {
+        return XFindOrCreateArray(keyPredicate, data, dgraphClient, _dgraph)
+    } else {
+        return XFindOrCreateObject(keyPredicate, data, dgraphClient, _dgraph)
+    }
 }
 
-async function XFindOrCreateObject(keyPredicate: string, data: object, dgraphClient: dgraph.DgraphClient, _dgraph=dgraph): Promise<any> {
+async function XFindOrCreateArray(keyPredicate: string, nodes: object[], dgraphClient: dgraph.DgraphClient, _dgraph=dgraph): Promise<void> {
+    const errors: {error: Error, forNode: any}[] = [];
+    for(let i=0; i < nodes.length; i++) {
+        const currentNode = nodes[i];
+        try {
+            await XFindOrCreateObject(keyPredicate, currentNode, dgraphClient)
+        } catch(e) {
+            errors.push({
+                error: e,
+                forNode: currentNode
+            })
+        }
+    }
 
-    const searchValue = data[keyPredicate];
+    if(errors.length > 0) {
+        let message: string = `${errors.length} node/s failed to upsert`;
+        errors.forEach(e => {
+            message = message.concat(`
+                        node: ${JSON.stringify(e.forNode)}
+                        error: ${e.error.message}
+                    `)
+        });
+        message = message.concat(`
+            All other nodes were upserted
+        `);
+        throw new Error(message);
+    }
+}
+
+async function XFindOrCreateObject(keyPredicate: string, node: object, dgraphClient: dgraph.DgraphClient, _dgraph=dgraph): Promise<void> {
+
+    const searchValue = node[keyPredicate];
 
     if(typeof searchValue !== 'string') {
         const error = new Error(`
         The key predicate must be a searchable string value on the object you are creating.
         
         "${keyPredicate}" does not exist as a string on:
-        ${JSON.stringify(data)}`);
+        ${JSON.stringify(node)}`);
         throw error;
     }
 
@@ -40,10 +73,10 @@ async function XFindOrCreateObject(keyPredicate: string, data: object, dgraphCli
                     Delete the extra values before tyring XUpsert again.`);
                 throw error;
             }
-            const mu = XSetJs(Object.assign(data, {uid}));
+            const mu = XSetJs(Object.assign({}, node, {uid}));
             await transaction.mutate(mu)
         } else {
-            const mu = XSetJs(data);
+            const mu = XSetJs(node);
             await transaction.mutate(mu)
         }
 
