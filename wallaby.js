@@ -14,6 +14,12 @@ module.exports = function () {
             type: 'node'
         },
 
-        testFramework: 'jasmine'
+        testFramework: 'jasmine',
+
+        // as the db needs to be reset in between some tests we cannot test in parallel
+        workers: {
+            initial: 1,
+            regular: 1
+        }
     };
 };
