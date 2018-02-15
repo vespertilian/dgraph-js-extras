@@ -4,7 +4,7 @@
   "description": "Functions to use with dgraph",
   "main": "lib/index.js",
   "scripts": {
-    "build": "./node_modules/.bin/tsc -p build.tsconfig.json",
+    "build": "rm -rf /lib && ./node_modules/.bin/tsc -p build.tsconfig.json",
     "test": "ts-node node_modules/.bin/jasmine JASMINE_CONFIG_PATH=jasmine.json"
   },
   "typings": "lib/index.d.ts",
@@ -20,11 +20,10 @@
     "grpc": "1.8.4"
   },
   "peerDependencies": {
-    "dgraph-js": "1.1.0",
-    "grpc": "1.8.4"
+    "dgraph-js": "~1.1.0",
+    "grpc": "~1.8.4"
   },
   "repository": "https://github.com/helperific/dgraph-js-extras",
   "author": "<vespertilian@gmail.com>",
-  "license": "MIT",
-  "private": true
+  "license": "MIT"
 }
