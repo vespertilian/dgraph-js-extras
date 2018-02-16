@@ -138,6 +138,102 @@ describe('XUpsertNow', () => {
         })
     });
 
+
+    describe('upsert with multiple predicates', () => {
+
+        const predicateSkillQuery = `{
+            q(func: has(skill), orderasc: level) {
+                skill
+                level
+                x
+                y
+                z
+            }
+        }`;
+
+        it('should upsert by matching more than one predicate with a filter', async() => {
+            const schema = `
+                skill: string @index(fulltext) .
+                level: string @index(exact) .
+            `;
+
+            const JSSenior = {
+                skill: 'Javascript',
+                level: 'Senior',
+                x: 'a',
+                y: 'a',
+                z: 'a'
+            };
+
+            const JSMid = {
+                skill: 'Javascript',
+                level: 'Midlevel',
+                x: 'c',
+                y: 'b',
+                z: 'b'
+            };
+
+            const {dgraphClient} = await setupWith({schema, data: [JSSenior, JSMid]});
+
+            const update = {
+                skill: 'Javascript',
+                level: 'Midlevel',
+                x: 'd',
+                y: 'c',
+                z: 'e'
+            };
+
+            await XUpsertNow(['skill', 'level'], update, dgraphClient);
+
+            const skillQuery = await dgraphClient.newTxn().query(predicateSkillQuery);
+            const result = skillQuery.getJson().q;
+
+            expect(result).toEqual([update, JSSenior])
+        });
+
+        it('should upsert by matching more than two predicates with a filter with an and clause', async() => {
+            const schema = `
+                skill: string @index(fulltext) .
+                level: string @index(exact) .
+                x: string @index(exact) .
+            `;
+
+            const JSSenior = {
+                skill: 'Javascript',
+                level: 'Senior',
+                x: 'a',
+                y: 'a',
+                z: 'a'
+            };
+
+            const JSMid = {
+                skill: 'Javascript',
+                level: 'Midlevel',
+                x: 'c',
+                y: 'b',
+                z: 'b'
+            };
+
+            const {dgraphClient} = await setupWith({schema, data: [JSSenior, JSMid]});
+
+            const update = {
+                skill: 'Javascript',
+                level: 'Midlevel',
+                x: 'c',
+                y: 'c',
+                z: 'e'
+            };
+
+            await XUpsertNow(['skill', 'level', 'x'], update, dgraphClient)
+
+            const skillQuery = await dgraphClient.newTxn().query(predicateSkillQuery);
+            const result = skillQuery.getJson().q;
+
+            expect(result).toEqual([update, JSSenior])
+        })
+
+    });
+
     describe('upsert multiple values', () => {
         it('should allow you to upsert multiple values', async() => {
             // setup
@@ -162,6 +258,8 @@ describe('XUpsertNow', () => {
             };
 
             const {dgraphClient} = await setupWith({schema, data: [cameron, helena, barbara]});
+
+
 
             const initialUsersQuery = await dgraphClient.newTxn().query(predicateNameQuery);
             const initialUsers = initialUsersQuery.getJson().q;

@@ -42,7 +42,7 @@ async function XFindOrCreateArray(searchPredicates: string | string[], nodes: ob
 async function XFindOrCreateObject(searchPredicates: string | string[], node: object, dgraphClient: dgraph.DgraphClient, _dgraph=dgraph): Promise<void> {
 
 
-    const {query, searchValues} = getSearchQuery(searchPredicates, node);
+    const {query, searchValues} = buildUpsertQuery(searchPredicates, node);
 
 
     const transaction = dgraphClient.newTxn();
@@ -71,25 +71,26 @@ async function XFindOrCreateObject(searchPredicates: string | string[], node: ob
     } finally {
         await transaction.discard()
     }
-
 }
 
-function getSearchQuery(_searchPredicates: string | string[], node: object): {query: string, searchValues: string[]}{
+// TODO this is really a find by predicate function that returns the id of the node
+export function buildUpsertQuery(_searchPredicates: string | string[], node: object): {query: string, searchValues: string[]}{
 
     // make search predicates an array if it is not already
-    const searchPredicates =
+    const searchPredicates: string[] =
         Array.isArray(_searchPredicates) ?
             _searchPredicates
             : [_searchPredicates];
 
 
-    const searchValues: string[] = searchPredicates.map((predicate) => {
+    // check values are present on predicate
+    const searchValues: string[] = searchPredicates.map((predicate, index) => {
         const searchValue = node[predicate];
         if(typeof searchValue !== 'string') {
             const error = new Error(`
         The search predicate/s must be a searchable value on the object you are creating.
         
-        "${searchPredicates}" does not exist as a string on:
+        "${searchPredicates[index]}" does not exist as a string on:
         ${JSON.stringify(node)}`);
             throw error;
         }
@@ -97,12 +98,42 @@ function getSearchQuery(_searchPredicates: string | string[], node: object): {qu
     });
 
     let query = '';
-    if(searchValues.length === 1) {
+
+    const searchLength= searchValues.length;
+    if(searchLength === 1) {
+        // simple case simple query
         query = `{
-            q(func: eq(${searchPredicates}, "${searchValues[0]}")) {
+            q(func: eq(${searchPredicates}, "${searchValues}")) {
                 uid
             }
         }`;
+    } else {
+        // build query
+        query = `
+        {
+            q(func: eq(${searchPredicates[0]}, "${searchValues[0]}"))`;
+
+        // add first filter
+        query = query.concat(
+            `
+            @filter(eq(${searchPredicates[1]}, "${searchValues[1]}")`
+        );
+
+        // add more filters if required
+        if(searchValues.length > 2){
+            for(let i=2; i < searchLength; i++) {
+                query = query.concat(
+                  `
+                AND eq(${searchPredicates[i]}, "${searchValues[i]}")`
+                )
+            }
+        }
+        // close the filters, get the uid and close the larger query
+        query = query.concat(`)
+            {
+                uid
+            }
+        }`)
     }
 
     return {query, searchValues}
