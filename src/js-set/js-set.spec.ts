@@ -25,7 +25,7 @@ describe('XSetJs', () => {
       await trx.commit();
 
       const predicateNameQuery = `{
-            q(func: has(name)) {
+            q(func: has(name), orderasc: name) {
                 name
                 age
             }

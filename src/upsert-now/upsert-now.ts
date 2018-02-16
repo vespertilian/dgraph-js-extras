@@ -73,7 +73,7 @@ async function XFindOrCreateObject(searchPredicates: string | string[], node: ob
     }
 }
 
-// TODO this is really a find by predicate function that returns the id of the node
+// TODO this is really a find by predicate function that returns the id of the node - maybe break out... not sure
 export function buildUpsertQuery(_searchPredicates: string | string[], node: object): {query: string, searchValues: string[]}{
 
     // make search predicates an array if it is not already
@@ -86,11 +86,11 @@ export function buildUpsertQuery(_searchPredicates: string | string[], node: obj
     // check values are present on predicate
     const searchValues: string[] = searchPredicates.map((predicate, index) => {
         const searchValue = node[predicate];
-        if(typeof searchValue !== 'string') {
+        if(!searchValue) {
             const error = new Error(`
         The search predicate/s must be a searchable value on the object you are creating.
         
-        "${searchPredicates[index]}" does not exist as a string on:
+        "${searchPredicates[index]}" does not exist on:
         ${JSON.stringify(node)}`);
             throw error;
         }

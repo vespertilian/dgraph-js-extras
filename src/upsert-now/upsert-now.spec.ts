@@ -26,7 +26,7 @@ describe('XUpsertNow', () => {
             const expectedError = new Error(`
         The search predicate/s must be a searchable value on the object you are creating.
         
-        "email" does not exist as a string on:
+        "email" does not exist on:
         {"name":"cameron"}`);
 
             expect(error).toEqual(expectedError);
