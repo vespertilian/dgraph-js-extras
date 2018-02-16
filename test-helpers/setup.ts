@@ -1,7 +1,7 @@
 import * as dgraph from 'dgraph-js';
-import {XCreateDgraphClient} from '../create-client/create-dgraph-client';
-import {XSetSchema} from '../set-schema/set-schema';
-import {XTrxSetJSNow} from '../trx-set-now/trx-set-now';
+import {XCreateDgraphClient} from '../src/create-client/create-dgraph-client';
+import {XSetSchemaNow} from '../src/set-schema-now/set-schema-now';
+import {XTrxSetJSNow} from '../src/js-set-now/js-set-now';
 
 export interface ISetupReturnValue {
     dgraphClient: dgraph.DgraphClient,
@@ -30,7 +30,7 @@ export async function setupWith(params: ISetupWithParams): Promise<ISetupReturnV
     const {schema, data, debugDgraphClient } = Object.assign(defaultParams, params);
 
     const {dgraphClient, dgraphClientStub} = await setup(debugDgraphClient);
-    await XSetSchema(schema, dgraphClient);
+    await XSetSchemaNow(schema, dgraphClient);
 
     if (data) {
         await XTrxSetJSNow(data, dgraphClient)

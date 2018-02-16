@@ -1,6 +1,6 @@
-import {setup} from '../test-helpers/setup';
-import {XSetSchema} from '../set-schema/set-schema';
-import {XSetJs, XSetJSNow} from './js-set';
+import {setup} from '../../test-helpers/setup';
+import {XSetSchemaNow} from '../set-schema-now/set-schema-now';
+import {XSetJs, XSetJSCommitNow} from './js-set';
 
 describe('XSetJs', () => {
   it('should add new data when no uid id set', async() => {
@@ -10,7 +10,7 @@ describe('XSetJs', () => {
             age: int .
         `;
 
-      await XSetSchema(schema, dgraphClient);
+      await XSetSchemaNow(schema, dgraphClient);
 
 
       const data =[
@@ -42,7 +42,7 @@ describe('XSetJs', () => {
             age: int .
         `;
 
-        await XSetSchema(schema, dgraphClient);
+        await XSetSchemaNow(schema, dgraphClient);
 
 
         const setHelena = XSetJs([
@@ -76,7 +76,7 @@ describe('XSetJs', () => {
     });
 });
 
-describe('XSetJSNow', () => {
+describe('XSetJSCommitNow', () => {
     it('should add new data and commit the mutation as soon as it is called', async() => {
         const {dgraphClient} = await setup();
         const schema = `
@@ -84,10 +84,10 @@ describe('XSetJSNow', () => {
             age: int .
         `;
 
-        await XSetSchema(schema, dgraphClient);
+        await XSetSchemaNow(schema, dgraphClient);
         const data = { name: 'Cameron', age: 35 };
 
-        const setObject = XSetJSNow(data);
+        const setObject = XSetJSCommitNow(data);
 
         expect(setObject.getCommitNow()).toBe(true);
 

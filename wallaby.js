@@ -3,6 +3,7 @@ module.exports = function () {
     return {
         files: [
             'src/**/*.ts',
+            'test-helpers/**/*.ts',
             { pattern: 'src/**/*.spec.ts', ignore: true }
         ],
 

@@ -7,7 +7,7 @@ export function XSetJs(object: object, _dgraph=dgraph): Mutation  {
     return mu;
 }
 
-export function XSetJSNow(object: object, _dgraph=dgraph): Mutation {
+export function XSetJSCommitNow(object: object, _dgraph=dgraph): Mutation {
    const mu = XSetJs(object, _dgraph);
    mu.setCommitNow(true);
    return mu

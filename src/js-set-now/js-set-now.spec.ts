@@ -1,6 +1,6 @@
-import {setup} from '../test-helpers/setup';
-import {XTrxSetJSNow} from './trx-set-now';
-import {XSetSchema} from '../set-schema/set-schema';
+import {setup} from '../../test-helpers/setup';
+import {XSetSchemaNow} from '../set-schema-now/set-schema-now';
+import {XTrxSetJSNow} from './js-set-now';
 
 describe('XTrxSetJSNow', () => {
     it('should instantly persist js object data', async() => {
@@ -11,7 +11,7 @@ describe('XTrxSetJSNow', () => {
             age: int .
         `;
 
-        await XSetSchema(schema, dgraphClient);
+        await XSetSchemaNow(schema, dgraphClient);
         const data = { name: 'Cameron', age: 35 };
 
         // set data with one line

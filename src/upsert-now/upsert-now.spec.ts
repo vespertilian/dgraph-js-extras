@@ -1,5 +1,5 @@
-import {setupWith} from '../test-helpers/setup';
-import {XUpsertNow} from './find-or-create';
+import {setupWith} from '../../test-helpers/setup';
+import {XUpsertNow} from './upsert-now';
 
 const predicateNameQuery = `{
             q(func: has(name), orderasc: name) {
