@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "Functions to use with dgraph",
   "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
   "scripts": {
     "build": "rm -rf /lib && ./node_modules/.bin/tsc -p build.tsconfig.json",
     "test": "ts-node node_modules/.bin/jasmine JASMINE_CONFIG_PATH=jasmine.json"
