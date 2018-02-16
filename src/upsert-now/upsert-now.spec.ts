@@ -24,7 +24,7 @@ describe('XUpsertNow', () => {
             }
 
             const expectedError = new Error(`
-        The key predicate must be a searchable string value on the object you are creating.
+        The search predicate/s must be a searchable value on the object you are creating.
         
         "email" does not exist as a string on:
         {"name":"cameron"}`);

@@ -2,20 +2,20 @@ import * as dgraph from 'dgraph-js'
 import {XSetJs} from '../js-set/js-set';
 
 
-export async function XUpsertNow(keyPredicate: string, data: object, dgraphClient: dgraph.DgraphClient, _dgraph=dgraph): Promise<void> {
+export async function XUpsertNow(searchPredicates: string | string[], data: object, dgraphClient: dgraph.DgraphClient, _dgraph=dgraph): Promise<void> {
     if(Array.isArray(data)) {
-        return XFindOrCreateArray(keyPredicate, data, dgraphClient, _dgraph)
+        return XFindOrCreateArray(searchPredicates, data, dgraphClient, _dgraph)
     } else {
-        return XFindOrCreateObject(keyPredicate, data, dgraphClient, _dgraph)
+        return XFindOrCreateObject(searchPredicates, data, dgraphClient, _dgraph)
     }
 }
 
-async function XFindOrCreateArray(keyPredicate: string, nodes: object[], dgraphClient: dgraph.DgraphClient, _dgraph=dgraph): Promise<void> {
+async function XFindOrCreateArray(searchPredicates: string | string[], nodes: object[], dgraphClient: dgraph.DgraphClient, _dgraph=dgraph): Promise<void> {
     const errors: {error: Error, forNode: any}[] = [];
     for(let i=0; i < nodes.length; i++) {
         const currentNode = nodes[i];
         try {
-            await XFindOrCreateObject(keyPredicate, currentNode, dgraphClient)
+            await XFindOrCreateObject(searchPredicates, currentNode, dgraphClient)
         } catch(e) {
             errors.push({
                 error: e,
@@ -39,27 +39,14 @@ async function XFindOrCreateArray(keyPredicate: string, nodes: object[], dgraphC
     }
 }
 
-async function XFindOrCreateObject(keyPredicate: string, node: object, dgraphClient: dgraph.DgraphClient, _dgraph=dgraph): Promise<void> {
+async function XFindOrCreateObject(searchPredicates: string | string[], node: object, dgraphClient: dgraph.DgraphClient, _dgraph=dgraph): Promise<void> {
 
-    const searchValue = node[keyPredicate];
 
-    if(typeof searchValue !== 'string') {
-        const error = new Error(`
-        The key predicate must be a searchable string value on the object you are creating.
-        
-        "${keyPredicate}" does not exist as a string on:
-        ${JSON.stringify(node)}`);
-        throw error;
-    }
+    const {query, searchValues} = getSearchQuery(searchPredicates, node);
 
 
     const transaction = dgraphClient.newTxn();
     try {
-        const query = `{
-            q(func: eq(${keyPredicate}, "${searchValue}")) {
-                uid
-            }
-        }`;
 
         const queryResult = await transaction.query(query);
 
@@ -68,7 +55,7 @@ async function XFindOrCreateObject(keyPredicate: string, node: object, dgraphCli
         if(uid) {
             if(others.length > 0) {
                 const error = new Error(`
-                    More than one node matches "${searchValue}" for the "${keyPredicate}" predicate. 
+                    More than one node matches "${searchValues}" for the "${searchPredicates}" predicate. 
                     Aborting XUpsert. 
                     Delete the extra values before tyring XUpsert again.`);
                 throw error;
@@ -85,4 +72,38 @@ async function XFindOrCreateObject(keyPredicate: string, node: object, dgraphCli
         await transaction.discard()
     }
 
+}
+
+function getSearchQuery(_searchPredicates: string | string[], node: object): {query: string, searchValues: string[]}{
+
+    // make search predicates an array if it is not already
+    const searchPredicates =
+        Array.isArray(_searchPredicates) ?
+            _searchPredicates
+            : [_searchPredicates];
+
+
+    const searchValues: string[] = searchPredicates.map((predicate) => {
+        const searchValue = node[predicate];
+        if(typeof searchValue !== 'string') {
+            const error = new Error(`
+        The search predicate/s must be a searchable value on the object you are creating.
+        
+        "${searchPredicates}" does not exist as a string on:
+        ${JSON.stringify(node)}`);
+            throw error;
+        }
+        return searchValue
+    });
+
+    let query = '';
+    if(searchValues.length === 1) {
+        query = `{
+            q(func: eq(${searchPredicates}, "${searchValues[0]}")) {
+                uid
+            }
+        }`;
+    }
+
+    return {query, searchValues}
 }
