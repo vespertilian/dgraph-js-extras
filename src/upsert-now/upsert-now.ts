@@ -44,7 +44,6 @@ async function XFindOrCreateObject(searchPredicates: string | string[], node: ob
 
     const {query, searchValues} = buildUpsertQuery(searchPredicates, node);
 
-
     const transaction = dgraphClient.newTxn();
     try {
 
@@ -52,7 +51,7 @@ async function XFindOrCreateObject(searchPredicates: string | string[], node: ob
 
         const [uid, ...others] = queryResult.getJson().q.map(r => r.uid);
 
-        if(uid) {
+        if(Boolean(uid)) {
             if(others.length > 0) {
                 const error = new Error(`
                     More than one node matches "${searchValues}" for the "${searchPredicates}" predicate. 

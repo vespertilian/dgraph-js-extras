@@ -8,6 +8,16 @@ const predicateNameQuery = `{
             }
         }`;
 
+const predicateSkillQuery = `{
+            q(func: has(skill), orderasc: level) {
+                skill
+                level
+                x
+                y
+                z
+            }
+        }`;
+
 
 describe('XUpsertNow', () => {
     describe('Upsert a single value', () => {
@@ -141,25 +151,15 @@ describe('XUpsertNow', () => {
 
     describe('upsert with multiple predicates', () => {
 
-        const predicateSkillQuery = `{
-            q(func: has(skill), orderasc: level) {
-                skill
-                level
-                x
-                y
-                z
-            }
-        }`;
-
         it('should upsert by matching more than one predicate with a filter', async() => {
             const schema = `
-                skill: string @index(fulltext) .
-                level: string @index(exact) .
+                skill: string @index(hash) .
+                level: int @index(int) .
             `;
 
             const JSSenior = {
                 skill: 'Javascript',
-                level: 'Senior',
+                level: 30,
                 x: 'a',
                 y: 'a',
                 z: 'a'
@@ -167,7 +167,7 @@ describe('XUpsertNow', () => {
 
             const JSMid = {
                 skill: 'Javascript',
-                level: 'Midlevel',
+                level: 20,
                 x: 'c',
                 y: 'b',
                 z: 'b'
@@ -177,7 +177,7 @@ describe('XUpsertNow', () => {
 
             const update = {
                 skill: 'Javascript',
-                level: 'Midlevel',
+                level: 20,
                 x: 'd',
                 y: 'c',
                 z: 'e'
@@ -194,8 +194,8 @@ describe('XUpsertNow', () => {
         it('should upsert by matching more than two predicates with a filter with an and clause', async() => {
             const schema = `
                 skill: string @index(fulltext) .
-                level: string @index(exact) .
-                x: string @index(exact) .
+                level: string @index(hash) .
+                x: string @index(hash) .
             `;
 
             const JSSenior = {
@@ -224,7 +224,7 @@ describe('XUpsertNow', () => {
                 z: 'e'
             };
 
-            await XUpsertNow(['skill', 'level', 'x'], update, dgraphClient)
+            await XUpsertNow(['skill', 'level', 'x'], update, dgraphClient);
 
             const skillQuery = await dgraphClient.newTxn().query(predicateSkillQuery);
             const result = skillQuery.getJson().q;
@@ -285,6 +285,64 @@ describe('XUpsertNow', () => {
         })
     });
 
+    it('should upsert multiple values when matching more than one predicate with a filter', async() => {
+        const schema = `
+                skill: string @index(hash) .
+                level: int @index(int) .
+            `;
+
+        const JSSenior = {
+            skill: 'Javascript',
+            level: 30,
+            x: 'a',
+            y: 'a',
+            z: 'a'
+        };
+
+        const JSMid = {
+            skill: 'Javascript',
+            level: 20,
+            x: 'c',
+            y: 'b',
+            z: 'b'
+        };
+
+        const JSJunior = {
+            skill: 'Javascript',
+            level: 10,
+            x: 'c',
+            y: 'b',
+            z: 'b'
+        };
+        const {dgraphClient} = await setupWith({schema, data: [JSSenior, JSMid, JSJunior]});
+
+        const updateMid = {
+            skill: 'Javascript',
+            level: 20,
+            x: 'x',
+            y: 'x',
+            z: 'x'
+        };
+
+        const updateJunior = {
+            skill: 'Javascript',
+            level: 10,
+            x: 'y',
+            y: 'y',
+            z: 'y'
+        };
+
+        const updates = [updateJunior, updateMid];
+
+        await XUpsertNow(['skill', 'level'], updates, dgraphClient);
+
+        const skillQuery = await dgraphClient.newTxn().query(predicateSkillQuery);
+        const result = skillQuery.getJson().q;
+
+        expect(result.length).toEqual(3);
+        expect(result).toEqual([updateJunior, updateMid, JSSenior])
+    });
+
     it('should throw an error highlighting any update failures', async() => {
         // setup
         const schema = `
@@ -341,7 +399,7 @@ describe('XUpsertNow', () => {
 
         expect(users).toEqual([barbara, cameronUpdate, helena1, helena2, stuart]);
         expect(errors.message).toContain('1 node/s failed');
-        expect(errors.message).toContain('More than one node matches "h@gmail.com" for the "email" predicate. ')
-        expect(errors.message).toContain('All other nodes were upserted')
+        expect(errors.message).toContain('More than one node matches "h@gmail.com" for the "email" predicate. ');
+        expect(errors.message).toContain('All other nodes were upserted');
     })
 });
