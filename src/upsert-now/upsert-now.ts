@@ -95,6 +95,7 @@ async function XFindOrCreateObject(searchPredicates: string | string[], node: ob
         if(deeplyNestedObjectsDetected) {
             const error = new Error(`
                 XUpsertNow does not support finding and creating nested objects.
+                Failed for object: ${JSON.stringify(node)}
                 You should write your own custom transaction for this.
                 You can upsert existing references if you have the UID.
             `);

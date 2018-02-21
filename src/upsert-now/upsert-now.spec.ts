@@ -189,6 +189,7 @@ describe('XUpsertNow', () => {
 
             const message: string = `
                 XUpsertNow does not support finding and creating nested objects.
+                Failed for object: ${JSON.stringify(cameronC)}
                 You should write your own custom transaction for this.
                 You can upsert existing references if you have the UID.
             `;
