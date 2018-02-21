@@ -161,6 +161,7 @@ describe('XUpsertNow', () => {
             const schema = `
                 name: string @index(hash) .
                 email: string @index(hash) .
+                friends: uid .
             `;
             const {dgraphClient} = await setupWith({schema});
 
@@ -194,9 +195,59 @@ describe('XUpsertNow', () => {
 
             expect(users.length).toBe(0); // user should have not been added
             expect(error.message).toEqual(message)
-        })
-    });
+        });
 
+        it('should allow you to link existing nodes with an upsert', async() => {
+            // setup
+            const schema = `
+                name: string @index(hash) .
+                email: string @index(hash) .
+                friends: uid .
+            `;
+
+            const stuart = {
+                name: 'Stuart',
+                email: 'stu@gmail.com'
+            };
+
+            const {dgraphClient, result} = await setupWith({schema, data: stuart});
+            const [stuartUid] = getUids({numberOfIdsToGet: 1, result});
+
+            const cameronC = {
+                name: 'Cameron',
+                email: 'cam@gmail.com',
+                friends: [{
+                    uid: stuartUid
+                }]
+            };
+
+            await XUpsertNow('email', cameronC, dgraphClient);
+
+            const finalUidQuery = await dgraphClient.newTxn().query(predicateNameQuery);
+            const users = finalUidQuery.getJson().q;
+
+            expect(users.length).toBe(2); // user should have been added
+
+            const friendQuery = await dgraphClient.newTxn().query(`{
+                 q(func: eq(name, "Cameron")) {
+                    name
+                    friends {
+                        name
+                    }
+                 }
+            }`);
+
+            const cameronAndFriend = friendQuery.getJson().q[0];
+            expect(cameronAndFriend).toEqual({
+                name: 'Cameron',
+                friends: [
+                    { name: 'Stuart' }
+                ]
+            })
+
+        })
+
+    });
 
     describe('upsert with multiple predicates', () => {
 
