@@ -1,75 +1,108 @@
 import * as dgraph from 'dgraph-js'
 import {XSetJs} from '../js-set/js-set';
+import {Txn} from 'dgraph-js';
 
+// overload function to always return a string array when an object array is passed in
+export async function XUpsertNow(searchPredicates: string | string[], data: object[], dgraphClient: dgraph.DgraphClient, _dgraph?: any): Promise<string[]>
+export async function XUpsertNow(searchPredicates: string | string[], data: object, dgraphClient: dgraph.DgraphClient, _dgraph?: any): Promise<string>
 
-export async function XUpsertNow(searchPredicates: string | string[], data: object, dgraphClient: dgraph.DgraphClient, _dgraph=dgraph): Promise<void> {
+export async function XUpsertNow(searchPredicates: string | string[], data: object | object[], dgraphClient: dgraph.DgraphClient, _dgraph=dgraph): Promise<string | string[]> {
     if(Array.isArray(data)) {
         return XFindOrCreateArray(searchPredicates, data, dgraphClient, _dgraph)
     } else {
-        return XFindOrCreateObject(searchPredicates, data, dgraphClient, _dgraph)
+        return XFindOrCreateObjectNow(searchPredicates, data, dgraphClient, _dgraph)
     }
 }
 
-async function XFindOrCreateArray(searchPredicates: string | string[], nodes: object[], dgraphClient: dgraph.DgraphClient, _dgraph=dgraph): Promise<void> {
-    const errors: {error: Error, forNode: any}[] = [];
-    for(let i=0; i < nodes.length; i++) {
-        const currentNode = nodes[i];
+async function XFindOrCreateArray(searchPredicates: string | string[], nodes: object[], dgraphClient: dgraph.DgraphClient, _dgraph=dgraph): Promise<string[]> {
+    const results: string[] = [];
+    const errors: Error[] = [];
+    const transaction = dgraphClient.newTxn();
         try {
-            await XFindOrCreateObject(searchPredicates, currentNode, dgraphClient)
+            for(let i=0; i < nodes.length; i++) {
+                const currentNode = nodes[i];
+                const result = await XFindOrCreateObject(searchPredicates, currentNode, transaction);
+                results.push(result)
+            }
+            await transaction.commit()
         } catch(e) {
-            errors.push({
-                error: e,
-                forNode: currentNode
-            })
+            // catch the error here so we can throw it properly
+            errors.push(e);
+            throw e
         }
-    }
+        finally {
+            try {
+                await transaction.discard()
+            } catch(e) {
+                // the error e here will be the transaction.discard() error.
+                // not the error we want - the one that was thrown in the for loop
+                if(errors.length > 0) throw(errors);
+                else throw(e)
+            }
+        }
 
-    if(errors.length > 0) {
-        let message: string = `${errors.length} node/s failed to upsert`;
-        errors.forEach(e => {
-            message = message.concat(`
-                        node: ${JSON.stringify(e.forNode)}
-                        error: ${e.error.message}
-                    `)
-        });
-        message = message.concat(`
-            All other nodes were upserted
-        `);
-        throw new Error(message);
-    }
+    return results
 }
 
-async function XFindOrCreateObject(searchPredicates: string | string[], node: object, dgraphClient: dgraph.DgraphClient, _dgraph=dgraph): Promise<void> {
-
-
-    const {query, searchValues} = buildUpsertQuery(searchPredicates, node);
-
+async function XFindOrCreateObjectNow(searchPredicates: string | string[], node: object, dgraphClient: dgraph.DgraphClient, _dgraph=dgraph): Promise<string> {
+    let uid = null;
+    let error: Error | null = null;
     const transaction = dgraphClient.newTxn();
     try {
-
-        const queryResult = await transaction.query(query);
-
-        const [uid, ...others] = queryResult.getJson().q.map(r => r.uid);
-
-        if(Boolean(uid)) {
-            if(others.length > 0) {
-                const error = new Error(`
-                    More than one node matches "${searchValues}" for the "${searchPredicates}" predicate. 
-                    Aborting XUpsert. 
-                    Delete the extra values before tyring XUpsert again.`);
-                throw error;
-            }
-            const mu = XSetJs(Object.assign({}, node, {uid}));
-            await transaction.mutate(mu)
-        } else {
-            const mu = XSetJs(node);
-            await transaction.mutate(mu)
+        try {
+            uid = await XFindOrCreateObject(searchPredicates, node, transaction);
+            await transaction.commit()
+        } catch (e) {
+           // catch the error here so we can throw it properly
+           error = e;
+           throw e;
         }
-
-        await transaction.commit()
-    } finally {
-        await transaction.discard()
+    }  finally {
+        try {
+            await transaction.discard()
+        } catch(e) {
+            if(error) throw error;
+            else throw e
+        }
     }
+    return uid;
+}
+
+async function XFindOrCreateObject(searchPredicates: string | string[], node: object, transaction: Txn): Promise<string | null> {
+    let result = null;
+
+    const {query, searchValues} = buildUpsertQuery(searchPredicates, node);
+    const queryResult = await transaction.query(query);
+
+    const [existingUid, ...others] = queryResult.getJson().q.map(r => r.uid);
+
+    if(Boolean(existingUid)) {
+        if(others.length > 0) {
+            const error = new Error(`
+                    More than one node matches "${searchValues}" for the "${searchPredicates}" predicate. 
+                    Aborting XUpsertNow. 
+                    Delete the extra values before tyring XUpsert again.`);
+            throw error;
+        }
+        const mu = XSetJs(Object.assign({}, node, {uid: existingUid}));
+        await transaction.mutate(mu);
+        result = existingUid;
+    } else {
+        const mu = XSetJs(node);
+        const muResult = await transaction.mutate(mu);
+        const uid = muResult.getUidsMap().get('blank-0');
+        const deeplyNestedObjectsDetected = Boolean(muResult.getUidsMap().get('blank-1'));
+        if(deeplyNestedObjectsDetected) {
+            const error = new Error(`
+                XUpsertNow does not support finding and creating nested objects.
+                You should write your own custom transaction for this.
+                You can upsert existing references if you have the UID.
+            `);
+            throw error;
+        }
+        result = uid;
+    }
+    return result
 }
 
 // TODO this is really a find by predicate function that returns the id of the node - maybe break out... not sure

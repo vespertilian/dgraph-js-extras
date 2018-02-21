@@ -1,8 +1,9 @@
-import {setupWith} from '../../test-helpers/setup';
+import {getUids, setup, setupWith} from '../../test-helpers/setup';
 import {XUpsertNow} from './upsert-now';
 
 const predicateNameQuery = `{
             q(func: has(name), orderasc: name) {
+                uid
                 name
                 email
             }
@@ -10,6 +11,7 @@ const predicateNameQuery = `{
 
 const predicateSkillQuery = `{
             q(func: has(skill), orderasc: level) {
+                uid
                 skill
                 level
                 x
@@ -18,17 +20,18 @@ const predicateSkillQuery = `{
             }
         }`;
 
-
 describe('XUpsertNow', () => {
     describe('Upsert a single value', () => {
-        it('should throw an error if the key predicate is not a string value', async() => {
+        it('should throw an error if the key predicate is not present on the object being used for the upsert', async() => {
+
+            const {dgraphClient} = await setup();
             const data = {
                 name: 'cameron'
             };
 
             let error = null;
             try {
-                await XUpsertNow('email', data, {} as any)
+                await XUpsertNow('email', data, dgraphClient)
             } catch (e) {
                 error = e
             }
@@ -43,12 +46,12 @@ describe('XUpsertNow', () => {
         });
 
 
-        it('should find an overwrite a node if the node exists', async() => {
+        it('should find and overwrite a node if the node exists', async() => {
+
             // setup
             const schema = `
-            name: string @index(fulltext) .
-            email: string @index(exact) .
-        `;
+            name: string @index(hash) .
+            email: string @index(hash) .`;
 
             const initialData = {
                 name: 'Cameron',
@@ -66,7 +69,7 @@ describe('XUpsertNow', () => {
                 email: 'cam@gmail.com'
             };
 
-            await XUpsertNow('email', data, dgraphClient);
+            const result = await XUpsertNow('email', data, dgraphClient);
 
             const finalUidQuery = await dgraphClient.newTxn().query(predicateNameQuery);
             const [finalCameron, ...others] = finalUidQuery.getJson().q;
@@ -74,22 +77,23 @@ describe('XUpsertNow', () => {
 
             expect(finalCameron.uid).toEqual(initialCameron.uid);
             expect(finalCameron.name).toEqual(data.name);
+            expect(result).toEqual(finalCameron.uid);
         });
 
         it('should create a new node if one does not exist', async() => {
 
             // setup
             const schema = `
-            name: string @index(fulltext) .
-            email: string @index(exact) .
-        `;
+            name: string @index(hash) .
+            email: string @index(hash) .`;
 
             const cameron = {
                 name: 'Cameron',
                 email: 'cam@gmail.com'
             };
 
-            const {dgraphClient} = await setupWith({schema, data: cameron});
+            const {dgraphClient, result} = await setupWith({schema, data: cameron});
+            const [cameronUid] = getUids({numberOfIdsToGet: 1, result});
 
             // add helena
             const helena = {
@@ -97,19 +101,21 @@ describe('XUpsertNow', () => {
                 email: 'h@gmail.com'
             };
 
-            await XUpsertNow('email', helena, dgraphClient);
+            const helenaUid = await XUpsertNow('email', helena, dgraphClient);
 
             const finalUidQuery = await dgraphClient.newTxn().query(predicateNameQuery);
             const users = finalUidQuery.getJson().q;
-            expect(users).toEqual([cameron, helena]); // cameron and helena should both be present
+            expect(users).toEqual([
+                {...cameron, uid: cameronUid}, {...helena, uid: helenaUid} ]);
+                // cameron and helena should both be present
 
         });
 
-        it('should throw an error if you try to upsert and two nodes exist for the searched predicate', async() => {
+        it('should throw an error if you try to upsert when two nodes exist for the searched predicate', async() => {
             // setup
             const schema = `
-            name: string @index(fulltext) .
-            email: string @index(exact) .
+            name: string @index(hash) .
+            email: string @index(hash) .
         `;
 
             const cameronA = {
@@ -122,7 +128,8 @@ describe('XUpsertNow', () => {
                 email: 'cam@gmail.com'
             };
 
-            const {dgraphClient} = await setupWith({schema, data: [cameronA, cameronB]});
+            const {dgraphClient, result} = await setupWith({schema, data: [cameronA, cameronB]});
+            const [cameronAUid, cameronBUid] = getUids({numberOfIdsToGet: 2, result});
 
             const cameronC = {
                 name: 'Cameron',
@@ -138,13 +145,55 @@ describe('XUpsertNow', () => {
 
             const expectedError = new Error(`
                     More than one node matches "cam@gmail.com" for the "email" predicate. 
-                    Aborting XUpsert. 
+                    Aborting XUpsertNow. 
                     Delete the extra values before tyring XUpsert again.`);
 
             expect(error).toEqual(expectedError);
             const finalUidQuery = await dgraphClient.newTxn().query(predicateNameQuery);
             const users = finalUidQuery.getJson().q;
-            expect(users).toEqual([cameronA, cameronB]);
+            // use toContain as order is random because they match the same search term
+            expect(users).toContain( {...cameronA, uid: cameronAUid});
+            expect(users).toContain({...cameronB, uid: cameronBUid});
+        });
+
+        it('should throw an error when you try to upsert a deeply nested object that involves the creation of subnodes', async() => {
+            // setup
+            const schema = `
+                name: string @index(hash) .
+                email: string @index(hash) .
+            `;
+            const {dgraphClient} = await setupWith({schema});
+
+            const cameronC = {
+                name: 'Cameron',
+                email: 'cam@gmail.com',
+                friends: [
+                    {
+                        name: 'Stuart',
+                        email: 'stu@gmail.com'
+                    }
+                ]
+            };
+
+            let error = null;
+            try {
+                await XUpsertNow('email', cameronC, dgraphClient);
+            } catch(e) {
+                error = e;
+            }
+
+
+            const finalUidQuery = await dgraphClient.newTxn().query(predicateNameQuery);
+            const users = finalUidQuery.getJson().q;
+
+            const message: string = `
+                XUpsertNow does not support finding and creating nested objects.
+                You should write your own custom transaction for this.
+                You can upsert existing references if you have the UID.
+            `;
+
+            expect(users.length).toBe(0); // user should have not been added
+            expect(error.message).toEqual(message)
         })
     });
 
@@ -173,9 +222,10 @@ describe('XUpsertNow', () => {
                 z: 'b'
             };
 
-            const {dgraphClient} = await setupWith({schema, data: [JSSenior, JSMid]});
+            const {dgraphClient, result} = await setupWith({schema, data: [JSSenior, JSMid]});
+            const [JSSeniorUid, JSMidUid] = getUids({numberOfIdsToGet: 2, result});
 
-            const update = {
+            const updateJSMid = {
                 skill: 'Javascript',
                 level: 20,
                 x: 'd',
@@ -183,15 +233,18 @@ describe('XUpsertNow', () => {
                 z: 'e'
             };
 
-            await XUpsertNow(['skill', 'level'], update, dgraphClient);
+            await XUpsertNow(['skill', 'level'], updateJSMid, dgraphClient);
 
             const skillQuery = await dgraphClient.newTxn().query(predicateSkillQuery);
-            const result = skillQuery.getJson().q;
+            const skills = skillQuery.getJson().q;
 
-            expect(result).toEqual([update, JSSenior])
+            expect(skills).toEqual([
+                {...updateJSMid, uid: JSMidUid},
+                {...JSSenior, uid: JSSeniorUid}
+            ])
         });
 
-        it('should upsert by matching more than two predicates with a filter with an and clause', async() => {
+        it('should upsert by matching more than two predicates with a filter and an "and" clause', async() => {
             const schema = `
                 skill: string @index(fulltext) .
                 level: string @index(hash) .
@@ -214,7 +267,8 @@ describe('XUpsertNow', () => {
                 z: 'b'
             };
 
-            const {dgraphClient} = await setupWith({schema, data: [JSSenior, JSMid]});
+            const {dgraphClient, result} = await setupWith({schema, data: [JSSenior, JSMid]});
+            const [JSSeniorUid, JSMidUid] = getUids({numberOfIdsToGet: 2, result});
 
             const update = {
                 skill: 'Javascript',
@@ -227,9 +281,12 @@ describe('XUpsertNow', () => {
             await XUpsertNow(['skill', 'level', 'x'], update, dgraphClient);
 
             const skillQuery = await dgraphClient.newTxn().query(predicateSkillQuery);
-            const result = skillQuery.getJson().q;
+            const skills = skillQuery.getJson().q;
 
-            expect(result).toEqual([update, JSSenior])
+            expect(skills).toEqual([
+                { ...update, uid: JSMidUid},
+                { ...JSSenior, uid: JSSeniorUid}
+            ])
         })
 
     });
@@ -257,7 +314,8 @@ describe('XUpsertNow', () => {
                 email: 'b@gmail.com'
             };
 
-            const {dgraphClient} = await setupWith({schema, data: [cameron, helena, barbara]});
+            const {dgraphClient, result} = await setupWith({schema, data: [cameron, helena, barbara]});
+            const [cameronUid, helenaUid, barabaraUid] = getUids({numberOfIdsToGet: 3, result});
 
 
 
@@ -271,17 +329,24 @@ describe('XUpsertNow', () => {
                 email: 'cam@gmail.com'
             };
 
+            // add howard
             const howard = {
                 name: 'Howard B',
                 email: 'hb@gmail.com',
             };
 
-            await XUpsertNow('email', [cameronUpdate, howard], dgraphClient);
+            const [cameronUpdateUid, howardUid] = await XUpsertNow('email', [cameronUpdate, howard], dgraphClient);
+            expect(cameronUpdateUid).toEqual(cameronUid);
 
             const queryUsers = await dgraphClient.newTxn().query(predicateNameQuery);
             const users = queryUsers.getJson().q;
 
-            expect(users).toEqual([barbara, cameronUpdate, helena, howard])
+            expect(users).toEqual([
+                {...barbara, uid: barabaraUid},
+                {...cameronUpdate, uid: cameronUid},
+                {...helena, uid: helenaUid},
+                {...howard, uid: howardUid}
+            ])
         })
     });
 
@@ -314,7 +379,8 @@ describe('XUpsertNow', () => {
             y: 'b',
             z: 'b'
         };
-        const {dgraphClient} = await setupWith({schema, data: [JSSenior, JSMid, JSJunior]});
+        const {dgraphClient, result} = await setupWith({schema, data: [JSSenior, JSMid, JSJunior]});
+        const [JSSeniorUid, JSMidUid, JSJuniorUid] = getUids({numberOfIdsToGet: 3, result});
 
         const updateMid = {
             skill: 'Javascript',
@@ -337,13 +403,17 @@ describe('XUpsertNow', () => {
         await XUpsertNow(['skill', 'level'], updates, dgraphClient);
 
         const skillQuery = await dgraphClient.newTxn().query(predicateSkillQuery);
-        const result = skillQuery.getJson().q;
+        const skills = skillQuery.getJson().q;
 
-        expect(result.length).toEqual(3);
-        expect(result).toEqual([updateJunior, updateMid, JSSenior])
+        expect(skills.length).toEqual(3);
+        expect(skills).toEqual([
+            {...updateJunior, uid: JSJuniorUid},
+            {...updateMid, uid: JSMidUid},
+            {...JSSenior, uid: JSSeniorUid}
+        ])
     });
 
-    it('should throw an error highlighting any update failures', async() => {
+    it('should throw an error highlighting why an update failed', async() => {
         // setup
         const schema = `
                 name: string @index(fulltext) .
@@ -370,7 +440,8 @@ describe('XUpsertNow', () => {
             email: 'b@gmail.com'
         };
 
-        const {dgraphClient} = await setupWith({schema, data: [cameron, helena1, helena2, barbara]});
+        const {dgraphClient, result} = await setupWith({schema, data: [cameron, helena1, helena2, barbara]});
+        const [cameronUid, helena1Uid, helena2Uid, barbaraUid] = getUids({numberOfIdsToGet: 4, result});
 
         const cameronUpdate = {
             name: 'Cameron B',
@@ -387,19 +458,27 @@ describe('XUpsertNow', () => {
             email: 's@gmail.com'
         };
 
-        let errors: Error | null = null;
+        let errors: Error[] | null = null;
         try {
-            await XUpsertNow('email', [cameronUpdate, helenaUpdate, stuart], dgraphClient);
+            await XUpsertNow('email', [cameronUpdate, helenaUpdate, cameronUpdate, stuart], dgraphClient);
         } catch (e) {
-            errors = e;
+            errors = e
         }
 
         const queryUsers = await dgraphClient.newTxn().query(predicateNameQuery);
         const users = queryUsers.getJson().q;
+        expect(users).toEqual([
+            {...barbara, uid: barbaraUid},
+            {...cameron, uid: cameronUid},
+            {...helena1, uid: helena1Uid},
+            {...helena2, uid: helena2Uid},
+        ]);
 
-        expect(users).toEqual([barbara, cameronUpdate, helena1, helena2, stuart]);
-        expect(errors.message).toContain('1 node/s failed');
-        expect(errors.message).toContain('More than one node matches "h@gmail.com" for the "email" predicate. ');
-        expect(errors.message).toContain('All other nodes were upserted');
+        const error = new Error(`
+                    More than one node matches "h@gmail.com" for the "email" predicate. 
+                    Aborting XUpsertNow. 
+                    Delete the extra values before tyring XUpsert again.`);
+        expect(errors).toEqual([error])
+
     })
 });

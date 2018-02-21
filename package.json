@@ -7,14 +7,12 @@
   "scripts": {
     "build": "rm -rf /lib && ./node_modules/.bin/tsc -p build.tsconfig.json",
     "test": "ts-node node_modules/.bin/jasmine JASMINE_CONFIG_PATH=jasmine.json",
-    "prepublishOnly": "yarn run build"
+    "prepublishOnly": "yarn run build",
+    "install:peers": "node -e \"const peers = Object.entries(require('./package.json').peerDependencies || {}).map(d => d.join('@')).join(' '); if (peers.length) process.stdout.write('yarn add -P --no-lockfile ' + String(peers));\" | sh"
   },
   "devDependencies": {
     "@types/jasmine": "^2.8.4",
     "@types/node": "^9.3.0",
-    "dgraph-js": "1.1.0",
-    "grpc": "1.8.4",
-    "install-peers": "^1.0.2",
     "jasmine": "^2.9.0",
     "rimraf": "^2.6.2",
     "ts-node": "^4.1.0",
@@ -22,7 +20,7 @@
   },
   "peerDependencies": {
     "dgraph-js": "~1.1.0",
-    "grpc": "~1.8.4"
+    "grpc": "~1.9.1"
   },
   "repository": "https://github.com/helperific/dgraph-js-extras",
   "author": "<vespertilian@gmail.com>",
