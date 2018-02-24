@@ -1,5 +1,8 @@
 export { XCreateDgraphClient } from './create-client/create-dgraph-client';
 export { XUpsertNow } from './upsert-now/upsert-now';
+export { XUpsertMapNow } from './upsert-map-now/upsert-map-now';
+export { IUidMap } from './upsert-map-now/upsert-map-now';
+export { IObjectMap } from './upsert-map-now/upsert-map-now';
 export { XGetSchemaMapNow } from './get-schema-map-now/get-schema-map-now';
 export { XSetJs } from './js-set/js-set';
 export { XSetSchemaNow } from './set-schema-now/set-schema-now';
