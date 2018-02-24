@@ -469,7 +469,7 @@ describe('XUpsertNow', () => {
         // setup
         const schema = `
                 name: string @index(fulltext) .
-                email: string @index(exact) .
+                email: string @index(hash) .
             `;
 
         const cameron = {

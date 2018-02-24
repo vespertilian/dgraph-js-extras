@@ -84,7 +84,8 @@ async function XFindOrCreateObject(searchPredicates: string | string[], node: ob
                     Delete the extra values before tyring XUpsert again.`);
             throw error;
         }
-        const mu = XSetJs(Object.assign({}, node, {uid: existingUid}));
+        const updatedNode = Object.assign({uid: existingUid}, node);
+        const mu = XSetJs(updatedNode);
         await transaction.mutate(mu);
         result = existingUid;
     } else {
