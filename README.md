@@ -1,6 +1,7 @@
 #### DGraph JS Extras
 
-A library of helper functions to accompany the dgraph-js library.
+
+A library of helper functions to accompany the dgraph-js library. **Currently in an ALPHA state could break at any point**
 
 Functions with the postfix "now" indicate they are transactions or operations and can be awaited.
 
