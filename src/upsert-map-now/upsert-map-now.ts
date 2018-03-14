@@ -14,5 +14,5 @@ export async function XUpsertMapNow(searchPredicates: string | string[], data: I
    const objects: object[] = objectKeys.map(key => { return {...data[key]} });
    const uids = await XUpsertNow(searchPredicates, objects, dgraphClient, _dgraph);
    const resultMap: IUidMap = objectKeys.reduce((acc, key, index) => { return {...acc, [key]: uids[index]} }, {});
-    return resultMap;
+   return resultMap;
 }

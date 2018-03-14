@@ -35,8 +35,9 @@ async function XFindOrCreateArray(searchPredicates: string | string[], nodes: ob
                 await transaction.discard()
             } catch(e) {
                 // the error e here will be the transaction.discard() error.
-                // not the error we want - the one that was thrown in the for loop
+                // not the error we want - the one that was thrown in the for loop.
                 if(errors.length > 0) throw(errors);
+                // if for some reason it was only the transaction.discard that threw the error rethrow that.
                 else throw(e)
             }
         }
@@ -61,7 +62,10 @@ async function XFindOrCreateObjectNow(searchPredicates: string | string[], node:
         try {
             await transaction.discard()
         } catch(e) {
+            // the error e here will be the transaction.discard() error.
+            // not the error we want - the one that was thrown in the try catch block
             if(error) throw error;
+            // if for some reason it was only the transaction.discard that threw the error rethrow that.
             else throw e
         }
     }
@@ -122,7 +126,7 @@ export function buildUpsertQuery(_searchPredicates: string | string[], node: obj
         const searchValue = node[predicate];
         if(!searchValue) {
             const error = new Error(`
-        The search predicate/s must be a searchable value on the object you are creating.
+        The search predicate/s must be a value on the object you are trying to persist.
         
         "${searchPredicates[index]}" does not exist on:
         ${JSON.stringify(node)}`);

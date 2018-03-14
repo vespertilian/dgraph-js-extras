@@ -37,7 +37,7 @@ describe('XUpsertNow', () => {
             }
 
             const expectedError = new Error(`
-        The search predicate/s must be a searchable value on the object you are creating.
+        The search predicate/s must be a value on the object you are trying to persist.
         
         "email" does not exist on:
         {"name":"cameron"}`);
