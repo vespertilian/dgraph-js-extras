@@ -1,3 +1,13 @@
+<a name="0.1.8"></a>
+## [0.1.8](https://github.com/vespertilian/dgraph-js-extras/compare/v0.1.7...v0.1.8) (2018-03-22)
+
+
+### Features
+
+* **test-helpers:** move test helpers into main library and expose them for use by the client code b ([f750576](https://github.com/vespertilian/dgraph-js-extras/commit/f750576))
+
+
+
 <a name="0.1.7"></a>
 ## [0.1.7](https://github.com/vespertilian/dgraph-js-extras/compare/v0.1.6...v0.1.7) (2018-02-24)
 
