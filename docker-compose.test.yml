@@ -1,0 +1,31 @@
+version: "3.2"
+services:
+  zero-test:
+    image: dgraph/dgraph:v1.0.3
+    volumes:
+      - type: volume
+        source: dgraph-test
+        target: /dgraph-test
+        volume:
+          nocopy: true
+    ports:
+      - 6081:6081
+      - 5081:5081
+    restart: on-failure
+    command: dgraph zero --port_offset 1 --my=zero-test:5081
+  server-test:
+    image: dgraph/dgraph:v1.0.3
+    volumes:
+      - type: volume
+        source: dgraph-test
+        target: /dgraph-test
+        volume:
+          nocopy: true
+    ports:
+      - 8081:8081
+      - 9081:9081
+    restart: on-failure
+    command: dgraph server --my=server-test:7081 --memory_mb=2048 --zero=zero-test:5081 -o 1
+
+volumes:
+  dgraph-test:
