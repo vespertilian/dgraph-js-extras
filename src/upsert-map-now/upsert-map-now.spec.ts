@@ -1,9 +1,10 @@
 import {IUidMap, XUpsertMapNow} from './upsert-map-now';
-import {getUids, setupWith} from '../../test-helpers/setup';
+import {getUids} from '../test-helpers/get-uids';
+import {XSetupWithSchemaDataNow} from '../test-helpers/setup';
 
 describe('XUpsertMapNow', () => {
     it('should allow you to pass a mapped object of upserts and return the map with created or found uids', async() => {
-        // setup
+        // XSetupForTestNow
         const schema = `
            name: string @index(fulltext) .
            email: string @index(exact) .
@@ -24,7 +25,7 @@ describe('XUpsertMapNow', () => {
             email: 'b@gmail.com'
         };
 
-        const {dgraphClient, result} = await setupWith({schema, data: [cameron, helena, barbara]});
+        const {dgraphClient, result} = await XSetupWithSchemaDataNow({schema, data: [cameron, helena, barbara]});
         const [cameronUid] = getUids({numberOfIdsToGet: 1, result});
 
         const map = {
@@ -74,7 +75,7 @@ describe('XUpsertMapNow', () => {
             email: 'b@gmail.com'
         };
 
-        const {dgraphClient} = await setupWith({schema, data: [cameron, helena1, helena2, barbara]});
+        const {dgraphClient} = await XSetupWithSchemaDataNow({schema, data: [cameron, helena1, helena2, barbara]});
 
         const uidMap = {
             helenaUpdate: {

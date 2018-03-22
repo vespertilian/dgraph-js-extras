@@ -1,10 +1,10 @@
-import {setup} from '../../test-helpers/setup';
+import {XSetupForTestNow} from '../test-helpers/setup';
 import {XSetSchemaNow} from '../set-schema-now/set-schema-now';
 import {XSetJs, XSetJSCommitNow} from './js-set';
 
 describe('XSetJs', () => {
   it('should add new data when no uid id set', async() => {
-      const {dgraphClient} = await setup();
+      const {dgraphClient} = await XSetupForTestNow();
       const schema = `
             name: string @index(fulltext) .
             age: int .
@@ -36,7 +36,7 @@ describe('XSetJs', () => {
   });
 
     it('should overwrite data when a uid is passed in', async() => {
-        const {dgraphClient} = await setup();
+        const {dgraphClient} = await XSetupForTestNow();
         const schema = `
             name: string @index(fulltext) .
             age: int .
@@ -78,7 +78,7 @@ describe('XSetJs', () => {
 
 describe('XSetJSCommitNow', () => {
     it('should add new data and commit the mutation as soon as it is called', async() => {
-        const {dgraphClient} = await setup();
+        const {dgraphClient} = await XSetupForTestNow();
         const schema = `
             name: string @index(fulltext) .
             age: int .

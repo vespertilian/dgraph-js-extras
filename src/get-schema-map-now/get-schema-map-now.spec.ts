@@ -1,10 +1,10 @@
 import {XSetSchemaNow} from '../set-schema-now/set-schema-now';
-import {setup} from '../../test-helpers/setup';
+import {XSetupForTestNow} from '../test-helpers/setup';
 import {XGetSchemaMapNow} from './get-schema-map-now';
 
 describe('XGetSchema', () => {
     it('should return a map of the current schema', async() => {
-        const {dgraphClient} = await setup();
+        const {dgraphClient} = await XSetupForTestNow();
         const schema = `
             name: string @index(fulltext) .
             age: int .

@@ -1,8 +1,8 @@
 import * as dgraph from 'dgraph-js';
 import * as messages from "dgraph-js/generated/api_pb";
-import {XCreateDgraphClient} from '../src/create-client/create-dgraph-client';
-import {XSetSchemaNow} from '../src/set-schema-now/set-schema-now';
-import {XTrxSetJSNow} from '../src/js-set-now/js-set-now';
+import {ICreateDgraphClientConfig, XCreateDgraphClient} from '../create-client/create-dgraph-client';
+import {XSetSchemaNow, XTrxSetJSNow} from '..';
+import {XDropDBNow} from './drob-db';
 
 export interface ISetupReturnValue {
     dgraphClient: dgraph.DgraphClient,
@@ -10,9 +10,18 @@ export interface ISetupReturnValue {
     result?: messages.Assigned
 }
 
-export async function setup(debug: boolean = false): Promise<ISetupReturnValue> {
-    const {dgraphClient, dgraphClientStub} = XCreateDgraphClient({debug});
-    await dropAll(dgraphClient);
+export async function XSetupForTestNow(config?: ICreateDgraphClientConfig, _XCreateDgraphClient=XCreateDgraphClient, _drop=XDropDBNow): Promise<ISetupReturnValue> {
+
+    const defaults = {
+        port: 9081,
+        host: null,
+        debug: false
+    };
+
+    const testConfig: ICreateDgraphClientConfig = Object.assign(defaults, config);
+
+    const {dgraphClient, dgraphClientStub} = _XCreateDgraphClient(testConfig);
+    await _drop(dgraphClient);
     return {dgraphClient, dgraphClientStub};
 }
 
@@ -22,7 +31,7 @@ export interface ISetupWithParams {
     debugDgraphClient?: boolean
 }
 
-export async function setupWith(params: ISetupWithParams): Promise<ISetupReturnValue> {
+export async function XSetupWithSchemaDataNow(params: ISetupWithParams): Promise<ISetupReturnValue> {
     const defaultParams: ISetupWithParams = {
         schema: null,
         data: null,
@@ -31,7 +40,7 @@ export async function setupWith(params: ISetupWithParams): Promise<ISetupReturnV
 
     const {schema, data, debugDgraphClient } = Object.assign(defaultParams, params);
 
-    const {dgraphClient, dgraphClientStub} = await setup(debugDgraphClient);
+    const {dgraphClient, dgraphClientStub} = await XSetupForTestNow({debug: debugDgraphClient});
     await XSetSchemaNow(schema, dgraphClient);
 
     let result = null;
@@ -42,18 +51,3 @@ export async function setupWith(params: ISetupWithParams): Promise<ISetupReturnV
     return {dgraphClient, dgraphClientStub, result}
 }
 
-export function dropAll(c: dgraph.DgraphClient, _dgraph = dgraph): Promise<dgraph.Payload> {
-    const op = new _dgraph.Operation();
-    op.setDropAll(true);
-    return c.alter(op);
-}
-
-export function getUids(params: {numberOfIdsToGet: number, result: messages.Assigned}): string[] {
-    let uids = [];
-    for(let i=0; i < params.numberOfIdsToGet; i++) {
-        const key = `blank-${i}`;
-        const uid = params.result.getUidsMap().get(key);
-        uids.push(uid)
-    }
-    return uids;
-}

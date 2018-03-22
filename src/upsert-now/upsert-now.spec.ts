@@ -1,4 +1,5 @@
-import {getUids, setup, setupWith} from '../../test-helpers/setup';
+import {XSetupForTestNow, XSetupWithSchemaDataNow} from '../test-helpers/setup';
+import {getUids} from '../test-helpers/get-uids';
 import {XUpsertNow} from './upsert-now';
 
 const predicateNameQuery = `{
@@ -24,7 +25,7 @@ describe('XUpsertNow', () => {
     describe('Upsert a single value', () => {
         it('should throw an error if the key predicate is not present on the object being used for the upsert', async() => {
 
-            const {dgraphClient} = await setup();
+            const {dgraphClient} = await XSetupForTestNow();
             const data = {
                 name: 'cameron'
             };
@@ -48,7 +49,7 @@ describe('XUpsertNow', () => {
 
         it('should find and overwrite a node if the node exists', async() => {
 
-            // setup
+            // XSetupForTestNow
             const schema = `
             name: string @index(hash) .
             email: string @index(hash) .`;
@@ -58,7 +59,7 @@ describe('XUpsertNow', () => {
                 email: 'cam@gmail.com'
             };
 
-            const {dgraphClient} = await setupWith({schema, data: initialData});
+            const {dgraphClient} = await XSetupWithSchemaDataNow({schema, data: initialData});
 
             const initialUidQuery = await dgraphClient.newTxn().query(predicateNameQuery);
             const [initialCameron] = initialUidQuery.getJson().q;
@@ -82,7 +83,7 @@ describe('XUpsertNow', () => {
 
         it('should create a new node if one does not exist', async() => {
 
-            // setup
+            // XSetupForTestNow
             const schema = `
             name: string @index(hash) .
             email: string @index(hash) .`;
@@ -92,7 +93,7 @@ describe('XUpsertNow', () => {
                 email: 'cam@gmail.com'
             };
 
-            const {dgraphClient, result} = await setupWith({schema, data: cameron});
+            const {dgraphClient, result} = await XSetupWithSchemaDataNow({schema, data: cameron});
             const [cameronUid] = getUids({numberOfIdsToGet: 1, result});
 
             // add helena
@@ -112,7 +113,7 @@ describe('XUpsertNow', () => {
         });
 
         it('should throw an error if you try to upsert when two nodes exist for the searched predicate', async() => {
-            // setup
+            // XSetupForTestNow
             const schema = `
             name: string @index(hash) .
             email: string @index(hash) .
@@ -128,7 +129,7 @@ describe('XUpsertNow', () => {
                 email: 'cam@gmail.com'
             };
 
-            const {dgraphClient, result} = await setupWith({schema, data: [cameronA, cameronB]});
+            const {dgraphClient, result} = await XSetupWithSchemaDataNow({schema, data: [cameronA, cameronB]});
             const [cameronAUid, cameronBUid] = getUids({numberOfIdsToGet: 2, result});
 
             const cameronC = {
@@ -157,13 +158,13 @@ describe('XUpsertNow', () => {
         });
 
         it('should throw an error when you try to upsert a deeply nested object that involves the creation of subnodes', async() => {
-            // setup
+            // XSetupForTestNow
             const schema = `
                 name: string @index(hash) .
                 email: string @index(hash) .
                 friends: uid .
             `;
-            const {dgraphClient} = await setupWith({schema});
+            const {dgraphClient} = await XSetupWithSchemaDataNow({schema});
 
             const cameronC = {
                 name: 'Cameron',
@@ -199,7 +200,7 @@ describe('XUpsertNow', () => {
         });
 
         it('should allow you to link existing nodes with an upsert', async() => {
-            // setup
+            // XSetupForTestNow
             const schema = `
                 name: string @index(hash) .
                 email: string @index(hash) .
@@ -211,7 +212,7 @@ describe('XUpsertNow', () => {
                 email: 'stu@gmail.com'
             };
 
-            const {dgraphClient, result} = await setupWith({schema, data: stuart});
+            const {dgraphClient, result} = await XSetupWithSchemaDataNow({schema, data: stuart});
             const [stuartUid] = getUids({numberOfIdsToGet: 1, result});
 
             const cameronC = {
@@ -274,7 +275,7 @@ describe('XUpsertNow', () => {
                 z: 'b'
             };
 
-            const {dgraphClient, result} = await setupWith({schema, data: [JSSenior, JSMid]});
+            const {dgraphClient, result} = await XSetupWithSchemaDataNow({schema, data: [JSSenior, JSMid]});
             const [JSSeniorUid, JSMidUid] = getUids({numberOfIdsToGet: 2, result});
 
             const updateJSMid = {
@@ -319,7 +320,7 @@ describe('XUpsertNow', () => {
                 z: 'b'
             };
 
-            const {dgraphClient, result} = await setupWith({schema, data: [JSSenior, JSMid]});
+            const {dgraphClient, result} = await XSetupWithSchemaDataNow({schema, data: [JSSenior, JSMid]});
             const [JSSeniorUid, JSMidUid] = getUids({numberOfIdsToGet: 2, result});
 
             const update = {
@@ -345,7 +346,7 @@ describe('XUpsertNow', () => {
 
     describe('upsert multiple values', () => {
         it('should allow you to upsert multiple values', async() => {
-            // setup
+            // XSetupForTestNow
             const schema = `
                 name: string @index(fulltext) .
                 email: string @index(exact) .
@@ -366,7 +367,7 @@ describe('XUpsertNow', () => {
                 email: 'b@gmail.com'
             };
 
-            const {dgraphClient, result} = await setupWith({schema, data: [cameron, helena, barbara]});
+            const {dgraphClient, result} = await XSetupWithSchemaDataNow({schema, data: [cameron, helena, barbara]});
             const [cameronUid, helenaUid, barabaraUid] = getUids({numberOfIdsToGet: 3, result});
 
 
@@ -431,7 +432,7 @@ describe('XUpsertNow', () => {
             y: 'b',
             z: 'b'
         };
-        const {dgraphClient, result} = await setupWith({schema, data: [JSSenior, JSMid, JSJunior]});
+        const {dgraphClient, result} = await XSetupWithSchemaDataNow({schema, data: [JSSenior, JSMid, JSJunior]});
         const [JSSeniorUid, JSMidUid, JSJuniorUid] = getUids({numberOfIdsToGet: 3, result});
 
         const updateMid = {
@@ -466,7 +467,7 @@ describe('XUpsertNow', () => {
     });
 
     it('should throw an error highlighting why an update failed', async() => {
-        // setup
+        // XSetupForTestNow
         const schema = `
                 name: string @index(fulltext) .
                 email: string @index(hash) .
@@ -492,7 +493,7 @@ describe('XUpsertNow', () => {
             email: 'b@gmail.com'
         };
 
-        const {dgraphClient, result} = await setupWith({schema, data: [cameron, helena1, helena2, barbara]});
+        const {dgraphClient, result} = await XSetupWithSchemaDataNow({schema, data: [cameron, helena1, helena2, barbara]});
         const [cameronUid, helena1Uid, helena2Uid, barbaraUid] = getUids({numberOfIdsToGet: 4, result});
 
         const cameronUpdate = {

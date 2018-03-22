@@ -1,10 +1,10 @@
-import {setup} from '../../test-helpers/setup';
+import {XSetupForTestNow} from '../test-helpers/setup';
 import {XSetSchemaNow} from '../set-schema-now/set-schema-now';
 import {XTrxSetJSNow} from './js-set-now';
 
 describe('XTrxSetJSNow', () => {
     it('should instantly persist js object data', async() => {
-        const {dgraphClient} = await setup();
+        const {dgraphClient} = await XSetupForTestNow();
 
         const schema = `
             name: string @index(fulltext) .

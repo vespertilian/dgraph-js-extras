@@ -1,10 +1,10 @@
 import {XSetSchemaNow} from './set-schema-now';
-import {setup} from '../../test-helpers/setup';
+import {XSetupForTestNow} from '../test-helpers/setup';
 import {XGetSchemaMapNow} from '../get-schema-map-now/get-schema-map-now';
 
 describe('SetSchema', () => {
     it('should allow you to set the schema with only one command', async() => {
-        const {dgraphClient} = await setup();
+        const {dgraphClient} = await XSetupForTestNow();
 
         const schema = `
             name: string @index(fulltext) .
