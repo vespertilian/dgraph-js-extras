@@ -8,20 +8,20 @@ export async function XUpsertNow(searchPredicates: string | string[], data: obje
 
 export async function XUpsertNow(searchPredicates: string | string[], data: object | object[], dgraphClient: dgraph.DgraphClient, _dgraph=dgraph): Promise<string | string[]> {
     if(Array.isArray(data)) {
-        return XFindOrCreateArray(searchPredicates, data, dgraphClient, _dgraph)
+        return XUpsertArrayNow(searchPredicates, data, dgraphClient, _dgraph)
     } else {
-        return XFindOrCreateObjectNow(searchPredicates, data, dgraphClient, _dgraph)
+        return XUpsertObjectNow(searchPredicates, data, dgraphClient, _dgraph)
     }
 }
 
-async function XFindOrCreateArray(searchPredicates: string | string[], nodes: object[], dgraphClient: dgraph.DgraphClient, _dgraph=dgraph): Promise<string[]> {
+async function XUpsertArrayNow(searchPredicates: string | string[], nodes: object[], dgraphClient: dgraph.DgraphClient, _dgraph=dgraph): Promise<string[]> {
     const results: string[] = [];
     const errors: Error[] = [];
     const transaction = dgraphClient.newTxn();
         try {
             for(let i=0; i < nodes.length; i++) {
                 const currentNode = nodes[i];
-                const result = await XFindOrCreateObject(searchPredicates, currentNode, transaction);
+                const result = await XUpsertObject(searchPredicates, currentNode, transaction);
                 results.push(result)
             }
             await transaction.commit()
@@ -45,13 +45,13 @@ async function XFindOrCreateArray(searchPredicates: string | string[], nodes: ob
     return results
 }
 
-async function XFindOrCreateObjectNow(searchPredicates: string | string[], node: object, dgraphClient: dgraph.DgraphClient, _dgraph=dgraph): Promise<string> {
+async function XUpsertObjectNow(searchPredicates: string | string[], node: object, dgraphClient: dgraph.DgraphClient, _dgraph=dgraph): Promise<string> {
     let uid = null;
     let error: Error | null = null;
     const transaction = dgraphClient.newTxn();
     try {
         try {
-            uid = await XFindOrCreateObject(searchPredicates, node, transaction);
+            uid = await XUpsertObject(searchPredicates, node, transaction);
             await transaction.commit()
         } catch (e) {
            // catch the error here so we can throw it properly
@@ -72,7 +72,7 @@ async function XFindOrCreateObjectNow(searchPredicates: string | string[], node:
     return uid;
 }
 
-async function XFindOrCreateObject(searchPredicates: string | string[], node: object, transaction: Txn): Promise<string | null> {
+async function XUpsertObject(searchPredicates: string | string[], node: object, transaction: Txn): Promise<string | null> {
     let result = null;
 
     const {query, searchValues} = buildUpsertQuery(searchPredicates, node);
@@ -137,7 +137,7 @@ export function buildUpsertQuery(_searchPredicates: string | string[], node: obj
 
     let query = '';
 
-    const searchLength= searchValues.length;
+    const searchLength = searchValues.length;
     if(searchLength === 1) {
         // simple case simple query
         query = `{
