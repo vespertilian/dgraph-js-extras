@@ -1,3 +1,19 @@
+<a name="0.2.0"></a>
+# [0.2.0](https://github.com/vespertilian/dgraph-js-extras/compare/v0.1.8...v0.2.0) (2018-03-23)
+
+
+### Code Refactoring
+
+* **js-set-now set-json-now:** renaming js-set-now and associated functions to be more inline wi ([f7db9d4](https://github.com/vespertilian/dgraph-js-extras/commit/f7db9d4))
+
+
+### BREAKING CHANGES
+
+* **js-set-now set-json-now:** XSetJs has been renamed XSetJSON and XTRXSetJSNow has
+been renamed XSetJSONNow
+
+
+
 <a name="0.1.8"></a>
 ## [0.1.8](https://github.com/vespertilian/dgraph-js-extras/compare/v0.1.7...v0.1.8) (2018-03-22)
 

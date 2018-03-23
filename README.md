@@ -11,10 +11,11 @@ Other operations like JS set return a mutation that needs to be used in conjunct
 ## Workflow
 
 1. Make changes
-1. Commit those changes `npm run commit`
-1. Test `npm run test`
-1. Bump version in `package.json`
-1. Generate changelog `npm run generate-changelog`
-1. Commit `package.json` and `CHANGELOG.md` files
-1. Git tag - needed by changelog to know what version to attribute the commits to
-1. Push
+2. Commit those changes `yarn run commit`
+3. Test `yarn run test`
+4. Bump version in `package.json`
+5. Generate changelog `yarn run generate-changelog`
+6. Publish `yarn publish`
+7. Commit `package.json`, `CHANGELOG.md` and lib files
+8. Git tag - needed by changelog to know what version to attribute the commits to
+9. Push
