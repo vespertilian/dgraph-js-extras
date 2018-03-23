@@ -1,8 +1,9 @@
 import * as dgraph from 'dgraph-js';
 import * as messages from "dgraph-js/generated/api_pb";
 import {ICreateDgraphClientConfig, XCreateDgraphClient} from '../create-client/create-dgraph-client';
-import {XSetSchemaNow, XTrxSetJSNow} from '..';
+import {XSetSchemaNow} from '..';
 import {XDropDBNow} from './drob-db';
+import {XSetJSONNow} from '../';
 
 export interface ISetupReturnValue {
     dgraphClient: dgraph.DgraphClient,
@@ -45,7 +46,7 @@ export async function XSetupWithSchemaDataNow(params: ISetupWithParams): Promise
 
     let result = null;
     if (data) {
-        result = await XTrxSetJSNow(data, dgraphClient)
+        result = await XSetJSONNow(data, dgraphClient)
     }
 
     return {dgraphClient, dgraphClientStub, result}

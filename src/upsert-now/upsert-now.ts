@@ -1,5 +1,5 @@
 import * as dgraph from 'dgraph-js'
-import {XSetJs} from '../js-set/js-set';
+import {XSetJSON} from '../set-json/set-json';
 import {Txn} from 'dgraph-js';
 
 // overload function to always return a string array when an object array is passed in
@@ -89,11 +89,11 @@ async function XUpsertObject(searchPredicates: string | string[], node: object, 
             throw error;
         }
         const updatedNode = Object.assign({uid: existingUid}, node);
-        const mu = XSetJs(updatedNode);
+        const mu = XSetJSON(updatedNode);
         await transaction.mutate(mu);
         result = existingUid;
     } else {
-        const mu = XSetJs(node);
+        const mu = XSetJSON(node);
         const muResult = await transaction.mutate(mu);
         const uid = muResult.getUidsMap().get('blank-0');
         const deeplyNestedObjectsDetected = Boolean(muResult.getUidsMap().get('blank-1'));
