@@ -1,3 +1,18 @@
+<a name="0.3.0"></a>
+# [0.3.0](https://github.com/vespertilian/dgraph-js-extras/compare/v0.2.1...v0.3.0) (2018-03-26)
+
+
+### Features
+
+* **extract-uids:** XExtractFirstUid now returns a string not a string array ([751c827](https://github.com/vespertilian/dgraph-js-extras/commit/751c827))
+
+
+### BREAKING CHANGES
+
+* **extract-uids:** XExtractFirstUid now returns a string not a string array
+
+
+
 <a name="0.2.1"></a>
 ## [0.2.1](https://github.com/vespertilian/dgraph-js-extras/compare/v0.2.0...v0.2.1) (2018-03-26)
 
