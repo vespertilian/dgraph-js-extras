@@ -1,3 +1,13 @@
+<a name="0.2.1"></a>
+## [0.2.1](https://github.com/vespertilian/dgraph-js-extras/compare/v0.2.0...v0.2.1) (2018-03-26)
+
+
+### Features
+
+* **extract-uids:** added an extract uids function that can take an XSetJSONNow Promise or Result an ([5f88880](https://github.com/vespertilian/dgraph-js-extras/commit/5f88880))
+
+
+
 <a name="0.2.0"></a>
 # [0.2.0](https://github.com/vespertilian/dgraph-js-extras/compare/v0.1.8...v0.2.0) (2018-03-23)
 
