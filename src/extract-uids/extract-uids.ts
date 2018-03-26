@@ -1,7 +1,7 @@
-import * as messages from "dgraph-js/generated/api_pb";
+import {Assigned} from "dgraph-js/generated/api_pb"
 
 // core function
-function extractUids(result: messages.Assigned, limitTo: number | null = null): string[] {
+function extractUids(result: Assigned, limitTo: number | null = null): string[] {
     let uids = [];
     const uidsToReturn = limitTo || result.toObject().uidsMap.length;
     for(let i=0; i < uidsToReturn; i++) {
@@ -13,9 +13,9 @@ function extractUids(result: messages.Assigned, limitTo: number | null = null): 
 }
 
 // fancy way to let us use this function with an existing Async function (promise) or a result
-export function XExtractUids(_result: Promise<messages.Assigned>, limitTo?: number): Promise<string[]>
-export function XExtractUids(_result: messages.Assigned, limitTo?: number): string[]
-export function XExtractUids(_result: Promise<messages.Assigned> | messages.Assigned, limitTo?: number): Promise<string[]> | string[] | void {
+export function XExtractUids(_result: Promise<Assigned>, limitTo?: number): Promise<string[]>
+export function XExtractUids(_result: Assigned, limitTo?: number): string[]
+export function XExtractUids(_result: Promise<Assigned> | Assigned, limitTo?: number): Promise<string[]> | string[] | void {
     let result;
     try {
         result = _result instanceof Promise ?
@@ -35,9 +35,10 @@ export function XExtractUids(_result: Promise<messages.Assigned> | messages.Assi
     }
 }
 
-
-export function XExtractFirstUid(_result: Promise<messages.Assigned>): Promise<string[]>
-export function XExtractFirstUid(_result: messages.Assigned): string[]
-export function XExtractFirstUid(result: any): Promise<string[]> | string[] {
-    return XExtractUids(result, 1)
+export function XExtractFirstUid(result: Promise<Assigned>): Promise<string>
+export function XExtractFirstUid(result: Assigned): string
+export function XExtractFirstUid(result: any): Promise<string> | string {
+    return result instanceof Promise ?
+        XExtractUids(result, 1).then(r => r[0]) :
+        XExtractUids(result)[0]
 }

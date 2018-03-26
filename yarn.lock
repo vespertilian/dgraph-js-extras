@@ -2,7 +2,7 @@
 # yarn lockfile v1
 
 
-"@types/jasmine@^2.8.4":
+"@types/jasmine@^3.1.0":
   version "2.8.6"
   resolved "https://registry.yarnpkg.com/@types/jasmine/-/jasmine-2.8.6.tgz#14445b6a1613cf4e05dd61c3c3256d0e95c0421e"
 
@@ -352,10 +352,6 @@ escape-string-regexp@^1.0.5:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/escape-string-regexp/-/escape-string-regexp-1.0.5.tgz#1b61c0562190a8dff6ae3bb2cf0200ca130b86d4"
 
-exit@^0.1.2:
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/exit/-/exit-0.1.2.tgz#0632638f8d877cc82107d30a0fff1a17cba1cd0c"
-
 find-up@^1.0.0:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/find-up/-/find-up-1.1.2.tgz#6b2e9822b1a2ce0a60ab64d610eccad53cb24d0f"
@@ -527,17 +523,16 @@ isarray@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/isarray/-/isarray-1.0.0.tgz#bb935d48582cba168c06834957a54a3e07124f11"
 
-jasmine-core@~2.99.0:
-  version "2.99.1"
-  resolved "https://registry.yarnpkg.com/jasmine-core/-/jasmine-core-2.99.1.tgz#e6400df1e6b56e130b61c4bcd093daa7f6e8ca15"
+jasmine-core@~3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/jasmine-core/-/jasmine-core-3.1.0.tgz#a4785e135d5df65024dfc9224953df585bd2766c"
 
-jasmine@^2.9.0:
-  version "2.99.0"
-  resolved "https://registry.yarnpkg.com/jasmine/-/jasmine-2.99.0.tgz#8ca72d102e639b867c6489856e0e18a9c7aa42b7"
+jasmine@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/jasmine/-/jasmine-3.1.0.tgz#2bd59fd7ec6ec0e8acb64e09f45a68ed2ad1952a"
   dependencies:
-    exit "^0.1.2"
     glob "^7.0.6"
-    jasmine-core "~2.99.0"
+    jasmine-core "~3.1.0"
 
 json-parse-better-errors@^1.0.1:
   version "1.0.1"

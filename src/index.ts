@@ -1,3 +1,4 @@
+export {XExtractFirstUid, XExtractUids} from './extract-uids/extract-uids';
 export {XCreateDgraphClient} from './create-client/create-dgraph-client'
 export {XUpsertNow} from './upsert-now/upsert-now'
 export {XUpsertMapNow} from './upsert-map-now/upsert-map-now'

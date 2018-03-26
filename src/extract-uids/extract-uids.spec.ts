@@ -43,7 +43,6 @@ describe('XExtractUids', () => {
 
         expect(error.message).toContain('XExtractUids could not extract uids from');
         expect(error.message).toContain('Original Error');
-
     });
 
     describe('with existing result', async() => {
@@ -75,15 +74,15 @@ describe('XExtractUids', () => {
 describe('XExtractFirstUid', () => {
     it('should extract only the first uid from the SetJSON result from a promise', async() => {
         const {dgraphClient} = await XSetupForTestNow();
-        const ids = await XExtractFirstUid(XSetJSONNow(users, dgraphClient));
-        expect(ids.length).toEqual(1);
+        const id = await XExtractFirstUid(XSetJSONNow(users, dgraphClient));
+        expect(typeof id).toEqual('string')
     });
 
     it('should extract only the first uid from the SetJSON result from an existing result', async() => {
         const {dgraphClient} = await XSetupForTestNow();
         const result = await XSetJSONNow(users, dgraphClient);
-        const ids = XExtractFirstUid(result);
-        expect(ids.length).toEqual(1);
+        const id = XExtractFirstUid(result);
+        expect(typeof id).toEqual('string')
     })
 });
 
