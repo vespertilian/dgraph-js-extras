@@ -21,6 +21,9 @@ module.exports = function () {
         workers: {
             initial: 1,
             regular: 1
+        },
+        bootstrap: function () {
+            jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
         }
     };
 };
