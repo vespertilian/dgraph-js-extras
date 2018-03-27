@@ -16,20 +16,30 @@ function extractUids(result: Assigned, limitTo: number | null = null): string[] 
 export function XExtractUids(_result: Promise<Assigned>, limitTo?: number): Promise<string[]>
 export function XExtractUids(_result: Assigned, limitTo?: number): string[]
 export function XExtractUids(_result: Promise<Assigned> | Assigned, limitTo?: number): Promise<string[]> | string[] | void {
-    let result;
     try {
-        result = isPromise(_result) ?
-            _result.then((r) => extractUids(r, limitTo)).catch(ThrowExtractError) :
+        const result = isPromise(_result) ?
+            extractUidsFromPromise(_result) :
             extractUids(_result, limitTo);
-        return result
+        return result;
     } catch(e) {
-       ThrowExtractError(e);
+       ThrowExtractError(e, _result);
     }
 
-    // needs to be a function so we can call it from the promise or the try catch
-    function ThrowExtractError(e){
+    function extractUidsFromPromise(p) {
+        return p.then((r) => {
+            try {
+                return extractUids(r, limitTo)
+            } catch(e) {
+                return ThrowExtractError(e, r);
+            }
+        })
+    }
+
+    // needs to be a function so we can call it from the promise
+    // as well as from the main function
+    function ThrowExtractError(e, r){
        throw new Error(`
-        XExtractUids could not extract uids from: ${JSON.stringify(_result)}
+        XExtractUids could not extract uids from: ${JSON.stringify(r)}
         Original Error: ${e.message}
         `)
     }

@@ -12,46 +12,52 @@ const users = [
 ];
 
 describe('XExtractUids', () => {
-
     it('should accept a promise and return the uids as an array', async() => {
         const {dgraphClient} = await XSetupForTestNow();
         const ids = await XExtractUids(XSetJSONNow(users, dgraphClient));
         expect(ids.length).toEqual(5);
     });
 
-    it('should throw an informative error when a promise is passed in', async() => {
-        const junkPromise = Promise.resolve({junk: 'junk'});
+    describe('Errors', () => {
+        const junkObject = {junk: 'junk'};
+        const stringifiedJunkObject = JSON.stringify(junkObject);
+        it('should throw an informative error when a promise is passed in', async() => {
+            const junkPromise = Promise.resolve(junkObject);
 
-        let error = null;
-        try {
-            await XExtractUids(junkPromise as any);
-        } catch(e) {
-            error = e
-        }
+            let error = null;
+            try {
+                await XExtractUids(junkPromise as any);
+            } catch(e) {
+                error = e
+            }
 
-        expect(error.message).toContain('XExtractUids could not extract uids from');
-        expect(error.message).toContain('Original Error');
-    });
+            expect(error.message).toContain('XExtractUids could not extract uids from');
+            expect(error.message).toContain('Original Error');
+            expect(error.message).toContain(stringifiedJunkObject);
+        });
 
-    it('should throw an informative error when any object is passed in', () => {
-        let error = null;
-        try {
-            XExtractUids({junk: 'junk'} as any);
-        } catch(e) {
-            error = e
-        }
+        it('should throw an informative error when any object is passed in', () => {
+            let error = null;
+            try {
+                XExtractUids(junkObject as any);
+            } catch(e) {
+                error = e
+            }
 
-        expect(error.message).toContain('XExtractUids could not extract uids from');
-        expect(error.message).toContain('Original Error');
+            expect(error.message).toContain('XExtractUids could not extract uids from');
+            expect(error.message).toContain('Original Error');
+            expect(error.message).toContain(stringifiedJunkObject);
+        });
     });
 
     describe('with existing result', async() => {
 
         let result: messages.Assigned;
 
-        beforeAll(async() => {
+        beforeAll(async(done) => {
             const {dgraphClient} = await XSetupForTestNow();
             result = await XSetJSONNow(users, dgraphClient);
+            done()
         });
 
         it('should return results that are strings',() => {
@@ -85,7 +91,6 @@ describe('XExtractFirstUid', () => {
         expect(typeof id).toEqual('string')
     })
 });
-
 
 describe('.isPromise util', () => {
     // util from stack overflow suggestion
