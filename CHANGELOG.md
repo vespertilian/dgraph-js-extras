@@ -1,3 +1,13 @@
+<a name="0.3.2"></a>
+## [0.3.2](https://github.com/vespertilian/dgraph-js-extras/compare/v0.3.1...v0.3.2) (2018-03-27)
+
+
+### Features
+
+* **extract-uids:** improve error messaging ([aaffb7a](https://github.com/vespertilian/dgraph-js-extras/commit/aaffb7a))
+
+
+
 <a name="0.3.1"></a>
 ## [0.3.1](https://github.com/vespertilian/dgraph-js-extras/compare/v0.3.0...v0.3.1) (2018-03-27)
 
