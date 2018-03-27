@@ -18,7 +18,7 @@ export function XExtractUids(_result: Assigned, limitTo?: number): string[]
 export function XExtractUids(_result: Promise<Assigned> | Assigned, limitTo?: number): Promise<string[]> | string[] | void {
     let result;
     try {
-        result = _result instanceof Promise ?
+        result = isPromise(_result) ?
             _result.then((r) => extractUids(r, limitTo)).catch(ThrowExtractError) :
             extractUids(_result, limitTo);
         return result
@@ -37,8 +37,14 @@ export function XExtractUids(_result: Promise<Assigned> | Assigned, limitTo?: nu
 
 export function XExtractFirstUid(result: Promise<Assigned>): Promise<string>
 export function XExtractFirstUid(result: Assigned): string
-export function XExtractFirstUid(result: any): Promise<string> | string {
-    return result instanceof Promise ?
+export function XExtractFirstUid(result: Promise<Assigned> | Assigned): Promise<string> | string {
+    return isPromise(result) ?
         XExtractUids(result, 1).then(r => r[0]) :
         XExtractUids(result)[0]
+}
+
+// Typescript signature is "User-Defined Type Guard"
+// http://www.typescriptlang.org/docs/handbook/advanced-types.html
+export function isPromise(potentialPromise: Promise<any> | any): potentialPromise is Promise<any> {
+    return Promise.resolve(potentialPromise) == potentialPromise
 }

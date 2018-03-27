@@ -1,6 +1,6 @@
 import {XSetupForTestNow} from '../test-helpers/setup';
 import {XSetJSONNow} from '../set-json-now/set-json-now';
-import {XExtractFirstUid, XExtractUids} from './extract-uids';
+import {isPromise, XExtractFirstUid, XExtractUids} from './extract-uids';
 import * as messages from "dgraph-js/generated/api_pb";
 
 const users = [
@@ -84,6 +84,32 @@ describe('XExtractFirstUid', () => {
         const id = XExtractFirstUid(result);
         expect(typeof id).toEqual('string')
     })
+});
+
+
+describe('.isPromise util', () => {
+    // util from stack overflow suggestion
+    // https://stackoverflow.com/questions/27746304/how-do-i-tell-if-an-object-is-a-promise/38339199#38339199
+
+    it('should return true when passed a promise', () => {
+        const testPromise = Promise.resolve('promise');
+        expect(isPromise(testPromise)).toBe(true)
+    });
+
+    it('should return true for an async function (as they are promises)', () => {
+        async function testAsyncFunc(): Promise<number> {
+            return 1
+        }
+        expect(isPromise(testAsyncFunc())).toBe(true)
+    });
+
+    it('should return false when a string', () => {
+        expect(isPromise('junk')).toBe(false)
+    });
+
+    it('should return false when an object', () => {
+        expect(isPromise({junk: 'junk'})).toBe(false)
+    });
 });
 
 
