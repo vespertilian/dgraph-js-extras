@@ -1,10 +1,20 @@
+<a name="0.3.1"></a>
+## [0.3.1](https://github.com/vespertilian/dgraph-js-extras/compare/v0.3.0...v0.3.1) (2018-03-27)
+
+
+### Bug Fixes
+
+* **extract-uids:** added a better isPromise check ([e02b328](https://github.com/vespertilian/dgraph-js-extras/commit/e02b328))
+
+
+
 <a name="0.3.0"></a>
 # [0.3.0](https://github.com/vespertilian/dgraph-js-extras/compare/v0.2.1...v0.3.0) (2018-03-26)
 
 
 ### Features
 
-* **extract-uids:** XExtractFirstUid now returns a string not a string array ([751c827](https://github.com/vespertilian/dgraph-js-extras/commit/751c827))
+* **extract-uids:** XExtractFirstUid now returns a string not a string array ([0ea4245](https://github.com/vespertilian/dgraph-js-extras/commit/0ea4245))
 
 
 ### BREAKING CHANGES
