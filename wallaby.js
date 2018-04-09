@@ -24,6 +24,9 @@ module.exports = function () {
         },
         bootstrap: function () {
             jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+        },
+        delays: {
+            run: 1200
         }
     };
 };
