@@ -1,10 +1,20 @@
+<a name="0.3.3"></a>
+## [0.3.3](https://github.com/vespertilian/dgraph-js-extras/compare/v0.3.2...v0.3.3) (2018-04-09)
+
+
+### Features
+
+* **create-client:** add an option to log the host and port without having to be in debug mode ([0ad72e5](https://github.com/vespertilian/dgraph-js-extras/commit/0ad72e5))
+
+
+
 <a name="0.3.2"></a>
 ## [0.3.2](https://github.com/vespertilian/dgraph-js-extras/compare/v0.3.1...v0.3.2) (2018-03-27)
 
 
 ### Features
 
-* **extract-uids:** improve error messaging ([aaffb7a](https://github.com/vespertilian/dgraph-js-extras/commit/aaffb7a))
+* **extract-uids:** improve error messaging ([bb0b087](https://github.com/vespertilian/dgraph-js-extras/commit/bb0b087))
 
 
 
