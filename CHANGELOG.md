@@ -1,3 +1,18 @@
+<a name="0.4.0"></a>
+# [0.4.0](https://github.com/vespertilian/dgraph-js-extras/compare/v0.3.3...v0.4.0) (2018-04-09)
+
+
+### Features
+
+* **create-client:** rename log port to log address to be more descriptive ([5d9e609](https://github.com/vespertilian/dgraph-js-extras/commit/5d9e609))
+
+
+### BREAKING CHANGES
+
+* **create-client:** option name has changed logPort is now logAddress
+
+
+
 <a name="0.3.3"></a>
 ## [0.3.3](https://github.com/vespertilian/dgraph-js-extras/compare/v0.3.2...v0.3.3) (2018-04-09)
 

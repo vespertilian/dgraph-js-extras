@@ -3,7 +3,7 @@ export interface ICreateDgraphClientConfig {
     port?: number | null;
     host?: string | null;
     debug?: boolean;
-    logPort?: boolean;
+    logAddress?: boolean;
 }
 export interface ICreateDGraph {
     dgraphClient: dgraph.DgraphClient;
