@@ -5,7 +5,7 @@ export interface ICreateDgraphClientConfig {
    port?: number | null
    host?: string | null
    debug?: boolean
-   logPort?: boolean
+   logAddress?: boolean
 }
 export interface ICreateDGraph {
     dgraphClient: dgraph.DgraphClient,
@@ -17,17 +17,17 @@ export function XCreateDgraphClient(config?: ICreateDgraphClientConfig, _dgraph=
         port: null,
         host: null,
         debug: false,
-        logPort: false
+        logAddress: false
     };
 
-    const {port, host, debug, logPort} = Object.assign(defaults, config);
+    const {port, host, debug, logAddress} = Object.assign(defaults, config);
 
     // use params passed in, followed env values, followed by a static default
     const _port = port || process.env.DGRAPH_PORT || 9080;
     const _host = host || process.env.DGRAPH_HOST || 'localhost';
     const address = `${_host}:${_port}`;
 
-    if(debug || logPort) {
+    if(debug || logAddress) {
         infoLog(`configuring Dgraph host address: ${address}`);
     }
 
