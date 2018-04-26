@@ -1,3 +1,13 @@
+<a name="0.4.1"></a>
+## [0.4.1](https://github.com/vespertilian/dgraph-js-extras/compare/v0.4.0...v0.4.1) (2018-04-26)
+
+
+### Features
+
+* **package.json docker-compose:** update to latest dgraph 1.0.5 and latest dgraph-js 1.2.1 ([df8391f](https://github.com/vespertilian/dgraph-js-extras/commit/df8391f))
+
+
+
 <a name="0.4.0"></a>
 # [0.4.0](https://github.com/vespertilian/dgraph-js-extras/compare/v0.3.3...v0.4.0) (2018-04-09)
 
