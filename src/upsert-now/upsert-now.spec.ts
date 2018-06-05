@@ -1,6 +1,7 @@
 import {XSetupForTestNow, XSetupWithSchemaDataNow} from '../test-helpers/setup';
 import {getUids} from '../test-helpers/get-uids';
 import {XUpsertNow} from './upsert-now';
+import {basicEqualityQuery} from '../queries/basic-equality-query';
 
 const predicateNameQuery = `{
             q(func: has(name), orderasc: name) {
@@ -22,31 +23,26 @@ const predicateSkillQuery = `{
         }`;
 
 describe('XUpsertNow', () => {
+    it('should rethrow any errors from the query function', async() => {
+
+        const {dgraphClient} = await XSetupForTestNow();
+        const data = {
+            name: 'cameron'
+        };
+
+        const errorFn = (node: any) => { throw new Error(`Thrown error: ${JSON.stringify(node)}`)};
+        let error = null;
+        try {
+            await XUpsertNow(errorFn, data, dgraphClient)
+        } catch (e) {
+            error = e
+        }
+
+        const expectedError = new Error(`Thrown error: {"name":"cameron"}`);
+        expect(error).toEqual(expectedError);
+    });
+
     describe('Upsert a single value', () => {
-        it('should throw an error if the key predicate is not present on the object being used for the upsert', async() => {
-
-            const {dgraphClient} = await XSetupForTestNow();
-            const data = {
-                name: 'cameron'
-            };
-
-            let error = null;
-            try {
-                await XUpsertNow('email', data, dgraphClient)
-            } catch (e) {
-                error = e
-            }
-
-            const expectedError = new Error(`
-        The search predicate/s must be a value on the object you are trying to persist.
-        
-        "email" does not exist on:
-        {"name":"cameron"}`);
-
-            expect(error).toEqual(expectedError);
-        });
-
-
         it('should find and overwrite a node if the node exists', async() => {
 
             // XSetupForTestNow
@@ -70,7 +66,7 @@ describe('XUpsertNow', () => {
                 email: 'cam@gmail.com'
             };
 
-            const result = await XUpsertNow('email', data, dgraphClient);
+            const result = await XUpsertNow(basicEqualityQuery('email'), data, dgraphClient);
 
             const finalUidQuery = await dgraphClient.newTxn().query(predicateNameQuery);
             const [finalCameron, ...others] = finalUidQuery.getJson().q;
@@ -102,7 +98,7 @@ describe('XUpsertNow', () => {
                 email: 'h@gmail.com'
             };
 
-            const helenaUid = await XUpsertNow('email', helena, dgraphClient);
+            const helenaUid = await XUpsertNow(basicEqualityQuery('email'), helena, dgraphClient);
 
             const finalUidQuery = await dgraphClient.newTxn().query(predicateNameQuery);
             const users = finalUidQuery.getJson().q;
@@ -139,13 +135,13 @@ describe('XUpsertNow', () => {
 
             let error = null;
             try {
-                await XUpsertNow('email', cameronC, dgraphClient);
+                await XUpsertNow(basicEqualityQuery('email'), cameronC, dgraphClient);
             } catch(e) {
                 error = e;
             }
 
             const expectedError = new Error(`
-                    More than one node matches "cam@gmail.com" for the "email" predicate. 
+                    More than one node matches "cam@gmail.com" for the "email" predicate.
                     Aborting XUpsertNow. 
                     Delete the extra values before tyring XUpsert again.`);
 
@@ -179,7 +175,7 @@ describe('XUpsertNow', () => {
 
             let error = null;
             try {
-                await XUpsertNow('email', cameronC, dgraphClient);
+                await XUpsertNow(basicEqualityQuery('email'), cameronC, dgraphClient);
             } catch(e) {
                 error = e;
             }
@@ -223,7 +219,7 @@ describe('XUpsertNow', () => {
                 }]
             };
 
-            await XUpsertNow('email', cameronC, dgraphClient);
+            await XUpsertNow(basicEqualityQuery('email'), cameronC, dgraphClient);
 
             const finalUidQuery = await dgraphClient.newTxn().query(predicateNameQuery);
             const users = finalUidQuery.getJson().q;
@@ -286,7 +282,7 @@ describe('XUpsertNow', () => {
                 z: 'e'
             };
 
-            await XUpsertNow(['skill', 'level'], updateJSMid, dgraphClient);
+            await XUpsertNow(basicEqualityQuery(['skill', 'level']), updateJSMid, dgraphClient);
 
             const skillQuery = await dgraphClient.newTxn().query(predicateSkillQuery);
             const skills = skillQuery.getJson().q;
@@ -331,7 +327,7 @@ describe('XUpsertNow', () => {
                 z: 'e'
             };
 
-            await XUpsertNow(['skill', 'level', 'x'], update, dgraphClient);
+            await XUpsertNow(basicEqualityQuery(['skill', 'level', 'x']), update, dgraphClient);
 
             const skillQuery = await dgraphClient.newTxn().query(predicateSkillQuery);
             const skills = skillQuery.getJson().q;
@@ -388,7 +384,7 @@ describe('XUpsertNow', () => {
                 email: 'hb@gmail.com',
             };
 
-            const [cameronUpdateUid, howardUid] = await XUpsertNow('email', [cameronUpdate, howard], dgraphClient);
+            const [cameronUpdateUid, howardUid] = await XUpsertNow(basicEqualityQuery('email'), [cameronUpdate, howard], dgraphClient);
             expect(cameronUpdateUid).toEqual(cameronUid);
 
             const queryUsers = await dgraphClient.newTxn().query(predicateNameQuery);
@@ -453,7 +449,7 @@ describe('XUpsertNow', () => {
 
         const updates = [updateJunior, updateMid];
 
-        await XUpsertNow(['skill', 'level'], updates, dgraphClient);
+        await XUpsertNow(basicEqualityQuery(['skill', 'level']), updates, dgraphClient);
 
         const skillQuery = await dgraphClient.newTxn().query(predicateSkillQuery);
         const skills = skillQuery.getJson().q;
@@ -513,7 +509,7 @@ describe('XUpsertNow', () => {
 
         let errors: Error[] | null = null;
         try {
-            await XUpsertNow('email', [cameronUpdate, helenaUpdate, cameronUpdate, stuart], dgraphClient);
+            await XUpsertNow(basicEqualityQuery('email'), [cameronUpdate, helenaUpdate, cameronUpdate, stuart], dgraphClient);
         } catch (e) {
             errors = e
         }
@@ -528,10 +524,9 @@ describe('XUpsertNow', () => {
         ]);
 
         const error = new Error(`
-                    More than one node matches "h@gmail.com" for the "email" predicate. 
+                    More than one node matches "h@gmail.com" for the "email" predicate.
                     Aborting XUpsertNow. 
                     Delete the extra values before tyring XUpsert again.`);
         expect(errors).toEqual([error])
-
     })
 });

@@ -1,13 +1,16 @@
-import {buildUpsertQuery} from './upsert-now';
+import {basicEqualityQuery} from './basic-equality-query';
 
-describe('buildUpsertQuery', () => {
+// todo check other query return values
+describe('basicEqualityQuery', () => {
     it('should build a query when matching a single term', () => {
         const searchPredicate = 'name';
         const data = {
             name: 'Cameron',
             age: 35
         };
-        const {query} = buildUpsertQuery(searchPredicate, data);
+
+        const queryFn = basicEqualityQuery(searchPredicate);
+        const {query} = queryFn(data);
 
         const expectedQuery = `{
             q(func: eq(name, "Cameron")) {
@@ -24,7 +27,9 @@ describe('buildUpsertQuery', () => {
             email: 'cam@gmail.com',
             age: 35
         };
-        const {query} = buildUpsertQuery(searchPredicates, data);
+
+        const queryFn = basicEqualityQuery(searchPredicates);
+        const {query} = queryFn(data);
 
         const expectedQuery = `
         {
@@ -45,7 +50,9 @@ describe('buildUpsertQuery', () => {
             twitter: 'vespertilian',
             age: 35
         };
-        const {query} = buildUpsertQuery(searchPredicates, data);
+
+        const queryFn = basicEqualityQuery(searchPredicates);
+        const {query} = queryFn(data);
 
         const expectedQuery = `
         {
@@ -57,6 +64,20 @@ describe('buildUpsertQuery', () => {
             }
         }`;
         expect(query).toEqual(expectedQuery)
-    })
+    });
 
+    it('should throw an error if the key predicate is not present on the object being used for the upsert', async() => {
+        const searchPredicates = ['name', 'email'];
+        const data = {
+            name: 'Cameron',
+        };
+
+        const queryFn = basicEqualityQuery(searchPredicates);
+
+        expect(() => queryFn(data)).toThrowError(`
+        The search predicate/s must be a value on the object you are trying to persist.
+        
+        "email" does not exist on:
+        {"name":"Cameron"}`);
+    });
 });
