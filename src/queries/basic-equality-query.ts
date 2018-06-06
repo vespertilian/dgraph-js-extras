@@ -1,12 +1,14 @@
+import * as dgraph from 'dgraph-js'
+import {queryFnReturnValues} from '../upsert-now/upsert-now';
+
 export const basicEqualityQuery = searchPredicates => node => query(searchPredicates, node);
 
-function query(_searchPredicates: string | string[], node: object): {query: string, searchValues: string[], searchPredicates: string[]}{
+function query(_searchPredicates: string | string[], node: object): queryFnReturnValues {
     // make search predicates an array if it is not already
     const searchPredicates: string[] =
         Array.isArray(_searchPredicates) ?
             _searchPredicates
             : [_searchPredicates];
-
 
     // check values are present on predicate
     const searchValues: string[] = searchPredicates.map((predicate, index) => {
@@ -22,24 +24,24 @@ function query(_searchPredicates: string | string[], node: object): {query: stri
         return searchValue
     });
 
-    let query = '';
+    let dgraphQuery = '';
 
     const searchLength = searchValues.length;
     if(searchLength === 1) {
         // simple case simple query
-        query = `{
+        dgraphQuery = `{
             q(func: eq(${searchPredicates}, "${searchValues}")) {
                 uid
             }
         }`;
     } else {
         // build query
-        query = `
+        dgraphQuery = `
         {
             q(func: eq(${searchPredicates[0]}, "${searchValues[0]}"))`;
 
         // add first filter
-        query = query.concat(
+        dgraphQuery = dgraphQuery.concat(
             `
             @filter(eq(${searchPredicates[1]}, "${searchValues[1]}")`
         );
@@ -47,19 +49,34 @@ function query(_searchPredicates: string | string[], node: object): {query: stri
         // add more filters if required
         if(searchValues.length > 2){
             for(let i=2; i < searchLength; i++) {
-                query = query.concat(
+                dgraphQuery = dgraphQuery.concat(
                     `
                 AND eq(${searchPredicates[i]}, "${searchValues[i]}")`
                 )
             }
         }
         // close the filters, get the uid and close the larger query
-        query = query.concat(`)
+        dgraphQuery = dgraphQuery.concat(`)
             {
                 uid
             }
         }`)
     }
 
-    return {query, searchValues, searchPredicates}
+    function nodeFoundFn(queryResult: dgraph.Response): string {
+
+        const [existingUid, ...others] = queryResult.getJson().q.map(r => r.uid);
+
+        if(others.length > 0) {
+            const error = new Error(`
+                    More than one node matches "${searchValues}" for the "${searchPredicates}" predicate.
+                    Aborting XUpsertNow. 
+                    Delete the extra values before tyring XUpsert again.`);
+            throw error;
+        }
+        return existingUid
+    }
+
+    return {dgraphQuery, nodeFoundFn}
 }
+

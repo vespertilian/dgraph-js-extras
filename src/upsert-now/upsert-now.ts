@@ -2,11 +2,16 @@ import * as dgraph from 'dgraph-js'
 import {XSetJSON} from '../set-json/set-json';
 import {Txn} from 'dgraph-js';
 
-// overload function to always return a string array when an object array is passed in
-export async function XUpsertNow(queryFn: (node: any) => any, data: object[], dgraphClient: dgraph.DgraphClient, _dgraph?: any): Promise<string[]>
-export async function XUpsertNow(queryFn: (node: any) => any, data: object, dgraphClient: dgraph.DgraphClient, _dgraph?: any): Promise<string>
+export interface queryFnReturnValues {
+    dgraphQuery: string
+    nodeFoundFn: (queryResult: dgraph.Response) => string
+}
 
-export async function XUpsertNow(queryFn: (node: any) => any, data: object | object[], dgraphClient: dgraph.DgraphClient, _dgraph=dgraph): Promise<string | string[]> {
+// overload function to always return a string array when an object array is passed in
+export async function XUpsertNow(queryFn: (input: any) => queryFnReturnValues, data: object[], dgraphClient: dgraph.DgraphClient, _dgraph?: any): Promise<string[]>
+export async function XUpsertNow(queryFn: (input: any) => queryFnReturnValues, data: object, dgraphClient: dgraph.DgraphClient, _dgraph?: any): Promise<string>
+
+export async function XUpsertNow(queryFn: (input: any) => queryFnReturnValues, data: object | object[], dgraphClient: dgraph.DgraphClient, _dgraph=dgraph): Promise<string | string[]> {
     if(Array.isArray(data)) {
         return XUpsertArrayNow(queryFn, data, dgraphClient, _dgraph)
     } else {
@@ -14,7 +19,7 @@ export async function XUpsertNow(queryFn: (node: any) => any, data: object | obj
     }
 }
 
-async function XUpsertArrayNow(queryFn: (node: any) => any, nodes: object[], dgraphClient: dgraph.DgraphClient, _dgraph=dgraph): Promise<string[]> {
+async function XUpsertArrayNow(queryFn: (input: any) => queryFnReturnValues, nodes: object[], dgraphClient: dgraph.DgraphClient, _dgraph=dgraph): Promise<string[]> {
     const results: string[] = [];
     const errors: Error[] = [];
     const transaction = dgraphClient.newTxn();
@@ -45,7 +50,7 @@ async function XUpsertArrayNow(queryFn: (node: any) => any, nodes: object[], dgr
     return results
 }
 
-async function XUpsertObjectNow(queryFn: (node: any) => any, node: object, dgraphClient: dgraph.DgraphClient, _dgraph=dgraph): Promise<string> {
+async function XUpsertObjectNow(queryFn: (input: any) => queryFnReturnValues, node: object, dgraphClient: dgraph.DgraphClient, _dgraph=dgraph): Promise<string> {
     let uid = null;
     let error: Error | null = null;
     const transaction = dgraphClient.newTxn();
@@ -72,22 +77,14 @@ async function XUpsertObjectNow(queryFn: (node: any) => any, node: object, dgrap
     return uid;
 }
 
-async function XUpsertObject(queryFn: (node: any) => any, node: object, transaction: Txn): Promise<string | null> {
+async function XUpsertObject(queryFn: (input: any) => queryFnReturnValues, node: object, transaction: Txn): Promise<string | null> {
     let result = null;
 
-    const {query, searchValues, searchPredicates} = queryFn(node);
-    const queryResult = await transaction.query(query);
-
-    const [existingUid, ...others] = queryResult.getJson().q.map(r => r.uid);
+    const {dgraphQuery, nodeFoundFn} = queryFn(node);
+    const queryResult = await transaction.query(dgraphQuery);
+    const existingUid = nodeFoundFn(queryResult)
 
     if(Boolean(existingUid)) {
-        if(others.length > 0) {
-            const error = new Error(`
-                    More than one node matches "${searchValues}" for the "${searchPredicates}" predicate.
-                    Aborting XUpsertNow. 
-                    Delete the extra values before tyring XUpsert again.`);
-            throw error;
-        }
         const updatedNode = Object.assign({uid: existingUid}, node);
         const mu = XSetJSON(updatedNode);
         await transaction.mutate(mu);

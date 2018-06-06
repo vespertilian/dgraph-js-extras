@@ -10,14 +10,14 @@ describe('basicEqualityQuery', () => {
         };
 
         const queryFn = basicEqualityQuery(searchPredicate);
-        const {query} = queryFn(data);
+        const {dgraphQuery} = queryFn(data);
 
         const expectedQuery = `{
             q(func: eq(name, "Cameron")) {
                 uid
             }
         }`;
-        expect(query).toEqual(expectedQuery)
+        expect(dgraphQuery).toEqual(expectedQuery)
     });
 
     it('should build a query when matching a two terms', () => {
@@ -29,7 +29,7 @@ describe('basicEqualityQuery', () => {
         };
 
         const queryFn = basicEqualityQuery(searchPredicates);
-        const {query} = queryFn(data);
+        const {dgraphQuery} = queryFn(data);
 
         const expectedQuery = `
         {
@@ -39,7 +39,7 @@ describe('basicEqualityQuery', () => {
                 uid
             }
         }`;
-        expect(query).toEqual(expectedQuery)
+        expect(dgraphQuery).toEqual(expectedQuery)
     });
 
     it('should build a query when matching more than two terms', () => {
@@ -52,7 +52,7 @@ describe('basicEqualityQuery', () => {
         };
 
         const queryFn = basicEqualityQuery(searchPredicates);
-        const {query} = queryFn(data);
+        const {dgraphQuery} = queryFn(data);
 
         const expectedQuery = `
         {
@@ -63,7 +63,7 @@ describe('basicEqualityQuery', () => {
                 uid
             }
         }`;
-        expect(query).toEqual(expectedQuery)
+        expect(dgraphQuery).toEqual(expectedQuery)
     });
 
     it('should throw an error if the key predicate is not present on the object being used for the upsert', async() => {

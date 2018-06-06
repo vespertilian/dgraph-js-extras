@@ -3,7 +3,7 @@ import {getUids} from '../test-helpers/get-uids';
 import {XSetupWithSchemaDataNow} from '../test-helpers/setup';
 import {basicEqualityQuery} from '../queries/basic-equality-query';
 
-describe('XUpsertMapNow', () => {
+describe('XUpsertMapNow with basic equality query', () => {
     it('should allow you to pass a mapped object of upserts and return the map with created or found uids', async() => {
         // XSetupForTestNow
         const schema = `
