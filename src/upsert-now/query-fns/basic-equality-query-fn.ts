@@ -71,8 +71,8 @@ function queryFn(_searchPredicates: string | string[], node: object): queryFnRet
         if(others.length > 0) {
             const error = new Error(`
                     More than one node matches "${searchValues}" for the "${searchPredicates}" predicate.
-                    Aborting XUpsertNow. 
-                    Delete the extra values before tyring XUpsert again.`);
+                    Aborting xUpsertNow. 
+                    Delete the extra values before tyring xUpsert again.`);
             throw error;
         }
         return existingUid

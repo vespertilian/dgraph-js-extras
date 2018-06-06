@@ -1,6 +1,6 @@
-import {XSetupWithSchemaDataNow} from '../test-helpers/setup';
+import {xSetupWithSchemaDataNow} from '../test-helpers/setup';
 import {getUids} from '../test-helpers/get-uids';
-import {XUpsertNow} from './upsert-now';
+import {xUpsertNow} from './upsert-now';
 import {basicEqualityQueryFn} from './query-fns/basic-equality-query-fn';
 
 const predicateNameQuery = `{
@@ -22,7 +22,7 @@ const predicateSkillQuery = `{
             }
         }`;
 
-describe('XUpsertNow with basic equality query function', () => {
+describe('xUpsertNow with basic equality query function', () => {
     describe('Upsert a single value', () => {
         it('should find and overwrite a node if the node exists', async() => {
 
@@ -35,7 +35,7 @@ describe('XUpsertNow with basic equality query function', () => {
                 email: 'cam@gmail.com'
             };
 
-            const {dgraphClient} = await XSetupWithSchemaDataNow({schema, data: initialData});
+            const {dgraphClient} = await xSetupWithSchemaDataNow({schema, data: initialData});
 
             const initialUidQuery = await dgraphClient.newTxn().query(predicateNameQuery);
             const [initialCameron] = initialUidQuery.getJson().q;
@@ -46,7 +46,7 @@ describe('XUpsertNow with basic equality query function', () => {
                 email: 'cam@gmail.com'
             };
 
-            const result = await XUpsertNow(basicEqualityQueryFn('email'), data, dgraphClient);
+            const result = await xUpsertNow(basicEqualityQueryFn('email'), data, dgraphClient);
 
             const finalUidQuery = await dgraphClient.newTxn().query(predicateNameQuery);
             const [finalCameron, ...others] = finalUidQuery.getJson().q;
@@ -68,7 +68,7 @@ describe('XUpsertNow with basic equality query function', () => {
                 email: 'cam@gmail.com'
             };
 
-            const {dgraphClient, result} = await XSetupWithSchemaDataNow({schema, data: cameron});
+            const {dgraphClient, result} = await xSetupWithSchemaDataNow({schema, data: cameron});
             const [cameronUid] = getUids({numberOfIdsToGet: 1, result});
 
             // add helena
@@ -77,7 +77,7 @@ describe('XUpsertNow with basic equality query function', () => {
                 email: 'h@gmail.com'
             };
 
-            const helenaUid = await XUpsertNow(basicEqualityQueryFn('email'), helena, dgraphClient);
+            const helenaUid = await xUpsertNow(basicEqualityQueryFn('email'), helena, dgraphClient);
 
             const finalUidQuery = await dgraphClient.newTxn().query(predicateNameQuery);
             const users = finalUidQuery.getJson().q;
@@ -103,7 +103,7 @@ describe('XUpsertNow with basic equality query function', () => {
                 email: 'cam@gmail.com'
             };
 
-            const {dgraphClient, result} = await XSetupWithSchemaDataNow({schema, data: [cameronA, cameronB]});
+            const {dgraphClient, result} = await xSetupWithSchemaDataNow({schema, data: [cameronA, cameronB]});
             const [cameronAUid, cameronBUid] = getUids({numberOfIdsToGet: 2, result});
 
             const cameronC = {
@@ -113,15 +113,15 @@ describe('XUpsertNow with basic equality query function', () => {
 
             let error = null;
             try {
-                await XUpsertNow(basicEqualityQueryFn('email'), cameronC, dgraphClient);
+                await xUpsertNow(basicEqualityQueryFn('email'), cameronC, dgraphClient);
             } catch(e) {
                 error = e;
             }
 
             const expectedError = new Error(`
                     More than one node matches "cam@gmail.com" for the "email" predicate.
-                    Aborting XUpsertNow. 
-                    Delete the extra values before tyring XUpsert again.`);
+                    Aborting xUpsertNow. 
+                    Delete the extra values before tyring xUpsert again.`);
 
             expect(error).toEqual(expectedError);
             const finalUidQuery = await dgraphClient.newTxn().query(predicateNameQuery);
@@ -137,7 +137,7 @@ describe('XUpsertNow with basic equality query function', () => {
                 email: string @index(hash) .
                 friends: uid .
             `;
-            const {dgraphClient} = await XSetupWithSchemaDataNow({schema});
+            const {dgraphClient} = await xSetupWithSchemaDataNow({schema});
 
             const cameronC = {
                 name: 'Cameron',
@@ -152,7 +152,7 @@ describe('XUpsertNow with basic equality query function', () => {
 
             let error = null;
             try {
-                await XUpsertNow(basicEqualityQueryFn('email'), cameronC, dgraphClient);
+                await xUpsertNow(basicEqualityQueryFn('email'), cameronC, dgraphClient);
             } catch(e) {
                 error = e;
             }
@@ -161,7 +161,7 @@ describe('XUpsertNow with basic equality query function', () => {
             const users = finalUidQuery.getJson().q;
 
             const message: string = `
-                XUpsertNow does not support finding and creating nested objects.
+                xUpsertNow does not support finding and creating nested objects.
                 Failed for object: ${JSON.stringify(cameronC)}
                 You should write your own custom transaction for this.
                 You can upsert existing references if you have the UID.
@@ -183,7 +183,7 @@ describe('XUpsertNow with basic equality query function', () => {
                 email: 'stu@gmail.com'
             };
 
-            const {dgraphClient, result} = await XSetupWithSchemaDataNow({schema, data: stuart});
+            const {dgraphClient, result} = await xSetupWithSchemaDataNow({schema, data: stuart});
             const [stuartUid] = getUids({numberOfIdsToGet: 1, result});
 
             const cameronC = {
@@ -194,7 +194,7 @@ describe('XUpsertNow with basic equality query function', () => {
                 }]
             };
 
-            await XUpsertNow(basicEqualityQueryFn('email'), cameronC, dgraphClient);
+            await xUpsertNow(basicEqualityQueryFn('email'), cameronC, dgraphClient);
 
             const finalUidQuery = await dgraphClient.newTxn().query(predicateNameQuery);
             const users = finalUidQuery.getJson().q;
@@ -246,7 +246,7 @@ describe('XUpsertNow with basic equality query function', () => {
                 z: 'b'
             };
 
-            const {dgraphClient, result} = await XSetupWithSchemaDataNow({schema, data: [JSSenior, JSMid]});
+            const {dgraphClient, result} = await xSetupWithSchemaDataNow({schema, data: [JSSenior, JSMid]});
             const [JSSeniorUid, JSMidUid] = getUids({numberOfIdsToGet: 2, result});
 
             const updateJSMid = {
@@ -257,7 +257,7 @@ describe('XUpsertNow with basic equality query function', () => {
                 z: 'e'
             };
 
-            await XUpsertNow(basicEqualityQueryFn(['skill', 'level']), updateJSMid, dgraphClient);
+            await xUpsertNow(basicEqualityQueryFn(['skill', 'level']), updateJSMid, dgraphClient);
 
             const skillQuery = await dgraphClient.newTxn().query(predicateSkillQuery);
             const skills = skillQuery.getJson().q;
@@ -291,7 +291,7 @@ describe('XUpsertNow with basic equality query function', () => {
                 z: 'b'
             };
 
-            const {dgraphClient, result} = await XSetupWithSchemaDataNow({schema, data: [JSSenior, JSMid]});
+            const {dgraphClient, result} = await xSetupWithSchemaDataNow({schema, data: [JSSenior, JSMid]});
             const [JSSeniorUid, JSMidUid] = getUids({numberOfIdsToGet: 2, result});
 
             const update = {
@@ -302,7 +302,7 @@ describe('XUpsertNow with basic equality query function', () => {
                 z: 'e'
             };
 
-            await XUpsertNow(basicEqualityQueryFn(['skill', 'level', 'x']), update, dgraphClient);
+            await xUpsertNow(basicEqualityQueryFn(['skill', 'level', 'x']), update, dgraphClient);
 
             const skillQuery = await dgraphClient.newTxn().query(predicateSkillQuery);
             const skills = skillQuery.getJson().q;
@@ -337,7 +337,7 @@ describe('XUpsertNow with basic equality query function', () => {
                 email: 'b@gmail.com'
             };
 
-            const {dgraphClient, result} = await XSetupWithSchemaDataNow({schema, data: [cameron, helena, barbara]});
+            const {dgraphClient, result} = await xSetupWithSchemaDataNow({schema, data: [cameron, helena, barbara]});
             const [cameronUid, helenaUid, barabaraUid] = getUids({numberOfIdsToGet: 3, result});
 
 
@@ -358,7 +358,7 @@ describe('XUpsertNow with basic equality query function', () => {
                 email: 'hb@gmail.com',
             };
 
-            const [cameronUpdateUid, howardUid] = await XUpsertNow(basicEqualityQueryFn('email'), [cameronUpdate, howard], dgraphClient);
+            const [cameronUpdateUid, howardUid] = await xUpsertNow(basicEqualityQueryFn('email'), [cameronUpdate, howard], dgraphClient);
             expect(cameronUpdateUid).toEqual(cameronUid);
 
             const queryUsers = await dgraphClient.newTxn().query(predicateNameQuery);
@@ -402,7 +402,7 @@ describe('XUpsertNow with basic equality query function', () => {
             y: 'b',
             z: 'b'
         };
-        const {dgraphClient, result} = await XSetupWithSchemaDataNow({schema, data: [JSSenior, JSMid, JSJunior]});
+        const {dgraphClient, result} = await xSetupWithSchemaDataNow({schema, data: [JSSenior, JSMid, JSJunior]});
         const [JSSeniorUid, JSMidUid, JSJuniorUid] = getUids({numberOfIdsToGet: 3, result});
 
         const updateMid = {
@@ -423,7 +423,7 @@ describe('XUpsertNow with basic equality query function', () => {
 
         const updates = [updateJunior, updateMid];
 
-        await XUpsertNow(basicEqualityQueryFn(['skill', 'level']), updates, dgraphClient);
+        await xUpsertNow(basicEqualityQueryFn(['skill', 'level']), updates, dgraphClient);
 
         const skillQuery = await dgraphClient.newTxn().query(predicateSkillQuery);
         const skills = skillQuery.getJson().q;
@@ -462,7 +462,7 @@ describe('XUpsertNow with basic equality query function', () => {
             email: 'b@gmail.com'
         };
 
-        const {dgraphClient, result} = await XSetupWithSchemaDataNow({schema, data: [cameron, helena1, helena2, barbara]});
+        const {dgraphClient, result} = await xSetupWithSchemaDataNow({schema, data: [cameron, helena1, helena2, barbara]});
         const [cameronUid, helena1Uid, helena2Uid, barbaraUid] = getUids({numberOfIdsToGet: 4, result});
 
         const cameronUpdate = {
@@ -482,7 +482,7 @@ describe('XUpsertNow with basic equality query function', () => {
 
         let errors: Error[] | null = null;
         try {
-            await XUpsertNow(basicEqualityQueryFn('email'), [cameronUpdate, helenaUpdate, cameronUpdate, stuart], dgraphClient);
+            await xUpsertNow(basicEqualityQueryFn('email'), [cameronUpdate, helenaUpdate, cameronUpdate, stuart], dgraphClient);
         } catch (e) {
             errors = e
         }
@@ -498,8 +498,8 @@ describe('XUpsertNow with basic equality query function', () => {
 
         const error = new Error(`
                     More than one node matches "h@gmail.com" for the "email" predicate.
-                    Aborting XUpsertNow. 
-                    Delete the extra values before tyring XUpsert again.`);
+                    Aborting xUpsertNow. 
+                    Delete the extra values before tyring xUpsert again.`);
         expect(errors).toEqual([error])
     })
 });

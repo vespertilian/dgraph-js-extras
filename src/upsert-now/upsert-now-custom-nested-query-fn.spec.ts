@@ -1,5 +1,5 @@
-import {XSetupWithSchemaDataNow} from '../test-helpers/setup';
-import {XUpsertNow} from './upsert-now';
+import {xSetupWithSchemaDataNow} from '../test-helpers/setup';
+import {xUpsertNow} from './upsert-now';
 import * as dgraph from 'dgraph-js'
 import {queryFnReturnValues} from './upsert-now';
 
@@ -61,7 +61,7 @@ const userAvailabilityQueryFn = (name: string) => (node: IAvailability): queryFn
     return {dgraphQuery, nodeFoundFn}
 };
 
-describe('XUpsertNow with custom query', () => {
+describe('xUpsertNow with custom query', () => {
     it('should find an overwrite a node if one exists', async() => {
         const schema = `
             name: string @index(hash) .
@@ -95,7 +95,7 @@ describe('XUpsertNow with custom query', () => {
             ]
         };
 
-        const {dgraphClient, result} = await XSetupWithSchemaDataNow({schema, data: initialData});
+        const {dgraphClient, result} = await xSetupWithSchemaDataNow({schema, data: initialData});
 
         const map = result.getUidsMap();
         const availabilityBuid = map.get('availabilityB'); //?
@@ -107,7 +107,7 @@ describe('XUpsertNow with custom query', () => {
             location: 'At home'
         };
 
-        await XUpsertNow(userAvailabilityQueryFn('Cameron'), AVAILABILITY_B_MODIFIED, dgraphClient);
+        await xUpsertNow(userAvailabilityQueryFn('Cameron'), AVAILABILITY_B_MODIFIED, dgraphClient);
 
         const cameronQuery = await dgraphClient.newTxn().query(cameronAvailabilitiesQuery);
         const [cameron] = cameronQuery.getJson().q;

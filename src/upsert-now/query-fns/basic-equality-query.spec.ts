@@ -1,7 +1,7 @@
 import {basicEqualityQueryFn} from './basic-equality-query-fn';
 
 // todo check other query return values
-describe('basicEqualityQueryFn', () => {
+describe('xbasicEqualityQueryFn', () => {
     it('should build a query when matching a single term', () => {
         const searchPredicate = 'name';
         const data = {

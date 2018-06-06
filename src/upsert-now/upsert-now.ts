@@ -1,5 +1,5 @@
 import * as dgraph from 'dgraph-js'
-import {XSetJSON} from '../set-json/set-json';
+import {xSetJSON} from '../set-json/set-json';
 import {Txn} from 'dgraph-js';
 
 export interface queryFnReturnValues {
@@ -8,25 +8,25 @@ export interface queryFnReturnValues {
 }
 
 // overload function to always return a string array when an object array is passed in
-export async function XUpsertNow(queryFn: (input?: any) => queryFnReturnValues, data: object[], dgraphClient: dgraph.DgraphClient, _dgraph?: any): Promise<string[]>
-export async function XUpsertNow(queryFn: (input?: any) => queryFnReturnValues, data: object, dgraphClient: dgraph.DgraphClient, _dgraph?: any): Promise<string>
+export async function xUpsertNow(queryFn: (input?: any) => queryFnReturnValues, data: object[], dgraphClient: dgraph.DgraphClient, _dgraph?: any): Promise<string[]>
+export async function xUpsertNow(queryFn: (input?: any) => queryFnReturnValues, data: object, dgraphClient: dgraph.DgraphClient, _dgraph?: any): Promise<string>
 
-export async function XUpsertNow(queryFn: (input?: any) => queryFnReturnValues, data: object | object[], dgraphClient: dgraph.DgraphClient, _dgraph=dgraph): Promise<string | string[]> {
+export async function xUpsertNow(queryFn: (input?: any) => queryFnReturnValues, data: object | object[], dgraphClient: dgraph.DgraphClient, _dgraph=dgraph): Promise<string | string[]> {
     if(Array.isArray(data)) {
-        return XUpsertArrayNow(queryFn, data, dgraphClient, _dgraph)
+        return xUpsertArrayNow(queryFn, data, dgraphClient, _dgraph)
     } else {
-        return XUpsertObjectNow(queryFn, data, dgraphClient, _dgraph)
+        return xUpsertObjectNow(queryFn, data, dgraphClient, _dgraph)
     }
 }
 
-async function XUpsertArrayNow(queryFn: (input?: any) => queryFnReturnValues, nodes: object[], dgraphClient: dgraph.DgraphClient, _dgraph=dgraph): Promise<string[]> {
+async function xUpsertArrayNow(queryFn: (input?: any) => queryFnReturnValues, nodes: object[], dgraphClient: dgraph.DgraphClient, _dgraph=dgraph): Promise<string[]> {
     const results: string[] = [];
     const errors: Error[] = [];
     const transaction = dgraphClient.newTxn();
         try {
             for(let i=0; i < nodes.length; i++) {
                 const currentNode = nodes[i];
-                const result = await XUpsertObject(queryFn, currentNode, transaction);
+                const result = await xUpsertObject(queryFn, currentNode, transaction);
                 results.push(result)
             }
             await transaction.commit()
@@ -50,13 +50,13 @@ async function XUpsertArrayNow(queryFn: (input?: any) => queryFnReturnValues, no
     return results
 }
 
-async function XUpsertObjectNow(queryFn: (input?: any) => queryFnReturnValues, node: object, dgraphClient: dgraph.DgraphClient, _dgraph=dgraph): Promise<string> {
+async function xUpsertObjectNow(queryFn: (input?: any) => queryFnReturnValues, node: object, dgraphClient: dgraph.DgraphClient, _dgraph=dgraph): Promise<string> {
     let uid = null;
     let error: Error | null = null;
     const transaction = dgraphClient.newTxn();
     try {
         try {
-            uid = await XUpsertObject(queryFn, node, transaction);
+            uid = await xUpsertObject(queryFn, node, transaction);
             await transaction.commit()
         } catch (e) {
            // catch the error here so we can throw it properly
@@ -77,25 +77,25 @@ async function XUpsertObjectNow(queryFn: (input?: any) => queryFnReturnValues, n
     return uid;
 }
 
-async function XUpsertObject(queryFn: (input?: any) => queryFnReturnValues, node: object, transaction: Txn): Promise<string | null> {
+async function xUpsertObject(queryFn: (input?: any) => queryFnReturnValues, node: object, transaction: Txn): Promise<string | null> {
     let result = null;
 
     const {dgraphQuery, nodeFoundFn} = queryFn(node);
 
     const queryResult = await transaction.query(dgraphQuery).catch((e) => {
         // Rethrow the error but with more context about exactly what failed
-        throw new Error(`XUpsert DgraphQuery failed, check the query your provided against this error: ${e}`)
+        throw new Error(`xUpsert DgraphQuery failed, check the query your provided against this error: ${e}`)
     });
 
     const existingUid = nodeFoundFn(queryResult);
 
     if(Boolean(existingUid) && queryResult) {
         const updatedNode = Object.assign({uid: existingUid}, node);
-        const mu = XSetJSON(updatedNode);
+        const mu = xSetJSON(updatedNode);
         await transaction.mutate(mu);
         result = existingUid;
     } else if(queryResult) {
-        const mu = XSetJSON(node);
+        const mu = xSetJSON(node);
         const muResult = await transaction.mutate(mu);
         const uid = muResult.getUidsMap().get('blank-0');
         const deeplyNestedObjectsDetected = Boolean(muResult.getUidsMap().get('blank-1'));
@@ -103,7 +103,7 @@ async function XUpsertObject(queryFn: (input?: any) => queryFnReturnValues, node
         // TODO improve this
         if(deeplyNestedObjectsDetected) {
             const error = new Error(`
-                XUpsertNow does not support finding and creating nested objects.
+                xUpsertNow does not support finding and creating nested objects.
                 Failed for object: ${JSON.stringify(node)}
                 You should write your own custom transaction for this.
                 You can upsert existing references if you have the UID.

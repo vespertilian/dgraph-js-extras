@@ -1,11 +1,11 @@
-import {IUidMap, XUpsertMapNow} from './upsert-map-now';
+import {IUidMap, xUpsertMapNow} from './upsert-map-now';
 import {getUids} from '../test-helpers/get-uids';
-import {XSetupWithSchemaDataNow} from '../test-helpers/setup';
+import {xSetupWithSchemaDataNow} from '../test-helpers/setup';
 import {basicEqualityQueryFn} from '../upsert-now/query-fns/basic-equality-query-fn';
 
-describe('XUpsertMapNow with basic equality query', () => {
+describe('xUpsertMapNow with basic equality query', () => {
     it('should allow you to pass a mapped object of upserts and return the map with created or found uids', async() => {
-        // XSetupForTestNow
+        // xSetupForTestNow
         const schema = `
            name: string @index(fulltext) .
            email: string @index(exact) .
@@ -26,7 +26,7 @@ describe('XUpsertMapNow with basic equality query', () => {
             email: 'b@gmail.com'
         };
 
-        const {dgraphClient, result} = await XSetupWithSchemaDataNow({schema, data: [cameron, helena, barbara]});
+        const {dgraphClient, result} = await xSetupWithSchemaDataNow({schema, data: [cameron, helena, barbara]});
         const [cameronUid] = getUids({numberOfIdsToGet: 1, result});
 
         const map = {
@@ -40,7 +40,7 @@ describe('XUpsertMapNow with basic equality query', () => {
             }
         };
 
-        const resultMap = await XUpsertMapNow(basicEqualityQueryFn('email'), map, dgraphClient);
+        const resultMap = await xUpsertMapNow(basicEqualityQueryFn('email'), map, dgraphClient);
 
         const expectedResult: IUidMap = {
             cameron: cameronUid,
@@ -76,7 +76,7 @@ describe('XUpsertMapNow with basic equality query', () => {
             email: 'b@gmail.com'
         };
 
-        const {dgraphClient} = await XSetupWithSchemaDataNow({schema, data: [cameron, helena1, helena2, barbara]});
+        const {dgraphClient} = await xSetupWithSchemaDataNow({schema, data: [cameron, helena1, helena2, barbara]});
 
         const uidMap = {
             helenaUpdate: {
@@ -87,15 +87,15 @@ describe('XUpsertMapNow with basic equality query', () => {
 
         let error: Error | null = null;
         try {
-            await XUpsertMapNow(basicEqualityQueryFn('email'), uidMap, dgraphClient);
+            await xUpsertMapNow(basicEqualityQueryFn('email'), uidMap, dgraphClient);
         } catch (e) {
             error = e
         }
 
         const expectedError = new Error(`
                     More than one node matches "h@gmail.com" for the "email" predicate.
-                    Aborting XUpsertNow. 
-                    Delete the extra values before tyring XUpsert again.`);
+                    Aborting xUpsertNow. 
+                    Delete the extra values before tyring xUpsert again.`);
         expect(expectedError).toEqual(error)
     })
 });

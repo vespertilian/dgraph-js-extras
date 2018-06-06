@@ -1,16 +1,16 @@
-import {XSetupForTestNow} from '../test-helpers/setup';
-import {XSetSchemaNow} from '../set-schema-now/set-schema-now';
-import {XSetJSON, XSetJSONCommitNow} from './set-json';
+import {xSetupForTestNow} from '../test-helpers/setup';
+import {xSetSchemaNow} from '../set-schema-now/set-schema-now';
+import {xSetJSON, xSetJSONCommitNow} from './set-json';
 
-describe('XSetJSON', () => {
+describe('xSetJSON', () => {
   it('should add new data when no uid id set', async() => {
-      const {dgraphClient} = await XSetupForTestNow();
+      const {dgraphClient} = await xSetupForTestNow();
       const schema = `
             name: string @index(fulltext) .
             age: int .
         `;
 
-      await XSetSchemaNow(schema, dgraphClient);
+      await xSetSchemaNow(schema, dgraphClient);
 
 
       const data =[
@@ -18,7 +18,7 @@ describe('XSetJSON', () => {
           { name: 'Helena', age: 31 }
       ];
 
-      const setObject = XSetJSON(data);
+      const setObject = xSetJSON(data);
 
       const trx =  dgraphClient.newTxn();
       await trx.mutate(setObject);
@@ -36,16 +36,16 @@ describe('XSetJSON', () => {
   });
 
     it('should overwrite data when a uid is passed in', async() => {
-        const {dgraphClient} = await XSetupForTestNow();
+        const {dgraphClient} = await xSetupForTestNow();
         const schema = `
             name: string @index(fulltext) .
             age: int .
         `;
 
-        await XSetSchemaNow(schema, dgraphClient);
+        await xSetSchemaNow(schema, dgraphClient);
 
 
-        const setHelena = XSetJSON([
+        const setHelena = xSetJSON([
             { name: 'Helena', age: 31 }
         ]);
 
@@ -57,7 +57,7 @@ describe('XSetJSON', () => {
         const helenaUid = result.getUidsMap().get('blank-0');
 
         const cameron = { uid: helenaUid, name: 'Cameron', age: 35 }
-        const setCameron = XSetJSON(cameron);
+        const setCameron = xSetJSON(cameron);
 
         const trx2 =  dgraphClient.newTxn();
         await trx2.mutate(setCameron);
@@ -76,18 +76,18 @@ describe('XSetJSON', () => {
     });
 });
 
-describe('XSetJSONCommitNow', () => {
+describe('xSetJSONCommitNow', () => {
     it('should add new data and commit the mutation as soon as it is called', async() => {
-        const {dgraphClient} = await XSetupForTestNow();
+        const {dgraphClient} = await xSetupForTestNow();
         const schema = `
             name: string @index(fulltext) .
             age: int .
         `;
 
-        await XSetSchemaNow(schema, dgraphClient);
+        await xSetSchemaNow(schema, dgraphClient);
         const data = { name: 'Cameron', age: 35 };
 
-        const setObject = XSetJSONCommitNow(data);
+        const setObject = xSetJSONCommitNow(data);
 
         expect(setObject.getCommitNow()).toBe(true);
 
