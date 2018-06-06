@@ -1,7 +1,7 @@
 import {XSetupWithSchemaDataNow} from '../test-helpers/setup';
 import {getUids} from '../test-helpers/get-uids';
 import {XUpsertNow} from './upsert-now';
-import {basicEqualityQuery} from '../queries/basic-equality-query';
+import {basicEqualityQueryFn} from './query-fns/basic-equality-query-fn';
 
 const predicateNameQuery = `{
             q(func: has(name), orderasc: name) {
@@ -22,7 +22,7 @@ const predicateSkillQuery = `{
             }
         }`;
 
-describe('XUpsertNow with basic equality query', () => {
+describe('XUpsertNow with basic equality query function', () => {
     describe('Upsert a single value', () => {
         it('should find and overwrite a node if the node exists', async() => {
 
@@ -46,7 +46,7 @@ describe('XUpsertNow with basic equality query', () => {
                 email: 'cam@gmail.com'
             };
 
-            const result = await XUpsertNow(basicEqualityQuery('email'), data, dgraphClient);
+            const result = await XUpsertNow(basicEqualityQueryFn('email'), data, dgraphClient);
 
             const finalUidQuery = await dgraphClient.newTxn().query(predicateNameQuery);
             const [finalCameron, ...others] = finalUidQuery.getJson().q;
@@ -77,7 +77,7 @@ describe('XUpsertNow with basic equality query', () => {
                 email: 'h@gmail.com'
             };
 
-            const helenaUid = await XUpsertNow(basicEqualityQuery('email'), helena, dgraphClient);
+            const helenaUid = await XUpsertNow(basicEqualityQueryFn('email'), helena, dgraphClient);
 
             const finalUidQuery = await dgraphClient.newTxn().query(predicateNameQuery);
             const users = finalUidQuery.getJson().q;
@@ -113,7 +113,7 @@ describe('XUpsertNow with basic equality query', () => {
 
             let error = null;
             try {
-                await XUpsertNow(basicEqualityQuery('email'), cameronC, dgraphClient);
+                await XUpsertNow(basicEqualityQueryFn('email'), cameronC, dgraphClient);
             } catch(e) {
                 error = e;
             }
@@ -152,7 +152,7 @@ describe('XUpsertNow with basic equality query', () => {
 
             let error = null;
             try {
-                await XUpsertNow(basicEqualityQuery('email'), cameronC, dgraphClient);
+                await XUpsertNow(basicEqualityQueryFn('email'), cameronC, dgraphClient);
             } catch(e) {
                 error = e;
             }
@@ -194,7 +194,7 @@ describe('XUpsertNow with basic equality query', () => {
                 }]
             };
 
-            await XUpsertNow(basicEqualityQuery('email'), cameronC, dgraphClient);
+            await XUpsertNow(basicEqualityQueryFn('email'), cameronC, dgraphClient);
 
             const finalUidQuery = await dgraphClient.newTxn().query(predicateNameQuery);
             const users = finalUidQuery.getJson().q;
@@ -257,7 +257,7 @@ describe('XUpsertNow with basic equality query', () => {
                 z: 'e'
             };
 
-            await XUpsertNow(basicEqualityQuery(['skill', 'level']), updateJSMid, dgraphClient);
+            await XUpsertNow(basicEqualityQueryFn(['skill', 'level']), updateJSMid, dgraphClient);
 
             const skillQuery = await dgraphClient.newTxn().query(predicateSkillQuery);
             const skills = skillQuery.getJson().q;
@@ -302,7 +302,7 @@ describe('XUpsertNow with basic equality query', () => {
                 z: 'e'
             };
 
-            await XUpsertNow(basicEqualityQuery(['skill', 'level', 'x']), update, dgraphClient);
+            await XUpsertNow(basicEqualityQueryFn(['skill', 'level', 'x']), update, dgraphClient);
 
             const skillQuery = await dgraphClient.newTxn().query(predicateSkillQuery);
             const skills = skillQuery.getJson().q;
@@ -358,7 +358,7 @@ describe('XUpsertNow with basic equality query', () => {
                 email: 'hb@gmail.com',
             };
 
-            const [cameronUpdateUid, howardUid] = await XUpsertNow(basicEqualityQuery('email'), [cameronUpdate, howard], dgraphClient);
+            const [cameronUpdateUid, howardUid] = await XUpsertNow(basicEqualityQueryFn('email'), [cameronUpdate, howard], dgraphClient);
             expect(cameronUpdateUid).toEqual(cameronUid);
 
             const queryUsers = await dgraphClient.newTxn().query(predicateNameQuery);
@@ -423,7 +423,7 @@ describe('XUpsertNow with basic equality query', () => {
 
         const updates = [updateJunior, updateMid];
 
-        await XUpsertNow(basicEqualityQuery(['skill', 'level']), updates, dgraphClient);
+        await XUpsertNow(basicEqualityQueryFn(['skill', 'level']), updates, dgraphClient);
 
         const skillQuery = await dgraphClient.newTxn().query(predicateSkillQuery);
         const skills = skillQuery.getJson().q;
@@ -482,7 +482,7 @@ describe('XUpsertNow with basic equality query', () => {
 
         let errors: Error[] | null = null;
         try {
-            await XUpsertNow(basicEqualityQuery('email'), [cameronUpdate, helenaUpdate, cameronUpdate, stuart], dgraphClient);
+            await XUpsertNow(basicEqualityQueryFn('email'), [cameronUpdate, helenaUpdate, cameronUpdate, stuart], dgraphClient);
         } catch (e) {
             errors = e
         }

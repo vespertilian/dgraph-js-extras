@@ -4,14 +4,14 @@ import {Txn} from 'dgraph-js';
 
 export interface queryFnReturnValues {
     dgraphQuery: string
-    nodeFoundFn: (queryResult: dgraph.Response) => string
+    nodeFoundFn: (queryResult: dgraph.Response) => string | null
 }
 
 // overload function to always return a string array when an object array is passed in
-export async function XUpsertNow(queryFn: (input: any) => queryFnReturnValues, data: object[], dgraphClient: dgraph.DgraphClient, _dgraph?: any): Promise<string[]>
-export async function XUpsertNow(queryFn: (input: any) => queryFnReturnValues, data: object, dgraphClient: dgraph.DgraphClient, _dgraph?: any): Promise<string>
+export async function XUpsertNow(queryFn: (input?: any) => queryFnReturnValues, data: object[], dgraphClient: dgraph.DgraphClient, _dgraph?: any): Promise<string[]>
+export async function XUpsertNow(queryFn: (input?: any) => queryFnReturnValues, data: object, dgraphClient: dgraph.DgraphClient, _dgraph?: any): Promise<string>
 
-export async function XUpsertNow(queryFn: (input: any) => queryFnReturnValues, data: object | object[], dgraphClient: dgraph.DgraphClient, _dgraph=dgraph): Promise<string | string[]> {
+export async function XUpsertNow(queryFn: (input?: any) => queryFnReturnValues, data: object | object[], dgraphClient: dgraph.DgraphClient, _dgraph=dgraph): Promise<string | string[]> {
     if(Array.isArray(data)) {
         return XUpsertArrayNow(queryFn, data, dgraphClient, _dgraph)
     } else {
@@ -19,7 +19,7 @@ export async function XUpsertNow(queryFn: (input: any) => queryFnReturnValues, d
     }
 }
 
-async function XUpsertArrayNow(queryFn: (input: any) => queryFnReturnValues, nodes: object[], dgraphClient: dgraph.DgraphClient, _dgraph=dgraph): Promise<string[]> {
+async function XUpsertArrayNow(queryFn: (input?: any) => queryFnReturnValues, nodes: object[], dgraphClient: dgraph.DgraphClient, _dgraph=dgraph): Promise<string[]> {
     const results: string[] = [];
     const errors: Error[] = [];
     const transaction = dgraphClient.newTxn();
@@ -50,7 +50,7 @@ async function XUpsertArrayNow(queryFn: (input: any) => queryFnReturnValues, nod
     return results
 }
 
-async function XUpsertObjectNow(queryFn: (input: any) => queryFnReturnValues, node: object, dgraphClient: dgraph.DgraphClient, _dgraph=dgraph): Promise<string> {
+async function XUpsertObjectNow(queryFn: (input?: any) => queryFnReturnValues, node: object, dgraphClient: dgraph.DgraphClient, _dgraph=dgraph): Promise<string> {
     let uid = null;
     let error: Error | null = null;
     const transaction = dgraphClient.newTxn();
@@ -77,23 +77,30 @@ async function XUpsertObjectNow(queryFn: (input: any) => queryFnReturnValues, no
     return uid;
 }
 
-async function XUpsertObject(queryFn: (input: any) => queryFnReturnValues, node: object, transaction: Txn): Promise<string | null> {
+async function XUpsertObject(queryFn: (input?: any) => queryFnReturnValues, node: object, transaction: Txn): Promise<string | null> {
     let result = null;
 
     const {dgraphQuery, nodeFoundFn} = queryFn(node);
-    const queryResult = await transaction.query(dgraphQuery);
-    const existingUid = nodeFoundFn(queryResult)
 
-    if(Boolean(existingUid)) {
+    const queryResult = await transaction.query(dgraphQuery).catch((e) => {
+        // Rethrow the error but with more context about exactly what failed
+        throw new Error(`XUpsert DgraphQuery failed, check the query your provided against this error: ${e}`)
+    });
+
+    const existingUid = nodeFoundFn(queryResult);
+
+    if(Boolean(existingUid) && queryResult) {
         const updatedNode = Object.assign({uid: existingUid}, node);
         const mu = XSetJSON(updatedNode);
         await transaction.mutate(mu);
         result = existingUid;
-    } else {
+    } else if(queryResult) {
         const mu = XSetJSON(node);
         const muResult = await transaction.mutate(mu);
         const uid = muResult.getUidsMap().get('blank-0');
         const deeplyNestedObjectsDetected = Boolean(muResult.getUidsMap().get('blank-1'));
+
+        // TODO improve this
         if(deeplyNestedObjectsDetected) {
             const error = new Error(`
                 XUpsertNow does not support finding and creating nested objects.

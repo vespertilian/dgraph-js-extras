@@ -1,7 +1,7 @@
-import {basicEqualityQuery} from './basic-equality-query';
+import {basicEqualityQueryFn} from './basic-equality-query-fn';
 
 // todo check other query return values
-describe('basicEqualityQuery', () => {
+describe('basicEqualityQueryFn', () => {
     it('should build a query when matching a single term', () => {
         const searchPredicate = 'name';
         const data = {
@@ -9,7 +9,7 @@ describe('basicEqualityQuery', () => {
             age: 35
         };
 
-        const queryFn = basicEqualityQuery(searchPredicate);
+        const queryFn = basicEqualityQueryFn(searchPredicate);
         const {dgraphQuery} = queryFn(data);
 
         const expectedQuery = `{
@@ -28,7 +28,7 @@ describe('basicEqualityQuery', () => {
             age: 35
         };
 
-        const queryFn = basicEqualityQuery(searchPredicates);
+        const queryFn = basicEqualityQueryFn(searchPredicates);
         const {dgraphQuery} = queryFn(data);
 
         const expectedQuery = `
@@ -51,7 +51,7 @@ describe('basicEqualityQuery', () => {
             age: 35
         };
 
-        const queryFn = basicEqualityQuery(searchPredicates);
+        const queryFn = basicEqualityQueryFn(searchPredicates);
         const {dgraphQuery} = queryFn(data);
 
         const expectedQuery = `
@@ -72,7 +72,7 @@ describe('basicEqualityQuery', () => {
             name: 'Cameron',
         };
 
-        const queryFn = basicEqualityQuery(searchPredicates);
+        const queryFn = basicEqualityQueryFn(searchPredicates);
 
         expect(() => queryFn(data)).toThrowError(`
         The search predicate/s must be a value on the object you are trying to persist.

@@ -1,9 +1,10 @@
 import * as dgraph from 'dgraph-js'
-import {queryFnReturnValues} from '../upsert-now/upsert-now';
+import {queryFnReturnValues} from '../upsert-now';
 
-export const basicEqualityQuery = searchPredicates => node => query(searchPredicates, node);
+// TODO this is more of a function that a query now, maybe change the name
+export const basicEqualityQueryFn = searchPredicates => node => queryFn(searchPredicates, node);
 
-function query(_searchPredicates: string | string[], node: object): queryFnReturnValues {
+function queryFn(_searchPredicates: string | string[], node: object): queryFnReturnValues {
     // make search predicates an array if it is not already
     const searchPredicates: string[] =
         Array.isArray(_searchPredicates) ?

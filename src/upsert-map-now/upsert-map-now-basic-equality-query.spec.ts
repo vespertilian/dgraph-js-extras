@@ -1,7 +1,7 @@
 import {IUidMap, XUpsertMapNow} from './upsert-map-now';
 import {getUids} from '../test-helpers/get-uids';
 import {XSetupWithSchemaDataNow} from '../test-helpers/setup';
-import {basicEqualityQuery} from '../queries/basic-equality-query';
+import {basicEqualityQueryFn} from '../upsert-now/query-fns/basic-equality-query-fn';
 
 describe('XUpsertMapNow with basic equality query', () => {
     it('should allow you to pass a mapped object of upserts and return the map with created or found uids', async() => {
@@ -40,7 +40,7 @@ describe('XUpsertMapNow with basic equality query', () => {
             }
         };
 
-        const resultMap = await XUpsertMapNow(basicEqualityQuery('email'), map, dgraphClient);
+        const resultMap = await XUpsertMapNow(basicEqualityQueryFn('email'), map, dgraphClient);
 
         const expectedResult: IUidMap = {
             cameron: cameronUid,
@@ -87,7 +87,7 @@ describe('XUpsertMapNow with basic equality query', () => {
 
         let error: Error | null = null;
         try {
-            await XUpsertMapNow(basicEqualityQuery('email'), uidMap, dgraphClient);
+            await XUpsertMapNow(basicEqualityQueryFn('email'), uidMap, dgraphClient);
         } catch (e) {
             error = e
         }
