@@ -1,7 +1,7 @@
 import {xSetupWithSchemaDataNow} from '../test-helpers/setup';
 import {xUpsertNow} from './upsert-now';
 import * as dgraph from 'dgraph-js'
-import {queryFnReturnValues} from './upsert-now';
+import {IUpsertFnReturnValues} from './upsert-now';
 
 interface IAvailability {
     fromUTC: string,
@@ -19,7 +19,7 @@ const cameronAvailabilitiesQuery = `{
     }
 }`;
 
-const userAvailabilityQueryFn = (name: string) => (node: IAvailability): queryFnReturnValues => {
+const userAvailabilityQueryFn = (name: string) => (node: IAvailability): IUpsertFnReturnValues => {
     const fromPresent: boolean = typeof node.fromUTC === 'string';
     const toPresent: boolean = typeof node.toUTC === 'string';
 

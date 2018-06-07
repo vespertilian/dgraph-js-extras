@@ -2,31 +2,31 @@ import * as dgraph from 'dgraph-js'
 import {xSetJSON} from '../set-json/set-json';
 import {Txn} from 'dgraph-js';
 
-export interface queryFnReturnValues {
+export interface IUpsertFnReturnValues {
     dgraphQuery: string
     nodeFoundFn: (queryResult: dgraph.Response) => string | null
 }
 
 // overload function to always return a string array when an object array is passed in
-export async function xUpsertNow(queryFn: (input?: any) => queryFnReturnValues, data: object[], dgraphClient: dgraph.DgraphClient, _dgraph?: any): Promise<string[]>
-export async function xUpsertNow(queryFn: (input?: any) => queryFnReturnValues, data: object, dgraphClient: dgraph.DgraphClient, _dgraph?: any): Promise<string>
+export async function xUpsertNow(upsertFn: (input?: any) => IUpsertFnReturnValues, data: object[], dgraphClient: dgraph.DgraphClient, _dgraph?: any): Promise<string[]>
+export async function xUpsertNow(upsertFn: (input?: any) => IUpsertFnReturnValues, data: object, dgraphClient: dgraph.DgraphClient, _dgraph?: any): Promise<string>
 
-export async function xUpsertNow(queryFn: (input?: any) => queryFnReturnValues, data: object | object[], dgraphClient: dgraph.DgraphClient, _dgraph=dgraph): Promise<string | string[]> {
+export async function xUpsertNow(upsertFn: (input?: any) => IUpsertFnReturnValues, data: object | object[], dgraphClient: dgraph.DgraphClient, _dgraph=dgraph): Promise<string | string[]> {
     if(Array.isArray(data)) {
-        return xUpsertArrayNow(queryFn, data, dgraphClient, _dgraph)
+        return xUpsertArrayNow(upsertFn, data, dgraphClient, _dgraph)
     } else {
-        return xUpsertObjectNow(queryFn, data, dgraphClient, _dgraph)
+        return xUpsertObjectNow(upsertFn, data, dgraphClient, _dgraph)
     }
 }
 
-async function xUpsertArrayNow(queryFn: (input?: any) => queryFnReturnValues, nodes: object[], dgraphClient: dgraph.DgraphClient, _dgraph=dgraph): Promise<string[]> {
+async function xUpsertArrayNow(upsertFn: (input?: any) => IUpsertFnReturnValues, nodes: object[], dgraphClient: dgraph.DgraphClient, _dgraph=dgraph): Promise<string[]> {
     const results: string[] = [];
     const errors: Error[] = [];
     const transaction = dgraphClient.newTxn();
         try {
             for(let i=0; i < nodes.length; i++) {
                 const currentNode = nodes[i];
-                const result = await xUpsertObject(queryFn, currentNode, transaction);
+                const result = await xUpsertObject(upsertFn, currentNode, transaction);
                 results.push(result)
             }
             await transaction.commit()
@@ -50,13 +50,13 @@ async function xUpsertArrayNow(queryFn: (input?: any) => queryFnReturnValues, no
     return results
 }
 
-async function xUpsertObjectNow(queryFn: (input?: any) => queryFnReturnValues, node: object, dgraphClient: dgraph.DgraphClient, _dgraph=dgraph): Promise<string> {
+async function xUpsertObjectNow(upsertFn: (input?: any) => IUpsertFnReturnValues, node: object, dgraphClient: dgraph.DgraphClient, _dgraph=dgraph): Promise<string> {
     let uid = null;
     let error: Error | null = null;
     const transaction = dgraphClient.newTxn();
     try {
         try {
-            uid = await xUpsertObject(queryFn, node, transaction);
+            uid = await xUpsertObject(upsertFn, node, transaction);
             await transaction.commit()
         } catch (e) {
            // catch the error here so we can throw it properly
@@ -77,10 +77,10 @@ async function xUpsertObjectNow(queryFn: (input?: any) => queryFnReturnValues, n
     return uid;
 }
 
-async function xUpsertObject(queryFn: (input?: any) => queryFnReturnValues, node: object, transaction: Txn): Promise<string | null> {
+async function xUpsertObject(upsertFn: (input?: any) => IUpsertFnReturnValues, node: object, transaction: Txn): Promise<string | null> {
     let result = null;
 
-    const {dgraphQuery, nodeFoundFn} = queryFn(node);
+    const {dgraphQuery, nodeFoundFn} = upsertFn(node);
 
     const queryResult = await transaction.query(dgraphQuery).catch((e) => {
         // Rethrow the error but with more context about exactly what failed

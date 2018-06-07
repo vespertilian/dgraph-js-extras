@@ -1,4 +1,4 @@
-import {basicEqualityQueryFn} from './basic-equality-query-fn';
+import {basicEqualityUpsertFn} from './basic-equality-upsert-fn';
 
 // todo check other query return values
 describe('xbasicEqualityQueryFn', () => {
@@ -9,7 +9,7 @@ describe('xbasicEqualityQueryFn', () => {
             age: 35
         };
 
-        const queryFn = basicEqualityQueryFn(searchPredicate);
+        const queryFn = basicEqualityUpsertFn(searchPredicate);
         const {dgraphQuery} = queryFn(data);
 
         const expectedQuery = `{
@@ -28,7 +28,7 @@ describe('xbasicEqualityQueryFn', () => {
             age: 35
         };
 
-        const queryFn = basicEqualityQueryFn(searchPredicates);
+        const queryFn = basicEqualityUpsertFn(searchPredicates);
         const {dgraphQuery} = queryFn(data);
 
         const expectedQuery = `
@@ -51,7 +51,7 @@ describe('xbasicEqualityQueryFn', () => {
             age: 35
         };
 
-        const queryFn = basicEqualityQueryFn(searchPredicates);
+        const queryFn = basicEqualityUpsertFn(searchPredicates);
         const {dgraphQuery} = queryFn(data);
 
         const expectedQuery = `
@@ -72,7 +72,7 @@ describe('xbasicEqualityQueryFn', () => {
             name: 'Cameron',
         };
 
-        const queryFn = basicEqualityQueryFn(searchPredicates);
+        const queryFn = basicEqualityUpsertFn(searchPredicates);
 
         expect(() => queryFn(data)).toThrowError(`
         The search predicate/s must be a value on the object you are trying to persist.

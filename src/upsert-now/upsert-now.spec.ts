@@ -1,6 +1,6 @@
 import {xSetupForTestNow} from '../test-helpers/setup';
 import {xSetupWithSchemaDataNow} from '../test-helpers/setup';
-import {queryFnReturnValues, xUpsertNow} from './upsert-now';
+import {IUpsertFnReturnValues, xUpsertNow} from './upsert-now';
 
 describe('xUpsertNow', () => {
     it('should rethrow any errors from the query function', async() => {
@@ -34,7 +34,7 @@ describe('xUpsertNow', () => {
 
         const {dgraphClient} = await xSetupWithSchemaDataNow({schema, data});
 
-        const badQuery = (name: string) => (): queryFnReturnValues => {
+        const badQuery = (name: string) => (): IUpsertFnReturnValues => {
             // This query is missing parentheses around the name value
             const dgraphQuery = `{
                 q(func: eq(name, "${name})) {
