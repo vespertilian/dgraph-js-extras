@@ -9,4 +9,4 @@ export interface ICreateDGraph {
     dgraphClient: dgraph.DgraphClient;
     dgraphClientStub: dgraph.DgraphClientStub;
 }
-export declare function XCreateDgraphClient(config?: ICreateDgraphClientConfig, _dgraph?: typeof dgraph, infoLog?: (message?: any, ...optionalParams: any[]) => void): ICreateDGraph;
+export declare function xCreateDgraphClient(config?: ICreateDgraphClientConfig, _dgraph?: typeof dgraph, infoLog?: (message?: any, ...optionalParams: any[]) => void): ICreateDGraph;

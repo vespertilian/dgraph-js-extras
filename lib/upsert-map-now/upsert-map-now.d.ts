@@ -5,4 +5,4 @@ export interface IObjectMap {
 export interface IUidMap {
     [key: string]: string;
 }
-export declare function XUpsertMapNow(searchPredicates: string | string[], data: IObjectMap, dgraphClient: dgraph.DgraphClient, _dgraph?: typeof dgraph): Promise<IUidMap>;
+export declare function xUpsertMapNow(queryFn: any, data: IObjectMap, dgraphClient: dgraph.DgraphClient, _dgraph?: typeof dgraph): Promise<IUidMap>;
