@@ -1,6 +1,6 @@
-import {XSetupForTestNow} from '../test-helpers/setup';
-import {XSetJSONNow} from '../set-json-now/set-json-now';
-import {isPromise, XExtractFirstUid, XExtractUids} from './extract-uids';
+import {xSetupForTestNow} from '../test-helpers/setup';
+import {xSetJSONNow} from '../set-json-now/set-json-now';
+import {isPromise, xExtractFirstUid, xExtractUids} from './extract-uids';
 import * as messages from "dgraph-js/generated/api_pb";
 
 const users = [
@@ -11,10 +11,10 @@ const users = [
     { username: 'user5' },
 ];
 
-describe('XExtractUids', () => {
+describe('xExtractUids', () => {
     it('should accept a promise and return the uids as an array', async() => {
-        const {dgraphClient} = await XSetupForTestNow();
-        const ids = await XExtractUids(XSetJSONNow(users, dgraphClient));
+        const {dgraphClient} = await xSetupForTestNow();
+        const ids = await xExtractUids(xSetJSONNow(users, dgraphClient));
         expect(ids.length).toEqual(5);
     });
 
@@ -26,12 +26,12 @@ describe('XExtractUids', () => {
 
             let error = null;
             try {
-                await XExtractUids(junkPromise as any);
+                await xExtractUids(junkPromise as any);
             } catch(e) {
                 error = e
             }
 
-            expect(error.message).toContain('XExtractUids could not extract uids from');
+            expect(error.message).toContain('xExtractUids could not extract uids from');
             expect(error.message).toContain('Original Error');
             expect(error.message).toContain(stringifiedJunkObject);
         });
@@ -39,12 +39,12 @@ describe('XExtractUids', () => {
         it('should throw an informative error when any object is passed in', () => {
             let error = null;
             try {
-                XExtractUids(junkObject as any);
+                xExtractUids(junkObject as any);
             } catch(e) {
                 error = e
             }
 
-            expect(error.message).toContain('XExtractUids could not extract uids from');
+            expect(error.message).toContain('xExtractUids could not extract uids from');
             expect(error.message).toContain('Original Error');
             expect(error.message).toContain(stringifiedJunkObject);
         });
@@ -55,39 +55,39 @@ describe('XExtractUids', () => {
         let result: messages.Assigned;
 
         beforeAll(async(done) => {
-            const {dgraphClient} = await XSetupForTestNow();
-            result = await XSetJSONNow(users, dgraphClient);
+            const {dgraphClient} = await xSetupForTestNow();
+            result = await xSetJSONNow(users, dgraphClient);
             done()
         });
 
         it('should return results that are strings',() => {
-            const ids = XExtractUids(result, 3);
+            const ids = xExtractUids(result, 3);
             expect(typeof ids[0]).toBe('string')
         });
 
         it('should accept a result and return the uids as an array',() => {
-            const ids = XExtractUids(result, 3);
+            const ids = xExtractUids(result, 3);
             expect(ids.length).toBe(3);
         });
 
         it('should return all uids when no parameters are passed in',() => {
-            const ids = XExtractUids(result);
+            const ids = xExtractUids(result);
             expect(ids.length).toBe(5);
         });
     });
 });
 
-describe('XExtractFirstUid', () => {
+describe('xExtractFirstUid', () => {
     it('should extract only the first uid from the SetJSON result from a promise', async() => {
-        const {dgraphClient} = await XSetupForTestNow();
-        const id = await XExtractFirstUid(XSetJSONNow(users, dgraphClient));
+        const {dgraphClient} = await xSetupForTestNow();
+        const id = await xExtractFirstUid(xSetJSONNow(users, dgraphClient));
         expect(typeof id).toEqual('string')
     });
 
     it('should extract only the first uid from the SetJSON result from an existing result', async() => {
-        const {dgraphClient} = await XSetupForTestNow();
-        const result = await XSetJSONNow(users, dgraphClient);
-        const id = XExtractFirstUid(result);
+        const {dgraphClient} = await xSetupForTestNow();
+        const result = await xSetJSONNow(users, dgraphClient);
+        const id = xExtractFirstUid(result);
         expect(typeof id).toEqual('string')
     })
 });

@@ -1,3 +1,26 @@
+<a name="0.5.0"></a>
+# [0.5.0](https://github.com/vespertilian/dgraph-js-extras/compare/v0.4.1...v0.5.0) (2018-06-07)
+
+
+### Code Refactoring
+
+* **src/*:** update all exports from capital X to lower case x ([ac900c2](https://github.com/vespertilian/dgraph-js-extras/commit/ac900c2))
+
+
+### Features
+
+* **upsert-now:** the upsert now nodeFoundFunction interface now optionally returns a function to cr ([3a1af70](https://github.com/vespertilian/dgraph-js-extras/commit/3a1af70))
+* **XUpsertNow XUpsertMapNow:** upsert now accepts a function not just a list of predicates so the s ([8ca5a6e](https://github.com/vespertilian/dgraph-js-extras/commit/8ca5a6e))
+
+
+### BREAKING CHANGES
+
+* **src/*:** All functions change from capital X to lowercase X
+* **XUpsertNow XUpsertMapNow:** XUpsertNow expects a function that resolves to a dgraph query, not a list of
+predicates.
+
+
+
 <a name="0.4.1"></a>
 ## [0.4.1](https://github.com/vespertilian/dgraph-js-extras/compare/v0.4.0...v0.4.1) (2018-04-26)
 

@@ -1,21 +1,21 @@
-import {XSetupForTestNow} from '../test-helpers/setup';
-import {XSetSchemaNow} from '../set-schema-now/set-schema-now';
-import {XSetJSONNow} from './set-json-now';
+import {xSetupForTestNow} from '../test-helpers/setup';
+import {xSetSchemaNow} from '../set-schema-now/set-schema-now';
+import {xSetJSONNow} from './set-json-now';
 
-describe('XSetJSONNow', () => {
+describe('xSetJSONNow', () => {
     it('should instantly persist js object data', async() => {
-        const {dgraphClient} = await XSetupForTestNow();
+        const {dgraphClient} = await xSetupForTestNow();
 
         const schema = `
             name: string @index(fulltext) .
             age: int .
         `;
 
-        await XSetSchemaNow(schema, dgraphClient);
+        await xSetSchemaNow(schema, dgraphClient);
         const data = { name: 'Cameron', age: 35 };
 
         // set data with one line
-        await XSetJSONNow(data, dgraphClient);
+        await xSetJSONNow(data, dgraphClient);
 
         const predicateNameQuery = `{
             q(func: has(name)) {

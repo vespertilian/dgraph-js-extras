@@ -12,7 +12,7 @@ export interface ICreateDGraph {
     dgraphClientStub: dgraph.DgraphClientStub
 }
 
-export function XCreateDgraphClient(config?: ICreateDgraphClientConfig, _dgraph=dgraph, infoLog=console.info): ICreateDGraph {
+export function xCreateDgraphClient(config?: ICreateDgraphClientConfig, _dgraph=dgraph, infoLog=console.info): ICreateDGraph {
     const defaults = {
         port: null,
         host: null,

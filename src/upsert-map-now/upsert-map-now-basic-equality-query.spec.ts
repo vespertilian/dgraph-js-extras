@@ -1,10 +1,11 @@
-import {IUidMap, XUpsertMapNow} from './upsert-map-now';
+import {IUidMap, xUpsertMapNow} from './upsert-map-now';
 import {getUids} from '../test-helpers/get-uids';
-import {XSetupWithSchemaDataNow} from '../test-helpers/setup';
+import {xSetupWithSchemaDataNow} from '../test-helpers/setup';
+import {basicEqualityUpsertFn} from '../upsert-now/upsert-fns/basic-equality-upsert-fn';
 
-describe('XUpsertMapNow', () => {
+describe('xUpsertMapNow with basic equality query', () => {
     it('should allow you to pass a mapped object of upserts and return the map with created or found uids', async() => {
-        // XSetupForTestNow
+        // xSetupForTestNow
         const schema = `
            name: string @index(fulltext) .
            email: string @index(exact) .
@@ -25,7 +26,7 @@ describe('XUpsertMapNow', () => {
             email: 'b@gmail.com'
         };
 
-        const {dgraphClient, result} = await XSetupWithSchemaDataNow({schema, data: [cameron, helena, barbara]});
+        const {dgraphClient, result} = await xSetupWithSchemaDataNow({schema, data: [cameron, helena, barbara]});
         const [cameronUid] = getUids({numberOfIdsToGet: 1, result});
 
         const map = {
@@ -39,7 +40,7 @@ describe('XUpsertMapNow', () => {
             }
         };
 
-        const resultMap = await XUpsertMapNow('email', map, dgraphClient);
+        const resultMap = await xUpsertMapNow(basicEqualityUpsertFn('email'), map, dgraphClient);
 
         const expectedResult: IUidMap = {
             cameron: cameronUid,
@@ -75,7 +76,7 @@ describe('XUpsertMapNow', () => {
             email: 'b@gmail.com'
         };
 
-        const {dgraphClient} = await XSetupWithSchemaDataNow({schema, data: [cameron, helena1, helena2, barbara]});
+        const {dgraphClient} = await xSetupWithSchemaDataNow({schema, data: [cameron, helena1, helena2, barbara]});
 
         const uidMap = {
             helenaUpdate: {
@@ -86,15 +87,15 @@ describe('XUpsertMapNow', () => {
 
         let error: Error | null = null;
         try {
-            await XUpsertMapNow('email', uidMap, dgraphClient);
+            await xUpsertMapNow(basicEqualityUpsertFn('email'), uidMap, dgraphClient);
         } catch (e) {
             error = e
         }
 
         const expectedError = new Error(`
-                    More than one node matches "h@gmail.com" for the "email" predicate. 
-                    Aborting XUpsertNow. 
-                    Delete the extra values before tyring XUpsert again.`);
+                    More than one node matches "h@gmail.com" for the "email" predicate.
+                    Aborting xUpsertNow. 
+                    Delete the extra values before tyring xUpsert again.`);
         expect(expectedError).toEqual(error)
     })
 });

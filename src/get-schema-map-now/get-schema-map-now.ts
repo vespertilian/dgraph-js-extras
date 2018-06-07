@@ -5,7 +5,7 @@ export interface ISchemaMap {
     [predicate: string]: SchemaNode
 }
 
-export async function XGetSchemaMapNow(dgraphClient: dgraph.DgraphClient): Promise<ISchemaMap>{
+export async function xGetSchemaMapNow(dgraphClient: dgraph.DgraphClient): Promise<ISchemaMap>{
     const query = `
                 schema {
                     type

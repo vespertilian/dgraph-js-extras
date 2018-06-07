@@ -13,9 +13,9 @@ function extractUids(result: Assigned, limitTo: number | null = null): string[] 
 }
 
 // fancy way to let us use this function with an existing Async function (promise) or a result
-export function XExtractUids(_result: Promise<Assigned>, limitTo?: number): Promise<string[]>
-export function XExtractUids(_result: Assigned, limitTo?: number): string[]
-export function XExtractUids(_result: Promise<Assigned> | Assigned, limitTo?: number): Promise<string[]> | string[] | void {
+export function xExtractUids(_result: Promise<Assigned>, limitTo?: number): Promise<string[]>
+export function xExtractUids(_result: Assigned, limitTo?: number): string[]
+export function xExtractUids(_result: Promise<Assigned> | Assigned, limitTo?: number): Promise<string[]> | string[] | void {
     try {
         const result = isPromise(_result) ?
             extractUidsFromPromise(_result) :
@@ -39,18 +39,18 @@ export function XExtractUids(_result: Promise<Assigned> | Assigned, limitTo?: nu
     // as well as from the main function
     function ThrowExtractError(e, r){
        throw new Error(`
-        XExtractUids could not extract uids from: ${JSON.stringify(r)}
+        xExtractUids could not extract uids from: ${JSON.stringify(r)}
         Original Error: ${e.message}
         `)
     }
 }
 
-export function XExtractFirstUid(result: Promise<Assigned>): Promise<string>
-export function XExtractFirstUid(result: Assigned): string
-export function XExtractFirstUid(result: Promise<Assigned> | Assigned): Promise<string> | string {
+export function xExtractFirstUid(result: Promise<Assigned>): Promise<string>
+export function xExtractFirstUid(result: Assigned): string
+export function xExtractFirstUid(result: Promise<Assigned> | Assigned): Promise<string> | string {
     return isPromise(result) ?
-        XExtractUids(result, 1).then(r => r[0]) :
-        XExtractUids(result)[0]
+        xExtractUids(result, 1).then(r => r[0]) :
+        xExtractUids(result)[0]
 }
 
 // Typescript signature is "User-Defined Type Guard"

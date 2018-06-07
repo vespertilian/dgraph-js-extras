@@ -1,27 +1,37 @@
 import * as dgraph from 'dgraph-js'
-import {XSetJSON} from '../set-json/set-json';
+import {xSetJSON} from '../set-json/set-json';
 import {Txn} from 'dgraph-js';
 
-// overload function to always return a string array when an object array is passed in
-export async function XUpsertNow(searchPredicates: string | string[], data: object[], dgraphClient: dgraph.DgraphClient, _dgraph?: any): Promise<string[]>
-export async function XUpsertNow(searchPredicates: string | string[], data: object, dgraphClient: dgraph.DgraphClient, _dgraph?: any): Promise<string>
+export interface INodeFoundFunction {
+    existingUid: string | null
+    newNodeFn?: (node: any) => object
+}
 
-export async function XUpsertNow(searchPredicates: string | string[], data: object | object[], dgraphClient: dgraph.DgraphClient, _dgraph=dgraph): Promise<string | string[]> {
+export interface IUpsertFnReturnValues {
+    dgraphQuery: string
+    nodeFoundFn: (queryResult: dgraph.Response) => INodeFoundFunction
+}
+
+// overload function to always return a string array when an object array is passed in
+export async function xUpsertNow(upsertFn: (input?: any) => IUpsertFnReturnValues, data: object[], dgraphClient: dgraph.DgraphClient, _dgraph?: any): Promise<string[]>
+export async function xUpsertNow(upsertFn: (input?: any) => IUpsertFnReturnValues, data: object, dgraphClient: dgraph.DgraphClient, _dgraph?: any): Promise<string>
+
+export async function xUpsertNow(upsertFn: (input?: any) => IUpsertFnReturnValues, data: object | object[], dgraphClient: dgraph.DgraphClient, _dgraph=dgraph): Promise<string | string[]> {
     if(Array.isArray(data)) {
-        return XUpsertArrayNow(searchPredicates, data, dgraphClient, _dgraph)
+        return xUpsertArrayNow(upsertFn, data, dgraphClient, _dgraph)
     } else {
-        return XUpsertObjectNow(searchPredicates, data, dgraphClient, _dgraph)
+        return xUpsertObjectNow(upsertFn, data, dgraphClient, _dgraph)
     }
 }
 
-async function XUpsertArrayNow(searchPredicates: string | string[], nodes: object[], dgraphClient: dgraph.DgraphClient, _dgraph=dgraph): Promise<string[]> {
+async function xUpsertArrayNow(upsertFn: (input?: any) => IUpsertFnReturnValues, nodes: object[], dgraphClient: dgraph.DgraphClient, _dgraph=dgraph): Promise<string[]> {
     const results: string[] = [];
     const errors: Error[] = [];
     const transaction = dgraphClient.newTxn();
         try {
             for(let i=0; i < nodes.length; i++) {
                 const currentNode = nodes[i];
-                const result = await XUpsertObject(searchPredicates, currentNode, transaction);
+                const result = await xUpsertObject(upsertFn, currentNode, transaction);
                 results.push(result)
             }
             await transaction.commit()
@@ -45,13 +55,13 @@ async function XUpsertArrayNow(searchPredicates: string | string[], nodes: objec
     return results
 }
 
-async function XUpsertObjectNow(searchPredicates: string | string[], node: object, dgraphClient: dgraph.DgraphClient, _dgraph=dgraph): Promise<string> {
+async function xUpsertObjectNow(upsertFn: (input?: any) => IUpsertFnReturnValues, node: object, dgraphClient: dgraph.DgraphClient, _dgraph=dgraph): Promise<string> {
     let uid = null;
     let error: Error | null = null;
     const transaction = dgraphClient.newTxn();
     try {
         try {
-            uid = await XUpsertObject(searchPredicates, node, transaction);
+            uid = await xUpsertObject(upsertFn, node, transaction);
             await transaction.commit()
         } catch (e) {
            // catch the error here so we can throw it properly
@@ -72,107 +82,52 @@ async function XUpsertObjectNow(searchPredicates: string | string[], node: objec
     return uid;
 }
 
-async function XUpsertObject(searchPredicates: string | string[], node: object, transaction: Txn): Promise<string | null> {
+async function xUpsertObject(upsertFn: (input?: any) => IUpsertFnReturnValues, node: object, transaction: Txn): Promise<string | null> {
     let result = null;
 
-    const {query, searchValues} = buildUpsertQuery(searchPredicates, node);
-    const queryResult = await transaction.query(query);
+    const {dgraphQuery, nodeFoundFn} = upsertFn(node);
 
-    const [existingUid, ...others] = queryResult.getJson().q.map(r => r.uid);
+    const queryResult = await transaction.query(dgraphQuery).catch((e) => {
+        // Rethrow the error but with more context about exactly what failed
+        throw new Error(`xUpsert DgraphQuery failed, check the query your provided against this error: ${e}`)
+    });
+
+    const {existingUid, newNodeFn} = nodeFoundFn(queryResult);
 
     if(Boolean(existingUid)) {
-        if(others.length > 0) {
-            const error = new Error(`
-                    More than one node matches "${searchValues}" for the "${searchPredicates}" predicate. 
-                    Aborting XUpsertNow. 
-                    Delete the extra values before tyring XUpsert again.`);
-            throw error;
-        }
         const updatedNode = Object.assign({uid: existingUid}, node);
-        const mu = XSetJSON(updatedNode);
+        const mu = xSetJSON(updatedNode);
         await transaction.mutate(mu);
         result = existingUid;
     } else {
-        const mu = XSetJSON(node);
+        const createNode =
+            newNodeFn ?
+                newNodeFn(node) :
+                node;
+
+        createNode //?
+        const mu = xSetJSON(createNode);
         const muResult = await transaction.mutate(mu);
         const uid = muResult.getUidsMap().get('blank-0');
-        const deeplyNestedObjectsDetected = Boolean(muResult.getUidsMap().get('blank-1'));
-        if(deeplyNestedObjectsDetected) {
-            const error = new Error(`
-                XUpsertNow does not support finding and creating nested objects.
+        const multipleNodes = Boolean(muResult.getUidsMap().get('blank-1'));
+
+        if(multipleNodes) {
+            const errorMessage = `
+                The find functions for xUpsertNow should only return a single node.
+                That's how we know which node we need to update.
+                
+                Therefor xUpsertNow cannot support creating multiple new nodes.
+                It seems that you have passed in an object that requires the creation of multiple nodes.
+                
+                Update your upsert to only create a single node at a time .
+                xUpsertNow does accept an array of objects to upsert.
+                
                 Failed for object: ${JSON.stringify(node)}
-                You should write your own custom transaction for this.
-                You can upsert existing references if you have the UID.
-            `);
-            throw error;
+            `;
+            throw new Error(errorMessage);
         }
         result = uid;
     }
     return result
 }
 
-// TODO this is really a find by predicate function that returns the id of the node - maybe break out... not sure
-export function buildUpsertQuery(_searchPredicates: string | string[], node: object): {query: string, searchValues: string[]}{
-
-    // make search predicates an array if it is not already
-    const searchPredicates: string[] =
-        Array.isArray(_searchPredicates) ?
-            _searchPredicates
-            : [_searchPredicates];
-
-
-    // check values are present on predicate
-    const searchValues: string[] = searchPredicates.map((predicate, index) => {
-        const searchValue = node[predicate];
-        if(!searchValue) {
-            const error = new Error(`
-        The search predicate/s must be a value on the object you are trying to persist.
-        
-        "${searchPredicates[index]}" does not exist on:
-        ${JSON.stringify(node)}`);
-            throw error;
-        }
-        return searchValue
-    });
-
-    let query = '';
-
-    const searchLength = searchValues.length;
-    if(searchLength === 1) {
-        // simple case simple query
-        query = `{
-            q(func: eq(${searchPredicates}, "${searchValues}")) {
-                uid
-            }
-        }`;
-    } else {
-        // build query
-        query = `
-        {
-            q(func: eq(${searchPredicates[0]}, "${searchValues[0]}"))`;
-
-        // add first filter
-        query = query.concat(
-            `
-            @filter(eq(${searchPredicates[1]}, "${searchValues[1]}")`
-        );
-
-        // add more filters if required
-        if(searchValues.length > 2){
-            for(let i=2; i < searchLength; i++) {
-                query = query.concat(
-                  `
-                AND eq(${searchPredicates[i]}, "${searchValues[i]}")`
-                )
-            }
-        }
-        // close the filters, get the uid and close the larger query
-        query = query.concat(`)
-            {
-                uid
-            }
-        }`)
-    }
-
-    return {query, searchValues}
-}
