@@ -2,9 +2,14 @@ import * as dgraph from 'dgraph-js'
 import {xSetJSON} from '../set-json/set-json';
 import {Txn} from 'dgraph-js';
 
+export interface INodeFoundFunction {
+    existingUid: string | null
+    newNodeFn?: (node: any) => object
+}
+
 export interface IUpsertFnReturnValues {
     dgraphQuery: string
-    nodeFoundFn: (queryResult: dgraph.Response) => string | null
+    nodeFoundFn: (queryResult: dgraph.Response) => INodeFoundFunction
 }
 
 // overload function to always return a string array when an object array is passed in
@@ -87,28 +92,39 @@ async function xUpsertObject(upsertFn: (input?: any) => IUpsertFnReturnValues, n
         throw new Error(`xUpsert DgraphQuery failed, check the query your provided against this error: ${e}`)
     });
 
-    const existingUid = nodeFoundFn(queryResult);
+    const {existingUid, newNodeFn} = nodeFoundFn(queryResult);
 
-    if(Boolean(existingUid) && queryResult) {
+    if(Boolean(existingUid)) {
         const updatedNode = Object.assign({uid: existingUid}, node);
         const mu = xSetJSON(updatedNode);
         await transaction.mutate(mu);
         result = existingUid;
-    } else if(queryResult) {
-        const mu = xSetJSON(node);
+    } else {
+        const createNode =
+            newNodeFn ?
+                newNodeFn(node) :
+                node;
+
+        createNode //?
+        const mu = xSetJSON(createNode);
         const muResult = await transaction.mutate(mu);
         const uid = muResult.getUidsMap().get('blank-0');
-        const deeplyNestedObjectsDetected = Boolean(muResult.getUidsMap().get('blank-1'));
+        const multipleNodes = Boolean(muResult.getUidsMap().get('blank-1'));
 
-        // TODO improve this
-        if(deeplyNestedObjectsDetected) {
-            const error = new Error(`
-                xUpsertNow does not support finding and creating nested objects.
+        if(multipleNodes) {
+            const errorMessage = `
+                The find functions for xUpsertNow should only return a single node.
+                That's how we know which node we need to update.
+                
+                Therefor xUpsertNow cannot support creating multiple new nodes.
+                It seems that you have passed in an object that requires the creation of multiple nodes.
+                
+                Update your upsert to only create a single node at a time .
+                xUpsertNow does accept an array of objects to upsert.
+                
                 Failed for object: ${JSON.stringify(node)}
-                You should write your own custom transaction for this.
-                You can upsert existing references if you have the UID.
-            `);
-            throw error;
+            `;
+            throw new Error(errorMessage);
         }
         result = uid;
     }

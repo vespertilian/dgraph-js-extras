@@ -1,5 +1,5 @@
 import * as dgraph from 'dgraph-js'
-import {IUpsertFnReturnValues} from '../upsert-now';
+import {INodeFoundFunction, IUpsertFnReturnValues} from '../upsert-now';
 
 export const basicEqualityUpsertFn = searchPredicates => node => queryFn(searchPredicates, node);
 
@@ -63,7 +63,7 @@ function queryFn(_searchPredicates: string | string[], node: object): IUpsertFnR
         }`)
     }
 
-    function nodeFoundFn(queryResult: dgraph.Response): string {
+    function nodeFoundFn(queryResult: dgraph.Response): INodeFoundFunction {
 
         const [existingUid, ...others] = queryResult.getJson().q.map(r => r.uid);
 
@@ -74,7 +74,7 @@ function queryFn(_searchPredicates: string | string[], node: object): IUpsertFnR
                     Delete the extra values before tyring xUpsert again.`);
             throw error;
         }
-        return existingUid
+        return {existingUid}
     }
 
     return {dgraphQuery, nodeFoundFn}

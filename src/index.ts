@@ -14,3 +14,4 @@ export {IUidMap} from './upsert-map-now/upsert-map-now'
 export {IObjectMap} from './upsert-map-now/upsert-map-now'
 export {ICreateDgraphClientConfig} from './create-client/create-dgraph-client';
 export {IUpsertFnReturnValues} from './upsert-now/upsert-now';
+export {INodeFoundFunction} from './upsert-now/upsert-now';

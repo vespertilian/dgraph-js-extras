@@ -160,11 +160,17 @@ describe('xUpsertNow with basic equality query function', () => {
             const finalUidQuery = await dgraphClient.newTxn().query(predicateNameQuery);
             const users = finalUidQuery.getJson().q;
 
-            const message: string = `
-                xUpsertNow does not support finding and creating nested objects.
+            const message = `
+                The find functions for xUpsertNow should only return a single node.
+                That's how we know which node we need to update.
+                
+                Therefor xUpsertNow cannot support creating multiple new nodes.
+                It seems that you have passed in an object that requires the creation of multiple nodes.
+                
+                Update your upsert to only create a single node at a time .
+                xUpsertNow does accept an array of objects to upsert.
+                
                 Failed for object: ${JSON.stringify(cameronC)}
-                You should write your own custom transaction for this.
-                You can upsert existing references if you have the UID.
             `;
 
             expect(error.message).toEqual(message);
