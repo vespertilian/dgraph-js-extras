@@ -1,3 +1,13 @@
+<a name="0.5.1"></a>
+## [0.5.1](https://github.com/vespertilian/dgraph-js-extras/compare/v0.5.0...v0.5.1) (2018-09-10)
+
+
+### Bug Fixes
+
+* **package.json:** fix deletion step in build script ([cd640ef](https://github.com/vespertilian/dgraph-js-extras/commit/cd640ef))
+
+
+
 <a name="0.5.0"></a>
 # [0.5.0](https://github.com/vespertilian/dgraph-js-extras/compare/v0.4.1...v0.5.0) (2018-06-07)
 
