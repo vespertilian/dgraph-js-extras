@@ -7,7 +7,7 @@
   "scripts": {
     "dgraph-test-db-up": "docker-compose -f docker-compose.test.yml up -d",
     "dgraph-test-db-down": "docker-compose -f docker-compose.test.yml down",
-    "build": "rm -rf /lib && ./node_modules/.bin/tsc -p build.tsconfig.json",
+    "build": "rm -rf ./lib && ./node_modules/.bin/tsc -p build.tsconfig.json",
     "test": "ts-node node_modules/.bin/jasmine JASMINE_CONFIG_PATH=jasmine.json",
     "prepublishOnly": "yarn run build",
     "install:peers": "node -e \"const peers = Object.entries(require('./package.json').peerDependencies || {}).map(d => d.join('@')).join(' '); if (peers.length) process.stdout.write('yarn add -P --no-lockfile ' + String(peers));\" | sh",
