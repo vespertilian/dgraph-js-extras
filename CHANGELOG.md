@@ -1,3 +1,13 @@
+<a name="0.5.2"></a>
+## [0.5.2](https://github.com/vespertilian/dgraph-js-extras/compare/v0.5.1...v0.5.2) (2018-09-10)
+
+
+### Features
+
+* **extract-named-uids:** add an extract named uids function ([37a7a7e](https://github.com/vespertilian/dgraph-js-extras/commit/37a7a7e))
+
+
+
 <a name="0.5.1"></a>
 ## [0.5.1](https://github.com/vespertilian/dgraph-js-extras/compare/v0.5.0...v0.5.1) (2018-09-10)
 
