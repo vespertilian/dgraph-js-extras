@@ -1,28 +1,29 @@
 import {Assigned} from "dgraph-js/generated/api_pb"
+import {isPromise} from '../util/is-promise';
 
 // core function
-function extractUids(result: Assigned, limitTo: number | null = null): string[] {
+function extractUids(mutation: Assigned, limitTo: number | null = null): string[] {
     let uids = [];
-    const uidsToReturn = limitTo || result.toObject().uidsMap.length;
+    const uidsToReturn = limitTo || mutation.toObject().uidsMap.length;
     for(let i=0; i < uidsToReturn; i++) {
         const key = `blank-${i}`;
-        const uid = result.getUidsMap().get(key);
+        const uid = mutation.getUidsMap().get(key);
         uids.push(uid)
     }
     return uids;
 }
 
-// fancy way to let us use this function with an existing Async function (promise) or a result
-export function xExtractUids(_result: Promise<Assigned>, limitTo?: number): Promise<string[]>
-export function xExtractUids(_result: Assigned, limitTo?: number): string[]
-export function xExtractUids(_result: Promise<Assigned> | Assigned, limitTo?: number): Promise<string[]> | string[] | void {
+// fancy way to let us use this function with an existing Async function (promise) or existing mutation
+export function xExtractUids(mutation: Promise<Assigned>, limitTo?: number): Promise<string[]>
+export function xExtractUids(mutation: Assigned, limitTo?: number): string[]
+export function xExtractUids(mutation: Promise<Assigned> | Assigned, limitTo?: number): Promise<string[]> | string[] {
+    let result = [];
     try {
-        const result = isPromise(_result) ?
-            extractUidsFromPromise(_result) :
-            extractUids(_result, limitTo);
-        return result;
+        result = isPromise(mutation) ?
+            extractUidsFromPromise(mutation) :
+            extractUids(mutation, limitTo);
     } catch(e) {
-       ThrowExtractError(e, _result);
+       ThrowExtractError(e, mutation);
     }
 
     function extractUidsFromPromise(p) {
@@ -43,18 +44,14 @@ export function xExtractUids(_result: Promise<Assigned> | Assigned, limitTo?: nu
         Original Error: ${e.message}
         `)
     }
+    return result;
 }
 
-export function xExtractFirstUid(result: Promise<Assigned>): Promise<string>
-export function xExtractFirstUid(result: Assigned): string
-export function xExtractFirstUid(result: Promise<Assigned> | Assigned): Promise<string> | string {
-    return isPromise(result) ?
-        xExtractUids(result, 1).then(r => r[0]) :
-        xExtractUids(result)[0]
+export function xExtractFirstUid(mutation: Promise<Assigned>): Promise<string>
+export function xExtractFirstUid(mutation: Assigned): string
+export function xExtractFirstUid(mutation: Promise<Assigned> | Assigned): Promise<string> | string {
+    return isPromise(mutation) ?
+        xExtractUids(mutation, 1).then(r => r[0]) :
+        xExtractUids(mutation)[0]
 }
 
-// Typescript signature is "User-Defined Type Guard"
-// http://www.typescriptlang.org/docs/handbook/advanced-types.html
-export function isPromise(potentialPromise: Promise<any> | any): potentialPromise is Promise<any> {
-    return Promise.resolve(potentialPromise) == potentialPromise
-}
