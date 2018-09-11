@@ -1,3 +1,14 @@
+<a name="0.5.3"></a>
+## [0.5.3](https://github.com/vespertilian/dgraph-js-extras/compare/v0.5.2...v0.5.3) (2018-09-11)
+
+
+### Features
+
+* **query-with-vars-now:** add a simple xQueryNow function ([151f748](https://github.com/vespertilian/dgraph-js-extras/commit/151f748))
+* **test-helper setup:** make schema an optional param for xSetupWithSchemaDataNow ([7c5b6ed](https://github.com/vespertilian/dgraph-js-extras/commit/7c5b6ed))
+
+
+
 <a name="0.5.2"></a>
 ## [0.5.2](https://github.com/vespertilian/dgraph-js-extras/compare/v0.5.1...v0.5.2) (2018-09-10)
 

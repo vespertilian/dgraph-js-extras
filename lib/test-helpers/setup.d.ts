@@ -9,7 +9,7 @@ export interface ISetupReturnValue {
 }
 export declare function xSetupForTestNow(config?: ICreateDgraphClientConfig, _xCreateDgraphClient?: typeof xCreateDgraphClient, _drop?: typeof xDropDBNow): Promise<ISetupReturnValue>;
 export interface ISetupWithParams {
-    schema: string | null;
+    schema?: string | null;
     data?: object | null;
     debugDgraphClient?: boolean;
 }
