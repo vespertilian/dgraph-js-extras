@@ -27,7 +27,7 @@ export async function xSetupForTestNow(config?: ICreateDgraphClientConfig, _xCre
 }
 
 export interface ISetupWithParams {
-    schema: string | null,
+    schema?: string | null,
     data?: object | null
     debugDgraphClient?: boolean
 }
@@ -42,7 +42,10 @@ export async function xSetupWithSchemaDataNow(params: ISetupWithParams): Promise
     const {schema, data, debugDgraphClient } = Object.assign(defaultParams, params);
 
     const {dgraphClient, dgraphClientStub} = await xSetupForTestNow({debug: debugDgraphClient});
-    await xSetSchemaNow(schema, dgraphClient);
+
+    if(schema) {
+      await xSetSchemaNow(schema, dgraphClient);
+    }
 
     let result = null;
     if (data) {
