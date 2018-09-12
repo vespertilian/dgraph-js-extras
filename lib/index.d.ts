@@ -10,6 +10,7 @@ export { xSetJSON } from './set-json/set-json';
 export { xSetSchemaNow } from './set-schema-now/set-schema-now';
 export { xSetJSONNow } from './set-json-now/set-json-now';
 export { xDropDBNow } from './test-helpers/drob-db';
+export { xDeleteJSONNow } from './delete-json-now/delete-json-now';
 export { xSetupForTestNow } from './test-helpers/setup';
 export { xSetupWithSchemaDataNow } from './test-helpers/setup';
 export { IxQueryParams } from './query-with-vars-now/query-with-vars-now';

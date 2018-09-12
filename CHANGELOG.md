@@ -1,3 +1,13 @@
+<a name="0.5.4"></a>
+## [0.5.4](https://github.com/vespertilian/dgraph-js-extras/compare/v0.5.3...v0.5.4) (2018-09-12)
+
+
+### Features
+
+* **delete-json-now:** add a delete json now function ([aaf059d](https://github.com/vespertilian/dgraph-js-extras/commit/aaf059d))
+
+
+
 <a name="0.5.3"></a>
 ## [0.5.3](https://github.com/vespertilian/dgraph-js-extras/compare/v0.5.2...v0.5.3) (2018-09-11)
 
