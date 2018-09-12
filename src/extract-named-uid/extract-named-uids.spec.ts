@@ -35,9 +35,9 @@ describe('xExtractNamedUids', () => {
     let dgraphClient;
 
     beforeAll(async(done) => {
-      const r = await xSetupWithSchemaDataNow({schema});
+      const r = await xSetupWithSchemaDataNow({schema, data: sampleData});
       dgraphClient = r.dgraphClient;
-      mutationResult = await xSetJSONNow(sampleData, dgraphClient);
+      mutationResult = r.result;
       done()
     });
 
