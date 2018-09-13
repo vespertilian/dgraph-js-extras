@@ -20,5 +20,5 @@ describe('xDropDBNow', () => {
         expect(secondSchemaMap.name).toBeUndefined();
         expect(Object.keys(secondSchemaMap).length).toBe(0);
 
-    })
+    }, 10000)
 });
