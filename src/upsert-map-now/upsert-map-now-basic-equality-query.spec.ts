@@ -8,7 +8,7 @@ describe('xUpsertMapNow with basic equality query', () => {
         // xSetupForTestNow
         const schema = `
            name: string @index(fulltext) .
-           email: string @index(exact) .
+           email: string @index(exact) @upsert .
         `;
 
         const cameron = {
@@ -53,7 +53,7 @@ describe('xUpsertMapNow with basic equality query', () => {
     it('should throw an error highlighting why an update failed', async() => {
         const schema = `
                 name: string @index(fulltext) .
-                email: string @index(hash) .
+                email: string @index(hash) @upsert .
             `;
 
         const cameron = {

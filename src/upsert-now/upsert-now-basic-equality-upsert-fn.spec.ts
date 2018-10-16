@@ -28,7 +28,7 @@ describe('xUpsertNow with basic equality query function', () => {
 
             const schema = `
             name: string @index(hash) .
-            email: string @index(hash) .`;
+            email: string @index(hash) @upsert .`;
 
             const initialData = {
                 name: 'Cameron',
@@ -61,7 +61,7 @@ describe('xUpsertNow with basic equality query function', () => {
 
             const schema = `
             name: string @index(hash) .
-            email: string @index(hash) .`;
+            email: string @index(hash) @upsert .`;
 
             const cameron = {
                 name: 'Cameron',
@@ -90,7 +90,7 @@ describe('xUpsertNow with basic equality query function', () => {
         it('should throw an error if you try to upsert when two nodes exist for the searched predicate', async() => {
             const schema = `
             name: string @index(hash) .
-            email: string @index(hash) .
+            email: string @index(hash) @upsert .
         `;
 
             const cameronA = {
@@ -134,7 +134,7 @@ describe('xUpsertNow with basic equality query function', () => {
         it('should throw an error when you try to upsert a deeply nested object that involves the creation of subnodes', async() => {
             const schema = `
                 name: string @index(hash) .
-                email: string @index(hash) .
+                email: string @index(hash) @upsert .
                 friends: uid .
             `;
             const {dgraphClient} = await xSetupWithSchemaDataNow({schema});
@@ -180,7 +180,7 @@ describe('xUpsertNow with basic equality query function', () => {
         it('should allow you to link existing nodes with an upsert', async() => {
             const schema = `
                 name: string @index(hash) .
-                email: string @index(hash) .
+                email: string @index(hash) @upsert .
                 friends: uid .
             `;
 
@@ -232,8 +232,8 @@ describe('xUpsertNow with basic equality query function', () => {
 
         it('should upsert by matching more than one predicate with a filter', async() => {
             const schema = `
-                skill: string @index(hash) .
-                level: int @index(int) .
+                skill: string @index(hash) @upsert .
+                level: int @index(int) @upsert .
             `;
 
             const JSSenior = {
@@ -276,9 +276,9 @@ describe('xUpsertNow with basic equality query function', () => {
 
         it('should upsert by matching more than two predicates with a filter and an "and" clause', async() => {
             const schema = `
-                skill: string @index(fulltext) .
-                level: string @index(hash) .
-                x: string @index(hash) .
+                skill: string @index(fulltext) @upsert .
+                level: string @index(hash) @upsert .
+                x: string @index(hash) @upsert .
             `;
 
             const JSSenior = {
@@ -325,7 +325,7 @@ describe('xUpsertNow with basic equality query function', () => {
         it('should allow you to upsert multiple values', async() => {
             const schema = `
                 name: string @index(fulltext) .
-                email: string @index(exact) .
+                email: string @index(exact) @upsert .
             `;
 
             const cameron = {
@@ -381,8 +381,8 @@ describe('xUpsertNow with basic equality query function', () => {
 
     it('should upsert multiple values when matching more than one predicate with a filter', async() => {
         const schema = `
-                skill: string @index(hash) .
-                level: int @index(int) .
+                skill: string @index(hash) @upsert .
+                level: int @index(int) @upsert .
             `;
 
         const JSSenior = {
@@ -445,7 +445,7 @@ describe('xUpsertNow with basic equality query function', () => {
     it('should throw an error highlighting why an update failed', async() => {
         const schema = `
                 name: string @index(fulltext) .
-                email: string @index(hash) .
+                email: string @index(hash) @upsert .
             `;
 
         const cameron = {
