@@ -1,7 +1,7 @@
 version: "3.2"
 services:
   zero-test:
-    image: dgraph/dgraph:v1.0.5
+    image: dgraph/dgraph:v1.0.9
     volumes:
       - type: volume
         source: dgraph-test
@@ -14,7 +14,7 @@ services:
     restart: on-failure
     command: dgraph zero --port_offset 1 --my=zero-test:5081
   server-test:
-    image: dgraph/dgraph:v1.0.5
+    image: dgraph/dgraph:v1.0.9
     volumes:
       - type: volume
         source: dgraph-test
