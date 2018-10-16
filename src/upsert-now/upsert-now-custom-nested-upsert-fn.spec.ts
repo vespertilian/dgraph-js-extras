@@ -10,7 +10,7 @@ interface IAvailability {
 
 const cameronAvailabilitiesQuery = `{
     q(func: eq(name, "Cameron")) {
-        availability {
+        availability(orderdesc: location) {
             uid
             fromUTC
             toUTC
@@ -27,6 +27,7 @@ const userAvailabilityQueryFn = (name: string) => (node: IAvailability): IUpsert
         throw new Error(`you must provide both a "fromUTC" and "toUTC" value on your input data ${JSON.stringify(node)}`)
     }
 
+    // upsert query
     const dgraphQuery = `{
       q(func: eq(name, "${name}")) {
         uid
@@ -37,6 +38,7 @@ const userAvailabilityQueryFn = (name: string) => (node: IAvailability): IUpsert
       }
     }`;
 
+    // handles result of upsert query
     function nodeFoundFn(queryResult: dgraph.Response): INodeFoundFunction {
         const [user, ...others] = queryResult.getJson().q;
 
@@ -62,7 +64,6 @@ const userAvailabilityQueryFn = (name: string) => (node: IAvailability): IUpsert
 
         const existingUid: string | null = _existingUid || null;
 
-
         function newNodeFn(node) {
             return {
                 uid: user.uid,
@@ -81,8 +82,8 @@ describe('xUpsertNow with custom query', () => {
             name: string @index(hash) @upsert .
             email: string @index(hash) .
             availability: uid @reverse .
-            fromUTC: dateTime @index(hour) .
-            toUTC: dateTime @index(hour) . 
+            fromUTC: dateTime @index(hour) @upsert .
+            toUTC: dateTime @index(hour) @upsert . 
             contactVia: string .
         `;
 
@@ -112,7 +113,7 @@ describe('xUpsertNow with custom query', () => {
         const {dgraphClient, result} = await xSetupWithSchemaDataNow({schema, data: initialData});
 
         const map = result.getUidsMap();
-        const availabilityBuid = map.get('availabilityB'); //?
+        const availabilityBuid = map.get('availabilityB');
 
         // Update availability
         const AVAILABILITY_B_MODIFIED = {

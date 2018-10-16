@@ -16,7 +16,7 @@ export async function xGetSchemaMapNow(dgraphClient: dgraph.DgraphClient): Promi
         `;
 
     const res = await dgraphClient.newTxn().query(query);
-    const schemaNodes: SchemaNode[]= res.getSchemaList();//?
+    const schemaNodes: SchemaNode[]= res.getSchemaList();
 
     // maps the schema nodes so they are keyed by predicate
     const schemaMap = schemaNodes.reduce((accumulator, schemaNode) => {

@@ -105,7 +105,6 @@ async function xUpsertObject(upsertFn: (input?: any) => IUpsertFnReturnValues, n
                 newNodeFn(node) :
                 node;
 
-        createNode //?
         const mu = xSetJSON(createNode);
         const muResult = await transaction.mutate(mu);
         const uid = muResult.getUidsMap().get('blank-0');
