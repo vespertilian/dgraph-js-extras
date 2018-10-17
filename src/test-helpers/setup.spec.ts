@@ -2,7 +2,7 @@ import {xSetupForTest} from './setup';
 
 describe('setup', () => {
     describe('xSetupForTestNow', () => {
-        it('should call create client with test defaults and drop the db', async() => {
+        it('calls create client with test defaults and drop the db', async() => {
             const createDgraphClientSpy = jasmine.createSpy('createDgraphClientSpy');
 
             const dgraphClientAndStubMock: any = {

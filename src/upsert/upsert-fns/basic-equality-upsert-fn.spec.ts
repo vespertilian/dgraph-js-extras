@@ -2,7 +2,7 @@ import {basicEqualityUpsertFn} from './basic-equality-upsert-fn';
 
 // todo check other query return values
 describe('xbasicEqualityQueryFn', () => {
-    it('should build a query when matching a single term', () => {
+    it('builds a query when matching a single term', () => {
         const searchPredicate = 'name';
         const data = {
             name: 'Cameron',
@@ -20,7 +20,7 @@ describe('xbasicEqualityQueryFn', () => {
         expect(dgraphQuery).toEqual(expectedQuery)
     });
 
-    it('should build a query when matching a two terms', () => {
+    it('builds a query when matching a two terms', () => {
         const searchPredicates = ['name', 'email'];
         const data = {
             name: 'Cameron',
@@ -42,7 +42,7 @@ describe('xbasicEqualityQueryFn', () => {
         expect(dgraphQuery).toEqual(expectedQuery)
     });
 
-    it('should build a query when matching more than two terms', () => {
+    it('builds a query when matching more than two terms', () => {
         const searchPredicates = ['name', 'email', 'twitter'];
         const data = {
             name: 'Cameron',
@@ -66,7 +66,7 @@ describe('xbasicEqualityQueryFn', () => {
         expect(dgraphQuery).toEqual(expectedQuery)
     });
 
-    it('should throw an error if the key predicate is not present on the object being used for the upsert', async() => {
+    it('throws an error if the key predicate is not present on the object being used for the upsert', async() => {
         const searchPredicates = ['name', 'email'];
         const data = {
             name: 'Cameron',

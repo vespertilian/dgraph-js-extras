@@ -3,7 +3,7 @@ import {xGetSchemaMapTxn} from '..';
 import {xDropDBAlt} from './drob-db';
 
 describe('xDropDBAlt', () => {
-    it('should drop the db', async() => {
+    it('drops the db', async() => {
         // setup db
         const schema = `
             name: string @index(hash) .

@@ -23,8 +23,8 @@ const predicateSkillQuery = `{
         }`;
 
 describe('xUpsertTxn with basic equality query function', () => {
-    describe('Upsert a single value', () => {
-        it('should find and overwrite a node if the node exists', async() => {
+    describe('Upserting a single value', () => {
+        it('finds and overwrite a node if the node exists', async() => {
 
             const schema = `
             name: string @index(hash) .
@@ -57,7 +57,7 @@ describe('xUpsertTxn with basic equality query function', () => {
             expect(result).toEqual(finalCameron.uid);
         });
 
-        it('should create a new node if one does not exist', async() => {
+        it('creates a new node if one does not exist', async() => {
 
             const schema = `
             name: string @index(hash) .
@@ -87,7 +87,7 @@ describe('xUpsertTxn with basic equality query function', () => {
 
         });
 
-        it('should throw an error if you try to upsert when two nodes exist for the searched predicate', async() => {
+        it('throws an error if you try to upsert when two nodes exist for the searched predicate', async() => {
             const schema = `
             name: string @index(hash) .
             email: string @index(hash) @upsert .
@@ -131,7 +131,7 @@ describe('xUpsertTxn with basic equality query function', () => {
             expect(users).toContain({...cameronB, uid: cameronBUid});
         });
 
-        it('should throw an error when you try to upsert a deeply nested object that involves the creation of subnodes', async() => {
+        it('throws an error when you try to upsert a deeply nested object that involves the creation of subnodes', async() => {
             const schema = `
                 name: string @index(hash) .
                 email: string @index(hash) @upsert .
@@ -177,7 +177,7 @@ describe('xUpsertTxn with basic equality query function', () => {
             expect(users.length).toBe(0); // user should have not been added
         });
 
-        it('should allow you to link existing nodes with an upsert', async() => {
+        it('allows you to link existing nodes with an upsert', async() => {
             const schema = `
                 name: string @index(hash) .
                 email: string @index(hash) @upsert .
@@ -230,7 +230,7 @@ describe('xUpsertTxn with basic equality query function', () => {
 
     describe('upsert with multiple predicates', () => {
 
-        it('should upsert by matching more than one predicate with a filter', async() => {
+        it('upserts by matching more than one predicate with a filter', async() => {
             const schema = `
                 skill: string @index(hash) @upsert .
                 level: int @index(int) @upsert .
@@ -274,7 +274,7 @@ describe('xUpsertTxn with basic equality query function', () => {
             ])
         });
 
-        it('should upsert by matching more than two predicates with a filter and an "and" clause', async() => {
+        it('upserts by matching more than two predicates with a filter and an "and" clause', async() => {
             const schema = `
                 skill: string @index(fulltext) @upsert .
                 level: string @index(hash) @upsert .
@@ -322,7 +322,7 @@ describe('xUpsertTxn with basic equality query function', () => {
     });
 
     describe('upsert multiple values', () => {
-        it('should allow you to upsert multiple values', async() => {
+        it('allows you to upsert multiple values', async() => {
             const schema = `
                 name: string @index(fulltext) .
                 email: string @index(exact) @upsert .
@@ -379,7 +379,7 @@ describe('xUpsertTxn with basic equality query function', () => {
         })
     });
 
-    it('should upsert multiple values when matching more than one predicate with a filter', async() => {
+    it('upserts multiple values when matching more than one predicate with a filter', async() => {
         const schema = `
                 skill: string @index(hash) @upsert .
                 level: int @index(int) @upsert .
@@ -442,7 +442,7 @@ describe('xUpsertTxn with basic equality query function', () => {
         ])
     });
 
-    it('should throw an error highlighting why an update failed', async() => {
+    it('throws an error highlighting why an update failed', async() => {
         const schema = `
                 name: string @index(fulltext) .
                 email: string @index(hash) @upsert .

@@ -3,7 +3,7 @@ import {xSetupForTest} from '../test-helpers/setup';
 import {xGetSchemaMapTxn} from './get-schema-map';
 
 describe('xGetSchemaMapTxn', () => {
-    it('should return a map of the current schema', async() => {
+    it('returns a map of the current schema', async() => {
         const {dgraphClient} = await xSetupForTest();
         const schema = `
             name: string @index(fulltext) .

@@ -3,7 +3,7 @@ import {xSetupWithSchemaDataNowTxn} from '../test-helpers/setup';
 import {IUpsertFnReturnValues, xUpsertTxn} from './upsert';
 
 describe('xUpsertTxn', () => {
-    it('should rethrow any errors from the query function', async() => {
+    it('rethrows any errors from the query function', async() => {
 
         const {dgraphClient} = await xSetupForTest();
         const data = {
@@ -23,7 +23,7 @@ describe('xUpsertTxn', () => {
         expect(error).toEqual(expectedError);
     });
 
-    it('should provide extra context when the dgraphQuery provided fails', async() => {
+    it('provides extra context when the dgraphQuery provided fails', async() => {
 
         const schema = `
             name: string @index(hash) . 

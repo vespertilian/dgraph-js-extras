@@ -4,7 +4,7 @@ import {xSetupWithSchemaDataNowTxn} from '../test-helpers/setup';
 import {basicEqualityUpsertFn} from '../upsert/upsert-fns/basic-equality-upsert-fn';
 
 describe('xUpsertMapTxn with basic equality query', () => {
-    it('should allow you to pass a mapped object of upserts and return the map with created or found uids', async() => {
+    it('allows you to pass a mapped object of upserts and return the map with created or found uids', async() => {
         // xSetupForTestNow
         const schema = `
            name: string @index(fulltext) .
@@ -50,7 +50,7 @@ describe('xUpsertMapTxn with basic equality query', () => {
         expect(resultMap).toEqual(expectedResult);
     });
 
-    it('should throw an error highlighting why an update failed', async() => {
+    it('throws an error highlighting why an update failed', async() => {
         const schema = `
                 name: string @index(fulltext) .
                 email: string @index(hash) @upsert .

@@ -3,7 +3,7 @@ import {xSetSchemaAlt} from '../set-schema/set-schema';
 import {xSetJSON, xSetJSONNow, xSetJSONNowTxn} from './set-json';
 
 describe('xSetJSON', () => {
-  it('should add new data when no uid id set', async() => {
+  it('adds new data when no uid id set', async() => {
       const {dgraphClient} = await xSetupForTest();
       const schema = `
             name: string @index(fulltext) .
@@ -35,7 +35,7 @@ describe('xSetJSON', () => {
       expect(queryRes.getJson().q).toEqual(data)
   });
 
-    it('should overwrite data when a uid is passed in', async() => {
+    it('overwrites data when a uid is passed in', async() => {
         const {dgraphClient} = await xSetupForTest();
         const schema = `
             name: string @index(fulltext) .
@@ -77,7 +77,7 @@ describe('xSetJSON', () => {
 });
 
 describe('xSetJSONCommitNow', () => {
-    it('should add new data and commit the mutation as soon as it is called', async() => {
+    it('adds new data and commit the mutation as soon as it is called', async() => {
         const {dgraphClient} = await xSetupForTest();
         const schema = `
             name: string @index(fulltext) .
@@ -107,7 +107,7 @@ describe('xSetJSONCommitNow', () => {
 });
 
 describe('xSetJSONNow', () => {
-  it('should instantly persist js object data', async() => {
+  it('instantly persists js object data', async() => {
     const {dgraphClient} = await xSetupForTest();
 
     const schema = `

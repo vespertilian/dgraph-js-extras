@@ -77,7 +77,7 @@ const userAvailabilityQueryFn = (name: string) => (node: IAvailability): IUpsert
 };
 
 describe('xUpsertTxn with custom query', () => {
-    it('should find an overwrite a node if one exists', async() => {
+    it('finds and overwrites a node if one exists', async() => {
         const schema = `
             name: string @index(hash) @upsert .
             email: string @index(hash) .
@@ -133,7 +133,7 @@ describe('xUpsertTxn with custom query', () => {
         expect(availabilityBresult).toEqual(expectedResult);
     });
 
-    it('should create a new node if none exist', async() => {
+    it('creates a new node if none exist', async() => {
         const schema = `
             name: string @index(hash) @upsert .
             email: string @index(hash) .

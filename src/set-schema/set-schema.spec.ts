@@ -3,7 +3,7 @@ import {xSetupForTest} from '../test-helpers/setup';
 import {xGetSchemaMapTxn} from '../get-schema-map/get-schema-map';
 
 describe('SetSchemaOp', () => {
-    it('should allow you to set the schema with only one command', async() => {
+    it('allows you to set the schema with only one command', async() => {
         const {dgraphClient} = await xSetupForTest();
 
         const schema = `
