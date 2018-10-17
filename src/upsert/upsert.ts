@@ -45,12 +45,9 @@ async function xUpsertArrayTxn(upsertFn: (input?: any) => IUpsertFnReturnValues,
             } catch(e) {
                 // the error e here will be the transaction.discard() error.
                 // not the error we want - the one that was thrown in the for loop.
-                if(errors.length > 0) throw(errors);
-                // if for some reason it was only the transaction.discard that threw the error rethrow that.
-                else throw(e)
+                throw(errors);
             }
         }
-
     return results
 }
 
@@ -73,9 +70,7 @@ async function xUpsertObjectTxn(upsertFn: (input?: any) => IUpsertFnReturnValues
         } catch(e) {
             // the error e here will be the transaction.discard() error.
             // not the error we want - the one that was thrown in the try catch block
-            if(error) throw error;
-            // if for some reason it was only the transaction.discard that threw the error rethrow that.
-            else throw e
+            throw error;
         }
     }
     return uid;
