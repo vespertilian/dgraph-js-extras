@@ -2,7 +2,7 @@ import {xCreateDgraphClient} from './create-dgraph-client';
 import * as dgraph from 'dgraph-js'
 
 describe('xCreateNewDgraphClient', () => {
-    it('should by default create a client with port 9080 on localhost', () => {
+    it('by default creates a client with port 9080 on localhost', () => {
         const clientStubSpy = spyOn(dgraph, 'DgraphClientStub');
 
         const {dgraphClient, dgraphClientStub} = xCreateDgraphClient({}, dgraph);
@@ -12,7 +12,7 @@ describe('xCreateNewDgraphClient', () => {
         expect(dgraphClientStub).toBeDefined();
     });
 
-    it('should create a client with the port an host when called as part of the function', () => {
+    it('creates a client with the port and host when called as part of the function', () => {
         const clientStubSpy = spyOn(dgraph, 'DgraphClientStub');
 
         // the passed in config should take precedent over all other
@@ -28,7 +28,7 @@ describe('xCreateNewDgraphClient', () => {
         delete process.env.DGRAPH_PORT;
     });
 
-    it('should use the process.env variables if no config variables were passed in', () => {
+    it('uses the process.env variables if no config variables were passed in', () => {
         const clientStubSpy = spyOn(dgraph, 'DgraphClientStub');
 
         // the passed in config should take precedent over all other
@@ -46,28 +46,28 @@ describe('xCreateNewDgraphClient', () => {
         delete process.env.DGRAPH_HOST;
     });
 
-    it('should log the address and port it is connecting to if logAddress is set to true', () => {
+    it('logs the address and port it is connecting to if logAddress is set to true', () => {
         const logSpy = jasmine.createSpy('log');
         xCreateDgraphClient({logAddress: true}, dgraph, logSpy);
 
         expect(logSpy).toHaveBeenCalledWith('configuring Dgraph host address: localhost:9080');
     });
 
-    it('should log the address and port it is connecting to if debug is set to true', () => {
+    it('logs the address and port it is connecting to if debug is set to true', () => {
         const logSpy = jasmine.createSpy('log');
         xCreateDgraphClient({debug: true}, dgraph, logSpy);
 
         expect(logSpy).toHaveBeenCalledWith('configuring Dgraph host address: localhost:9080');
     });
 
-    it('should not log the address and port it is connecting to by default', () => {
+    it('does not log the address and port it is connecting to by default', () => {
         const logSpy = jasmine.createSpy('log');
         xCreateDgraphClient({}, dgraph, logSpy);
 
         expect(logSpy).not.toHaveBeenCalled();
     });
 
-    it('should set debug on the dgraph client if it was passed in as an option', () => {
+    it('sets debug on the dgraph client if it was passed in as an option', () => {
         const logSpy = jasmine.createSpy('log');
         const dgraphClientSpy = jasmine.createSpyObj('dgraphClient', ['setDebugMode']);
         spyOn(dgraph, 'DgraphClient')

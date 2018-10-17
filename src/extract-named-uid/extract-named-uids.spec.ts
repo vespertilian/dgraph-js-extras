@@ -1,7 +1,7 @@
-import {xSetupForTestNow, xSetupWithSchemaDataNow} from '../test-helpers/setup';
+import {xSetupForTest, xSetupWithSchemaDataNowTxn} from '../test-helpers/setup';
 import {xExtractNamedUids} from './extract-named-uids';
-import {xSetJSONNow} from '..';
 import * as messages from "dgraph-js/generated/api_pb";
+import {xSetJSONNowTxn} from '../set-json/set-json';
 
 const schema = `
     name: string @index(exact) .
@@ -23,9 +23,9 @@ describe('xExtractNamedUids', () => {
 
   describe('Promise as input', () => {
     it('returns the uids as an array', async() => {
-      const {dgraphClient} = await xSetupForTestNow();
+      const {dgraphClient} = await xSetupForTest();
 
-      const ids = await xExtractNamedUids(['user', 'address'], xSetJSONNow(sampleData, dgraphClient))
+      const ids = await xExtractNamedUids(['user', 'address'], xSetJSONNowTxn(sampleData, dgraphClient))
       expect(ids.length).toEqual(2)
     });
   });
@@ -35,7 +35,7 @@ describe('xExtractNamedUids', () => {
     let dgraphClient;
 
     beforeAll(async(done) => {
-      const r = await xSetupWithSchemaDataNow({schema, data: sampleData});
+      const r = await xSetupWithSchemaDataNowTxn({schema, data: sampleData});
       dgraphClient = r.dgraphClient;
       mutationResult = r.result;
       done()

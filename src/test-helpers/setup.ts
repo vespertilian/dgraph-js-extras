@@ -1,9 +1,9 @@
 import * as dgraph from 'dgraph-js';
 import * as messages from "dgraph-js/generated/api_pb";
 import {ICreateDgraphClientConfig, xCreateDgraphClient} from '../create-client/create-dgraph-client';
-import {xSetSchemaNow} from '..';
-import {xDropDBNow} from './drob-db';
-import {xSetJSONNow} from '../';
+import {xSetSchemaAlt} from '..';
+import {xDropDBAlt} from './drob-db';
+import {xSetJSONNowTxn} from '../set-json/set-json';
 
 export interface ISetupReturnValue {
     dgraphClient: dgraph.DgraphClient,
@@ -11,7 +11,7 @@ export interface ISetupReturnValue {
     result?: messages.Assigned
 }
 
-export async function xSetupForTestNow(config?: ICreateDgraphClientConfig, _xCreateDgraphClient=xCreateDgraphClient, _drop=xDropDBNow): Promise<ISetupReturnValue> {
+export async function xSetupForTest(config?: ICreateDgraphClientConfig, _xCreateDgraphClient=xCreateDgraphClient, _drop=xDropDBAlt): Promise<ISetupReturnValue> {
 
     const defaults = {
         port: 9081,
@@ -32,7 +32,7 @@ export interface ISetupWithParams {
     debugDgraphClient?: boolean
 }
 
-export async function xSetupWithSchemaDataNow(params: ISetupWithParams): Promise<ISetupReturnValue> {
+export async function xSetupWithSchemaDataNowTxn(params: ISetupWithParams): Promise<ISetupReturnValue> {
     const defaultParams: ISetupWithParams = {
         schema: null,
         data: null,
@@ -41,15 +41,15 @@ export async function xSetupWithSchemaDataNow(params: ISetupWithParams): Promise
 
     const {schema, data, debugDgraphClient } = Object.assign(defaultParams, params);
 
-    const {dgraphClient, dgraphClientStub} = await xSetupForTestNow({debug: debugDgraphClient});
+    const {dgraphClient, dgraphClientStub} = await xSetupForTest({debug: debugDgraphClient});
 
     if(schema) {
-      await xSetSchemaNow(schema, dgraphClient);
+      await xSetSchemaAlt(schema, dgraphClient);
     }
 
     let result = null;
     if (data) {
-        result = await xSetJSONNow(data, dgraphClient)
+        result = await xSetJSONNowTxn(data, dgraphClient)
     }
 
     return {dgraphClient, dgraphClientStub, result}

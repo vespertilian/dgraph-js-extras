@@ -19,7 +19,6 @@ export function xExtractNamedUids(names: string[], mutation: Promise<Assigned> |
     result = isPromise(mutation) ?
       extractUidsFromPromise(mutation) :
       extractNamedUids(mutation, names);
-      return result;
   } catch(e) {
     ThrowExtractError(e, mutation)
   }
@@ -45,6 +44,5 @@ export function xExtractNamedUids(names: string[], mutation: Promise<Assigned> |
         Mutation result: ${JSON.stringify(r)}
         `)
   }
-
   return result;
 }
