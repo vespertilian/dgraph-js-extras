@@ -12,7 +12,7 @@ describe('xCreateNewDgraphClient', () => {
         expect(dgraphClientStub).toBeDefined();
     });
 
-    it('should create a client with the port an host when called as part of the function', () => {
+    it('should create a client with the port and host when called as part of the function', () => {
         const clientStubSpy = spyOn(dgraph, 'DgraphClientStub');
 
         // the passed in config should take precedent over all other

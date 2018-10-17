@@ -1,10 +1,10 @@
-import {xSetSchemaNow} from './set-schema-now';
-import {xSetupForTestNow} from '../test-helpers/setup';
-import {xGetSchemaMapNow} from '../get-schema-map-now/get-schema-map-now';
+import {xSetSchemaAlt} from './set-schema';
+import {xSetupForTest} from '../test-helpers/setup';
+import {xGetSchemaMapTxn} from '../get-schema-map/get-schema-map';
 
-describe('SetSchema', () => {
+describe('SetSchemaOp', () => {
     it('should allow you to set the schema with only one command', async() => {
-        const {dgraphClient} = await xSetupForTestNow();
+        const {dgraphClient} = await xSetupForTest();
 
         const schema = `
             name: string @index(fulltext) .
@@ -12,8 +12,8 @@ describe('SetSchema', () => {
             friend: uid .
         `;
 
-        await xSetSchemaNow(schema, dgraphClient);
-        const schemaMap = await xGetSchemaMapNow(dgraphClient);
+        await xSetSchemaAlt(schema, dgraphClient);
+        const schemaMap = await xGetSchemaMapTxn(dgraphClient);
 
         expect(schemaMap.name.getType()).toEqual('string');
         expect(schemaMap.email.getType()).toEqual('string');

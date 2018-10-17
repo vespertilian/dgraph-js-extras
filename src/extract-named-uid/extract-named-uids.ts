@@ -45,6 +45,4 @@ export function xExtractNamedUids(names: string[], mutation: Promise<Assigned> |
         Mutation result: ${JSON.stringify(r)}
         `)
   }
-
-  return result;
 }

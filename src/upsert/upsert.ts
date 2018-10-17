@@ -13,18 +13,17 @@ export interface IUpsertFnReturnValues {
 }
 
 // overload function to always return a string array when an object array is passed in
-export async function xUpsertNow(upsertFn: (input?: any) => IUpsertFnReturnValues, data: object[], dgraphClient: dgraph.DgraphClient, _dgraph?: any): Promise<string[]>
-export async function xUpsertNow(upsertFn: (input?: any) => IUpsertFnReturnValues, data: object, dgraphClient: dgraph.DgraphClient, _dgraph?: any): Promise<string>
-
-export async function xUpsertNow(upsertFn: (input?: any) => IUpsertFnReturnValues, data: object | object[], dgraphClient: dgraph.DgraphClient, _dgraph=dgraph): Promise<string | string[]> {
+export async function xUpsertTxn(upsertFn: (input?: any) => IUpsertFnReturnValues, data: object[], dgraphClient: dgraph.DgraphClient, _dgraph?: any): Promise<string[]>
+export async function xUpsertTxn(upsertFn: (input?: any) => IUpsertFnReturnValues, data: object, dgraphClient: dgraph.DgraphClient, _dgraph?: any): Promise<string>
+export async function xUpsertTxn(upsertFn: (input?: any) => IUpsertFnReturnValues, data: object | object[], dgraphClient: dgraph.DgraphClient, _dgraph=dgraph): Promise<string | string[]> {
     if(Array.isArray(data)) {
-        return xUpsertArrayNow(upsertFn, data, dgraphClient, _dgraph)
+        return xUpsertArrayTxn(upsertFn, data, dgraphClient, _dgraph)
     } else {
-        return xUpsertObjectNow(upsertFn, data, dgraphClient, _dgraph)
+        return xUpsertObjectTxn(upsertFn, data, dgraphClient, _dgraph)
     }
 }
 
-async function xUpsertArrayNow(upsertFn: (input?: any) => IUpsertFnReturnValues, nodes: object[], dgraphClient: dgraph.DgraphClient, _dgraph=dgraph): Promise<string[]> {
+async function xUpsertArrayTxn(upsertFn: (input?: any) => IUpsertFnReturnValues, nodes: object[], dgraphClient: dgraph.DgraphClient, _dgraph=dgraph): Promise<string[]> {
     const results: string[] = [];
     const errors: Error[] = [];
     const transaction = dgraphClient.newTxn();
@@ -55,7 +54,7 @@ async function xUpsertArrayNow(upsertFn: (input?: any) => IUpsertFnReturnValues,
     return results
 }
 
-async function xUpsertObjectNow(upsertFn: (input?: any) => IUpsertFnReturnValues, node: object, dgraphClient: dgraph.DgraphClient, _dgraph=dgraph): Promise<string> {
+async function xUpsertObjectTxn(upsertFn: (input?: any) => IUpsertFnReturnValues, node: object, dgraphClient: dgraph.DgraphClient, _dgraph=dgraph): Promise<string> {
     let uid = null;
     let error: Error | null = null;
     const transaction = dgraphClient.newTxn();

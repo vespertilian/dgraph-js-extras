@@ -1,9 +1,9 @@
-import {IUidMap, xUpsertMapNow} from './upsert-map-now';
+import {IUidMap, xUpsertMapTxn} from './upsert-map';
 import {getUids} from '../test-helpers/get-uids';
-import {xSetupWithSchemaDataNow} from '../test-helpers/setup';
-import {basicEqualityUpsertFn} from '../upsert-now/upsert-fns/basic-equality-upsert-fn';
+import {xSetupWithSchemaDataNowTxn} from '../test-helpers/setup';
+import {basicEqualityUpsertFn} from '../upsert/upsert-fns/basic-equality-upsert-fn';
 
-describe('xUpsertMapNow with basic equality query', () => {
+describe('xUpsertMapTxn with basic equality query', () => {
     it('should allow you to pass a mapped object of upserts and return the map with created or found uids', async() => {
         // xSetupForTestNow
         const schema = `
@@ -26,7 +26,7 @@ describe('xUpsertMapNow with basic equality query', () => {
             email: 'b@gmail.com'
         };
 
-        const {dgraphClient, result} = await xSetupWithSchemaDataNow({schema, data: [cameron, helena, barbara]});
+        const {dgraphClient, result} = await xSetupWithSchemaDataNowTxn({schema, data: [cameron, helena, barbara]});
         const [cameronUid] = getUids({numberOfIdsToGet: 1, result});
 
         const map = {
@@ -40,7 +40,7 @@ describe('xUpsertMapNow with basic equality query', () => {
             }
         };
 
-        const resultMap = await xUpsertMapNow(basicEqualityUpsertFn('email'), map, dgraphClient);
+        const resultMap = await xUpsertMapTxn(basicEqualityUpsertFn('email'), map, dgraphClient);
 
         const expectedResult: IUidMap = {
             cameron: cameronUid,
@@ -76,7 +76,7 @@ describe('xUpsertMapNow with basic equality query', () => {
             email: 'b@gmail.com'
         };
 
-        const {dgraphClient} = await xSetupWithSchemaDataNow({schema, data: [cameron, helena1, helena2, barbara]});
+        const {dgraphClient} = await xSetupWithSchemaDataNowTxn({schema, data: [cameron, helena1, helena2, barbara]});
 
         const uidMap = {
             helenaUpdate: {
@@ -87,7 +87,7 @@ describe('xUpsertMapNow with basic equality query', () => {
 
         let error: Error | null = null;
         try {
-            await xUpsertMapNow(basicEqualityUpsertFn('email'), uidMap, dgraphClient);
+            await xUpsertMapTxn(basicEqualityUpsertFn('email'), uidMap, dgraphClient);
         } catch (e) {
             error = e
         }

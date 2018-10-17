@@ -8,8 +8,13 @@ export function xDeleteJSON(json, _dgraph=dgraph): Mutation {
   return mu
 }
 
-export async function xDeleteJSONNow(json: object, dgraphClient: dgraph.DgraphClient): Promise<messages.Assigned> {
+export function xDeleteJSONNow(json, _dgraph=dgraph): Mutation {
   const mu = xDeleteJSON(json);
   mu.setCommitNow(true);
+  return mu
+}
+
+export async function xDeleteJSONNowTxn(json: object, dgraphClient: dgraph.DgraphClient): Promise<messages.Assigned> {
+  const mu = xDeleteJSONNow(json);
   return dgraphClient.newTxn().mutate(mu);
 }

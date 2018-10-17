@@ -1,4 +1,4 @@
-import {xSetupForTestNow} from './setup';
+import {xSetupForTest} from './setup';
 
 describe('setup', () => {
     describe('xSetupForTestNow', () => {
@@ -13,7 +13,7 @@ describe('setup', () => {
 
             const dropAllSpy = jasmine.createSpy('dropAll');
 
-            const result = await xSetupForTestNow({}, createDgraphClientSpy, dropAllSpy);
+            const result = await xSetupForTest({}, createDgraphClientSpy, dropAllSpy);
 
             expect(createDgraphClientSpy).toHaveBeenCalledWith({
                 port: 9081,

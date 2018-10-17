@@ -11,7 +11,7 @@ export async function xQueryWithVars({query, vars}: IxQueryParams, txn: Txn) {
   return res.getJson();
 }
 
-export async function xQueryNow({query, vars}: IxQueryParams, dgraphClient: dgraph.DgraphClient) {
+export async function xQueryWithVarsTxn({query, vars}: IxQueryParams, dgraphClient: dgraph.DgraphClient) {
   const txn = dgraphClient.newTxn();
   return await xQueryWithVars({query, vars}, txn);
 }

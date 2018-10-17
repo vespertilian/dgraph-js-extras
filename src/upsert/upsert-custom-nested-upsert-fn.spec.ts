@@ -1,7 +1,7 @@
-import {xSetupWithSchemaDataNow} from '../test-helpers/setup';
-import {INodeFoundFunction, xUpsertNow} from './upsert-now';
+import {xSetupWithSchemaDataNowTxn} from '../test-helpers/setup';
+import {INodeFoundFunction, xUpsertTxn} from './upsert';
 import * as dgraph from 'dgraph-js'
-import {IUpsertFnReturnValues} from './upsert-now';
+import {IUpsertFnReturnValues} from './upsert';
 
 interface IAvailability {
     fromUTC: string,
@@ -76,7 +76,7 @@ const userAvailabilityQueryFn = (name: string) => (node: IAvailability): IUpsert
     return {dgraphQuery, nodeFoundFn}
 };
 
-describe('xUpsertNow with custom query', () => {
+describe('xUpsertTxn with custom query', () => {
     it('should find an overwrite a node if one exists', async() => {
         const schema = `
             name: string @index(hash) @upsert .
@@ -110,7 +110,7 @@ describe('xUpsertNow with custom query', () => {
             ]
         };
 
-        const {dgraphClient, result} = await xSetupWithSchemaDataNow({schema, data: initialData});
+        const {dgraphClient, result} = await xSetupWithSchemaDataNowTxn({schema, data: initialData});
 
         const map = result.getUidsMap();
         const availabilityBuid = map.get('availabilityB');
@@ -122,7 +122,7 @@ describe('xUpsertNow with custom query', () => {
             location: 'At home'
         };
 
-        await xUpsertNow(userAvailabilityQueryFn('Cameron'), AVAILABILITY_B_MODIFIED, dgraphClient);
+        await xUpsertTxn(userAvailabilityQueryFn('Cameron'), AVAILABILITY_B_MODIFIED, dgraphClient);
 
         const cameronQuery = await dgraphClient.newTxn().query(cameronAvailabilitiesQuery);
         const [cameron] = cameronQuery.getJson().q;
@@ -155,9 +155,9 @@ describe('xUpsertNow with custom query', () => {
             availability: []
         };
 
-        const {dgraphClient} = await xSetupWithSchemaDataNow({schema, data: initialData});
+        const {dgraphClient} = await xSetupWithSchemaDataNowTxn({schema, data: initialData});
 
-        await xUpsertNow(userAvailabilityQueryFn('Cameron'), AVAILABILITY_A, dgraphClient);
+        await xUpsertTxn(userAvailabilityQueryFn('Cameron'), AVAILABILITY_A, dgraphClient);
 
         const cameronQuery = await dgraphClient.newTxn().query(cameronAvailabilitiesQuery);
         const [cameron] = cameronQuery.getJson().q;

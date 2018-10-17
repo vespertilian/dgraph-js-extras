@@ -1,10 +1,10 @@
-import {xSetSchemaNow} from '../set-schema-now/set-schema-now';
-import {xSetupForTestNow} from '../test-helpers/setup';
-import {xGetSchemaMapNow} from './get-schema-map-now';
+import {xSetSchemaAlt} from '../set-schema/set-schema';
+import {xSetupForTest} from '../test-helpers/setup';
+import {xGetSchemaMapTxn} from './get-schema-map';
 
-describe('xGetSchema', () => {
+describe('xGetSchemaMapTxn', () => {
     it('should return a map of the current schema', async() => {
-        const {dgraphClient} = await xSetupForTestNow();
+        const {dgraphClient} = await xSetupForTest();
         const schema = `
             name: string @index(fulltext) .
             age: int .
@@ -14,8 +14,8 @@ describe('xGetSchema', () => {
             date: dateTime .
             location: geo .
         `;
-        await xSetSchemaNow(schema, dgraphClient);
-        const schemaMap = await xGetSchemaMapNow(dgraphClient);
+        await xSetSchemaAlt(schema, dgraphClient);
+        const schemaMap = await xGetSchemaMapTxn(dgraphClient);
 
         // check that all valid dgraph types work
         expect(schemaMap.name.getType()).toBe('string');

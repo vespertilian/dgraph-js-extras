@@ -1,16 +1,16 @@
-import {xSetupWithSchemaDataNow} from '../test-helpers/setup';
+import {xSetupWithSchemaDataNowTxn} from '../test-helpers/setup';
 import {xExtractUids} from '../extract-uids/extract-uids';
-import {xQueryNow} from './query-with-vars-now';
+import {xQueryWithVarsTxn} from './query';
 
 const users = [
   { username: 'user1' },
   { username: 'user2' },
 ];
 
-describe("xQueryWithVarsNow", () => {
+describe("xQueryWithVarsTxn", () => {
   let user1uid, user2uid, dgraphClient;
   beforeAll(async(done) => {
-    const r = await xSetupWithSchemaDataNow({data: users});
+    const r = await xSetupWithSchemaDataNowTxn({data: users});
     const uids = await xExtractUids(r.result);
 
     dgraphClient = r.dgraphClient;
@@ -25,7 +25,7 @@ describe("xQueryWithVarsNow", () => {
       }
     }`;
 
-    const r1 = await xQueryNow({query: user1Query}, dgraphClient);
+    const r1 = await xQueryWithVarsTxn({query: user1Query}, dgraphClient);
     expect(r1.q[0].username).toEqual('user1');
 
     const user2Query = `{
@@ -33,7 +33,7 @@ describe("xQueryWithVarsNow", () => {
         username
       }
     }`;
-    const r2 = await xQueryNow({query: user2Query}, dgraphClient);
+    const r2 = await xQueryWithVarsTxn({query: user2Query}, dgraphClient);
     expect(r2.q[0].username).toEqual('user2');
   });
 
@@ -44,10 +44,10 @@ describe("xQueryWithVarsNow", () => {
       }
     }`;
 
-    const r1 = await xQueryNow({query, vars: {$userUid: user1uid}}, dgraphClient);
+    const r1 = await xQueryWithVarsTxn({query, vars: {$userUid: user1uid}}, dgraphClient);
     expect(r1.q[0].username).toEqual('user1');
 
-    const r2 = await xQueryNow({query, vars: {$userUid: user2uid}}, dgraphClient);
+    const r2 = await xQueryWithVarsTxn({query, vars: {$userUid: user2uid}}, dgraphClient);
     expect(r2.q[0].username).toEqual('user2');
   });
 });

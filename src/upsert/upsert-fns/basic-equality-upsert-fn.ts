@@ -1,5 +1,5 @@
 import * as dgraph from 'dgraph-js'
-import {INodeFoundFunction, IUpsertFnReturnValues} from '../upsert-now';
+import {INodeFoundFunction, IUpsertFnReturnValues} from '../upsert';
 
 export const basicEqualityUpsertFn = searchPredicates => node => queryFn(searchPredicates, node);
 
