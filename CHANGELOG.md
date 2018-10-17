@@ -1,3 +1,13 @@
+<a name="0.6.1"></a>
+## [0.6.1](https://github.com/vespertilian/dgraph-js-extras/compare/v0.6.0...v0.6.1) (2018-10-17)
+
+
+### Bug Fixes
+
+* **index:** export the xSetJSONNow and xSteJSONNowTxn ([cdb4fb1](https://github.com/vespertilian/dgraph-js-extras/commit/cdb4fb1))
+
+
+
 <a name="0.6.0"></a>
 # [0.6.0](https://github.com/vespertilian/dgraph-js-extras/compare/v0.5.4...v0.6.0) (2018-10-17)
 

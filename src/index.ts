@@ -6,7 +6,7 @@ export {xCreateDgraphClient} from './create-client/create-dgraph-client'
 export {xUpsertTxn} from './upsert/upsert'
 export {xUpsertMapTxn} from './upsert-map/upsert-map'
 export {xGetSchemaMapTxn} from './get-schema-map/get-schema-map'
-export {xSetJSON} from './set-json/set-json'
+export {xSetJSON, xSetJSONNow, xSetJSONNowTxn} from './set-json/set-json'
 export {xSetSchemaAlt} from './set-schema/set-schema'
 export {xDropDBAlt} from './test-helpers/drob-db'
 export {xDeleteJSONNowTxn, xDeleteJSONNow, xDeleteJSON} from './delete-json/delete-json';
