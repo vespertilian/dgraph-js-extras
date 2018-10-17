@@ -1,3 +1,25 @@
+<a name="0.6.0"></a>
+# [0.6.0](https://github.com/vespertilian/dgraph-js-extras/compare/v0.5.4...v0.6.0) (2018-10-17)
+
+
+### Code Refactoring
+
+* **src/*:** re postfix functions from now to txn ([3ff2f79](https://github.com/vespertilian/dgraph-js-extras/commit/3ff2f79)), closes [#8](https://github.com/vespertilian/dgraph-js-extras/issues/8)
+
+
+### Features
+
+* **query:** added an xQuery without vars function ([86b0b9d](https://github.com/vespertilian/dgraph-js-extras/commit/86b0b9d))
+* **query-with-vars-now & delete-json-now:** split these functions up so there is a function that ju ([6601f9e](https://github.com/vespertilian/dgraph-js-extras/commit/6601f9e))
+* **validate-node-predicates:** add a validate node predicates function ([0d5de8a](https://github.com/vespertilian/dgraph-js-extras/commit/0d5de8a))
+
+
+### BREAKING CHANGES
+
+* **src/*:** Function names have had the postfix changed. You will need to update your app.
+
+
+
 <a name="0.5.4"></a>
 ## [0.5.4](https://github.com/vespertilian/dgraph-js-extras/compare/v0.5.3...v0.5.4) (2018-09-12)
 
