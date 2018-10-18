@@ -1,3 +1,13 @@
+<a name="0.6.2"></a>
+## [0.6.2](https://github.com/vespertilian/dgraph-js-extras/compare/v0.6.1...v0.6.2) (2018-10-18)
+
+
+### Features
+
+* **validate-node-links:** add an xValidateNodeLinks function ([e093945](https://github.com/vespertilian/dgraph-js-extras/commit/e093945))
+
+
+
 <a name="0.6.1"></a>
 ## [0.6.1](https://github.com/vespertilian/dgraph-js-extras/compare/v0.6.0...v0.6.1) (2018-10-17)
 
