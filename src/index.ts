@@ -13,7 +13,9 @@ export {xDeleteJSONNowTxn, xDeleteJSONNow, xDeleteJSON} from './delete-json/dele
 export {xSetupForTest} from './test-helpers/setup'
 export {xSetupWithSchemaDataNowTxn} from './test-helpers/setup'
 export {xValidateNodePredicates, xValidateNodePredicatesTxn} from './validate-node-predicates/validate-node-predicates';
-export {IVerifyParams} from './validate-node-predicates/validate-node-predicates';
+export {xValidateNodeLinks, xValidateNodeLinksTxn} from './validate-node-links/validate-node-links';
+export {IValidateNodeLinks} from './validate-node-links/validate-node-links';
+export {IValidateNodePredicates} from './validate-node-predicates/validate-node-predicates';
 export {IxQueryParams} from './query/query'
 export {IUidMap} from './upsert-map/upsert-map'
 export {IObjectMap} from './upsert-map/upsert-map'
