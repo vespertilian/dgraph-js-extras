@@ -56,6 +56,6 @@ describe('xUpsertTxn', () => {
             error = e;
         }
 
-        expect(error.message).toContain('xUpsert DgraphQuery failed, check the query your provided against this error:')
+        expect(error.message).toContain('xUpsert DgraphQuery failed, check the query you provided against this error:')
     })
 });

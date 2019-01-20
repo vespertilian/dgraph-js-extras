@@ -48,12 +48,12 @@ describe('xValidateNodePredicatesTxn', () => {
     expect(result).toEqual(false)
   });
 
-  it('returns false when you nodes are missing the predicate', async() => {
+  it('returns false when nodes are missing the predicate', async() => {
     const result = await xValidateNodePredicatesTxn({
       nodes: userUids,
       predicates: ['foo']
     }, dgraphClient);
 
     expect(result).toEqual(false)
-  })
+  });
 });

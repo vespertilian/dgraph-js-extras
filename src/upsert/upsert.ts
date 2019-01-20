@@ -48,6 +48,7 @@ async function xUpsertArrayTxn(upsertFn: (input?: any) => IUpsertFnReturnValues,
                 throw(errors);
             }
         }
+
     return results
 }
 
@@ -76,14 +77,14 @@ async function xUpsertObjectTxn(upsertFn: (input?: any) => IUpsertFnReturnValues
     return uid;
 }
 
-async function xUpsertObject(upsertFn: (input?: any) => IUpsertFnReturnValues, node: object, transaction: Txn): Promise<string | null> {
+export async function xUpsertObject(upsertFn: (input?: any) => IUpsertFnReturnValues, node: object, transaction: Txn): Promise<string | null> {
     let result = null;
 
     const {dgraphQuery, nodeFoundFn} = upsertFn(node);
 
     const queryResult = await transaction.query(dgraphQuery).catch((e) => {
         // Rethrow the error but with more context about exactly what failed
-        throw new Error(`xUpsert DgraphQuery failed, check the query your provided against this error: ${e}`)
+        throw new Error(`xUpsert DgraphQuery failed, check the query you provided against this error: ${e}`)
     });
 
     const {existingUid, newNodeFn} = nodeFoundFn(queryResult);

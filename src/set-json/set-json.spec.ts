@@ -1,6 +1,8 @@
 import {xSetupForTest} from '../test-helpers/setup';
 import {xSetSchemaAlt} from '../set-schema/set-schema';
 import {xSetJSON, xSetJSONNow, xSetJSONNowTxn} from './set-json';
+import { xExtractFirstUid } from '../extract-uids/extract-uids';
+import { xQueryTxn } from '../query/query';
 
 describe('xSetJSON', () => {
   it('adds new data when no uid id set', async() => {
@@ -103,7 +105,8 @@ describe('xSetJSONCommitNow', () => {
 
         const queryRes = await dgraphClient.newTxn().query(predicateNameQuery);
         expect(queryRes.getJson().q).toEqual([data])
-    })
+    });
+
 });
 
 describe('xSetJSONNow', () => {
@@ -130,5 +133,76 @@ describe('xSetJSONNow', () => {
 
     const queryRes = await dgraphClient.newTxn().query(predicateNameQuery);
     expect(queryRes.getJson().q).toEqual([data])
+  });
+
+  it('lets you set nested objects', async() => {
+    const {dgraphClient} = await xSetupForTest();
+
+    const person = {
+      name: "Alice",
+      age: 26,
+      loc: "Riley Street",
+      married: true,
+      schools: [
+        {
+          name: "Crown Public School",
+        },
+      ],
+      friends: [
+        {
+          name: "Bob",
+          age: 24,
+        },
+        {
+          name: "Charlie",
+          age: 29,
+        },
+      ],
+    };
+
+    const person2 = {
+      name: "Bob",
+      age: 24,
+      loc: "Riley Street",
+      married: true,
+      schools: [
+        {
+          name: "Crown Public School",
+        },
+      ],
+      friends: [
+        {
+          name: "Alice",
+          age: 26,
+        },
+        {
+          name: "Charlie",
+          age: 29,
+        },
+      ],
+    };
+
+    const uid = await xExtractFirstUid(xSetJSONNowTxn([person, person2], dgraphClient));
+
+    const personQuery = `{
+            q(func: uid(${uid})) {
+                uid
+                name
+                age
+                loc
+                married
+                friends {
+                    uid
+                    name
+                    age
+                }
+                schools {
+                    uid
+                    name
+                }
+            }
+        }`;
+
+    const result = await xQueryTxn(personQuery, dgraphClient);
   })
 });
