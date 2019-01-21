@@ -1,3 +1,13 @@
+<a name="0.6.3"></a>
+## [0.6.3](https://github.com/vespertilian/dgraph-js-extras/compare/v0.6.2...v0.6.3) (2019-01-21)
+
+
+### Features
+
+* **docker-compose.test.yml get-schema-map.ts:** update to the latest version of dgraph v1.0.11 ([c7d5ca6](https://github.com/vespertilian/dgraph-js-extras/commit/c7d5ca6))
+
+
+
 <a name="0.6.2"></a>
 ## [0.6.2](https://github.com/vespertilian/dgraph-js-extras/compare/v0.6.1...v0.6.2) (2018-10-18)
 
