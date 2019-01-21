@@ -23,7 +23,9 @@ export async function xGetSchemaMapTxn(dgraphClient: dgraph.DgraphClient): Promi
         const predicate = schemaNode.getPredicate();
 
         // only return predicates we created
-        if(predicate !== '_predicate_') {
+        // they don't contain _predicate_ and also dont include dgraph. (namespaces)
+        // dgraph namespaces include ACL and password fields
+        if(predicate !== '_predicate_' && !predicate.includes('dgraph.')) {
             accumulator[predicate] = schemaNode;
         }
         return accumulator;
