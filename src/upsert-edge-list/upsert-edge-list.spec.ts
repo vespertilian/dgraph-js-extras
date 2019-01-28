@@ -1,7 +1,7 @@
 import { xSetupWithSchemaDataNowTxn } from '../test-helpers/setup';
 import { xExtractNamedUids } from '../extract-named-uid/extract-named-uids';
 import { basicEqualityUpsertFn, IUpsertFnReturnValues, xQueryTxn } from '..';
-import { IUpsertNode, xUpsertEdgeListTxn } from './upsert-edge-list';
+import { IUpsertNode, xUpsertEdgeListCommitTxn } from './upsert-edge-list';
 
 const addressesQuery = `{
   q(func: has(postCode), orderasc: streetName) {
@@ -101,7 +101,7 @@ describe('xUpsertEdge', () => {
       predicate: 'addresses'
     };
 
-    await xUpsertEdgeListTxn(addressUpsert, upsertNode, newAddresses, dgraphClient);
+    await xUpsertEdgeListCommitTxn(addressUpsert, upsertNode, newAddresses, dgraphClient);
 
     const cameronFinalResult = await xQueryTxn(userQuery(cameronUid), dgraphClient);
     const allAddressesFinal = await xQueryTxn(addressesQuery, dgraphClient);
@@ -186,7 +186,7 @@ describe('xUpsertEdge', () => {
       let error = null;
 
       try {
-        await  xUpsertEdgeListTxn(badQuery('streetName'), upsertNode, newAddresses, dgraphClient)
+        await  xUpsertEdgeListCommitTxn(badQuery('streetName'), upsertNode, newAddresses, dgraphClient)
       } catch(e) {
         error = e;
       }
@@ -211,7 +211,7 @@ describe('xUpsertEdge', () => {
 
       let error = null;
       try {
-        await xUpsertEdgeListTxn(addressUpsert, upsertNode, newAddresses, dgraphClient);
+        await xUpsertEdgeListCommitTxn(addressUpsert, upsertNode, newAddresses, dgraphClient);
       } catch(e) {
         error = e;
       }
@@ -242,7 +242,7 @@ describe('xUpsertEdge', () => {
 
       let error = null;
       try {
-        await xUpsertEdgeListTxn(addressUpsert, upsertNode, newAddresses, dgraphClient);
+        await xUpsertEdgeListCommitTxn(addressUpsert, upsertNode, newAddresses, dgraphClient);
       } catch(e) {
         error = e;
       }
@@ -274,7 +274,7 @@ describe('xUpsertEdge', () => {
 
       let error = null;
       try {
-        await xUpsertEdgeListTxn(addressUpsert, upsertNode, newAddresses, dgraphClient);
+        await xUpsertEdgeListCommitTxn(addressUpsert, upsertNode, newAddresses, dgraphClient);
       } catch(e) {
         error = e;
       }
