@@ -1,3 +1,19 @@
+<a name="0.7.0"></a>
+# [0.7.0](https://github.com/vespertilian/dgraph-js-extras/compare/v0.6.4...v0.7.0) (2019-01-28)
+
+
+### Features
+
+* **upsert-edge-list:** rename xUpsertEdgeListTxn to xUpsertEdgeListCommitTxn remove commit from xUp ([dd4a974](https://github.com/vespertilian/dgraph-js-extras/commit/dd4a974))
+
+
+### BREAKING CHANGES
+
+* **upsert-edge-list:** xUpsertEdgeList no longer calls transaction.commit and the name of
+xUpsertEdgeListTxn was changed to xUpsertEdgeListCommitTxn
+
+
+
 <a name="0.6.4"></a>
 ## [0.6.4](https://github.com/vespertilian/dgraph-js-extras/compare/v0.6.3...v0.6.4) (2019-01-28)
 

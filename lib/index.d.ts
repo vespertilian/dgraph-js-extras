@@ -4,7 +4,7 @@ export { xExtractFirstUid, xExtractUids } from './extract-uids/extract-uids';
 export { xExtractNamedUids } from './extract-named-uid/extract-named-uids';
 export { xCreateDgraphClient } from './create-client/create-dgraph-client';
 export { xUpsertTxn } from './upsert/upsert';
-export { xUpsertEdgeList, xUpsertEdgeListTxn } from './upsert-edge-list/upsert-edge-list';
+export { xUpsertEdgeList, xUpsertEdgeListCommitTxn } from './upsert-edge-list/upsert-edge-list';
 export { xUpsertMapTxn } from './upsert-map/upsert-map';
 export { xGetSchemaMapTxn } from './get-schema-map/get-schema-map';
 export { xSetJSON, xSetJSONNow, xSetJSONNowTxn } from './set-json/set-json';
