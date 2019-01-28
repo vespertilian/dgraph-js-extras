@@ -1,3 +1,13 @@
+<a name="0.6.4"></a>
+## [0.6.4](https://github.com/vespertilian/dgraph-js-extras/compare/v0.6.3...v0.6.4) (2019-01-28)
+
+
+### Features
+
+* **upsert-edge-list validate-node-exists:** added upsert-edge-list and validate-node-exists functio ([f42fa05](https://github.com/vespertilian/dgraph-js-extras/commit/f42fa05))
+
+
+
 <a name="0.6.3"></a>
 ## [0.6.3](https://github.com/vespertilian/dgraph-js-extras/compare/v0.6.2...v0.6.3) (2019-01-21)
 
