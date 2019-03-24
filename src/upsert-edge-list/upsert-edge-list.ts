@@ -10,7 +10,31 @@ export interface IUpsertNode {
   predicate: string
 }
 
-export async function xUpsertEdgeListCommitTxn(upsertFn: (input?: any) => IUpsertFnReturnValues, upsertNode: IUpsertNode, nodes: object[], dgraphClient: dgraph.DgraphClient, _dgraph=dgraph) {
+/**
+* Finds or creates new nodes on an edge replacing the old list with a new list.
+* No nodes are deleted
+*
+* Example
+* ```ts
+* // upsert on streetName and postCode
+* const addressUpsert = basicEqualityUpsertFn(['streetName', 'postCode']);
+*
+* const newAddresses = [
+*   { streetName: 'Clarence', postCode: 2444 },
+*   { streetName: 'New Street', postCode: 2444 },
+*   { streetName: 'William', postCode: 2444 },
+* ];
+*
+* const upsertNode: IUpsertNode = {
+*   uid: 0x2345, // the node you want to update a list on
+*   predicate: 'addresses' // the list predicate
+* };
+*
+* await xUpsertEdgeListCommitTxn(addressUpsert, upsertNode, newAddresses, dgraphClient);
+* ```
+*/
+
+export async function xUpsertEdgeListCommitTxn(upsertFn: (input?: any) => IUpsertFnReturnValues, upsertNode: IUpsertNode, nodes: object[], dgraphClient: dgraph.DgraphClient, _dgraph: any = dgraph) {
   const transaction = dgraphClient.newTxn();
   let result;
   let error: null | Error = null;
@@ -35,7 +59,7 @@ export async function xUpsertEdgeListCommitTxn(upsertFn: (input?: any) => IUpser
   return result;
 }
 
-export async function xUpsertEdgeList(upsertFn: (input?: any) => IUpsertFnReturnValues, {uid, predicate}: IUpsertNode, nodes: object[], transaction: Txn, _dgraph=dgraph) {
+export async function xUpsertEdgeList(upsertFn: (input?: any) => IUpsertFnReturnValues, {uid, predicate}: IUpsertNode, nodes: object[], transaction: Txn, _dgraph: any = dgraph) {
   const upsertedNodes: string[] = [];
 
   if(!Array.isArray(nodes)) {

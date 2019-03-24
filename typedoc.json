@@ -1,0 +1,8 @@
+{
+  "mode": "file",
+  "out": "docs",
+  "exclude": "**/*+(index|.spec).ts",
+  "excludePrivate": true,
+  "excludeNotExported": true,
+  "theme": "minimal"
+}
