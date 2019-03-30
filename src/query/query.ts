@@ -1,3 +1,7 @@
+/**
+ * @module Query
+ */
+
 import * as dgraph from 'dgraph-js'
 import {Txn} from 'dgraph-js';
 

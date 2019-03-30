@@ -1,14 +1,18 @@
+/**
+ * @module Delete
+ */
+
 import * as dgraph from 'dgraph-js'
 import * as messages from "dgraph-js/generated/api_pb";
 import {Mutation} from 'dgraph-js';
 
-export function xDeleteJSON(json, _dgraph=dgraph): Mutation {
+export function xDeleteJSON(json, _dgraph: any = dgraph): Mutation {
   const mu = new _dgraph.Mutation();
   mu.setDeleteJson(json);
   return mu
 }
 
-export function xDeleteJSONNow(json, _dgraph=dgraph): Mutation {
+export function xDeleteJSONNow(json): Mutation {
   const mu = xDeleteJSON(json);
   mu.setCommitNow(true);
   return mu

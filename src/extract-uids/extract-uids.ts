@@ -1,3 +1,7 @@
+/**
+ * @module ExtractUids
+ */
+
 import {Assigned} from "dgraph-js/generated/api_pb"
 import {isPromise} from '../util/is-promise';
 

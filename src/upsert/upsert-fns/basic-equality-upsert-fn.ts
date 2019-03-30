@@ -1,7 +1,11 @@
+/**
+ * @module Upsert
+ */
+
 import * as dgraph from 'dgraph-js'
 import {INodeFoundFunction, IUpsertFnReturnValues} from '../upsert';
 
-export const basicEqualityUpsertFn = searchPredicates => node => queryFn(searchPredicates, node);
+export const basicEqualityUpsertFn = (searchPredicates: string | string[]) => node => queryFn(searchPredicates, node);
 
 function queryFn(_searchPredicates: string | string[], node: object): IUpsertFnReturnValues {
     // make search predicates an array if it is not already

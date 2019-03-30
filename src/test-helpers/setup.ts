@@ -1,3 +1,7 @@
+/**
+ * @module TestHelpers
+ */
+
 import * as dgraph from 'dgraph-js';
 import * as messages from "dgraph-js/generated/api_pb";
 import {ICreateDgraphClientConfig, xCreateDgraphClient} from '../create-client/create-dgraph-client';

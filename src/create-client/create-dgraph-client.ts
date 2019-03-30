@@ -1,3 +1,7 @@
+/**
+ * @module TestHelpers
+ */
+
 import * as grpc from 'grpc';
 import * as dgraph from 'dgraph-js'
 
@@ -12,7 +16,7 @@ export interface ICreateDGraph {
     dgraphClientStub: dgraph.DgraphClientStub
 }
 
-export function xCreateDgraphClient(config?: ICreateDgraphClientConfig, _dgraph=dgraph, infoLog=console.info): ICreateDGraph {
+export function xCreateDgraphClient(config?: ICreateDgraphClientConfig, _dgraph: any = dgraph, infoLog=console.info): ICreateDGraph {
     const defaults = {
         port: null,
         host: null,
