@@ -1,3 +1,7 @@
+/**
+ * @module Upsert
+ */
+
 import * as dgraph from 'dgraph-js'
 import {xUpsertTxn} from '../upsert/upsert';
 

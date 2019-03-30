@@ -1,3 +1,7 @@
+/**
+ * @module TestHelpers
+ */
+
 import * as dgraph from 'dgraph-js';
 
 export async function xDropDBAlt(c: dgraph.DgraphClient, _dgraph: any = dgraph): Promise<dgraph.Payload> {

@@ -1,3 +1,7 @@
+/**
+ * @module TestHelpers
+ */
+
 import * as grpc from 'grpc';
 import * as dgraph from 'dgraph-js'
 

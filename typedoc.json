@@ -1,8 +1,8 @@
 {
-  "mode": "file",
+  "mode": "modules",
   "out": "docs",
-  "exclude": "**/*+(index|.spec).ts",
+  "exclude": "**/*+(index|get-uids|.spec).ts",
   "excludePrivate": true,
   "excludeNotExported": true,
-  "theme": "minimal"
+  "theme": "default"
 }

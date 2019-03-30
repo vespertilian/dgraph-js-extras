@@ -1,3 +1,7 @@
+/**
+ * @module Delete
+ */
+
 import * as dgraph from 'dgraph-js'
 import * as messages from "dgraph-js/generated/api_pb";
 import {Mutation} from 'dgraph-js';

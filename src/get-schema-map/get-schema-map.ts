@@ -1,3 +1,7 @@
+/**
+ * @module TestHelpers
+ */
+
 import * as dgraph from 'dgraph-js'
 import {SchemaNode} from 'dgraph-js';
 

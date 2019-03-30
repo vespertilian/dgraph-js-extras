@@ -1,3 +1,6 @@
+/**
+ * @module Upsert
+ */
 import * as dgraph from 'dgraph-js'
 import { Txn } from 'dgraph-js';
 import { IUpsertFnReturnValues, xDeleteJSON, xSetJSON } from '..';

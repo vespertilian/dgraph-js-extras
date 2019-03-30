@@ -1,3 +1,7 @@
+/**
+ * @module Upsert
+ */
+
 import * as dgraph from 'dgraph-js'
 import {xSetJSON} from '../set-json/set-json';
 import {Txn} from 'dgraph-js';

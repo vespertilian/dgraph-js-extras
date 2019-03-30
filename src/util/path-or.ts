@@ -1,3 +1,7 @@
+/**
+ * @module Util
+ */
+
 // this function has been copied by Ramda
 // just didn't want and dependencies
 export function pathOr(defaultValue ,_path, obj) {
@@ -5,8 +9,8 @@ export function pathOr(defaultValue ,_path, obj) {
 }
 
 function path(paths, obj) {
-  var val = obj;
-  var idx = 0;
+  let val = obj;
+  let idx = 0;
   while (idx < paths.length) {
     if (val == null) {
       return;
