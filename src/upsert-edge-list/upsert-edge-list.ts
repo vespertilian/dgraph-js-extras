@@ -14,8 +14,10 @@ export interface IUpsertNode {
 }
 
 /**
-* Finds or creates new nodes on an edge replacing the old list with a new list.
-* No nodes are deleted
+* #### Replaces an existing list of nodes.
+* - Finds or creates new nodes on an edge.
+* - Removes any nodes not listed from the edge.
+* - No nodes are deleted, the link is just removed.
 *
 * Example
 * ```ts
@@ -61,6 +63,11 @@ export async function xUpsertEdgeListCommitTxn(upsertFn: (input?: any) => IUpser
   }
   return result;
 }
+
+
+/**
+ * The same as {@link xUpsertEdgeListCommitTxn} but you have to pass in your own transaction.
+ */
 
 export async function xUpsertEdgeList(upsertFn: (input?: any) => IUpsertFnReturnValues, {uid, predicate}: IUpsertNode, nodes: object[], transaction: Txn, _dgraph: any = dgraph) {
   const upsertedNodes: string[] = [];

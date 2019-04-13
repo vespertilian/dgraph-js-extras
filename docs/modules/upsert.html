@@ -104,9 +104,40 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/vespertilian/dgraph-js-extras/blob/a9b6fc5/src/upsert/upsert-fns/basic-equality-upsert-fn.ts#L8">upsert/upsert-fns/basic-equality-upsert-fn.ts:8</a></li>
+									<li>Defined in <a href="https://github.com/vespertilian/dgraph-js-extras/blob/133dbda/src/upsert/upsert-fns/basic-equality-upsert-fn.ts#L47">upsert/upsert-fns/basic-equality-upsert-fn.ts:47</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<h4 id="return-a-dgraph-query-and-a-node-found-function">Return a dgraph query and a node found function</h4>
+								</div>
+								<p>The dgraph query is just a generic dgraph query that has been constructed with string concatenation.
+								The node found function is used by upsertFunctions to understand how to extract the uid from the query.</p>
+								<p>The basicEqualityUpsertFn below will find any nodes that has skill and level predicates.</p>
+								<pre><code class="language-ts"><span class="hljs-keyword">const</span> updateJunior = {
+  skill: <span class="hljs-string">'Javascript'</span>,
+  level: <span class="hljs-number">10</span>,
+  x: <span class="hljs-string">'y'</span>,
+  y: <span class="hljs-string">'y'</span>,
+  z: <span class="hljs-string">'y'</span>
+};
+
+<span class="hljs-comment">// So if you already had a node in the db that looks like:</span>
+<span class="hljs-keyword">const</span> existingNode = {
+  skill: <span class="hljs-string">'Javascript'</span>,
+  level: <span class="hljs-number">10</span>,
+  x: <span class="hljs-string">'foo'</span>,
+  y: <span class="hljs-string">'foo'</span>,
+  z: <span class="hljs-string">'foo'</span>
+};
+
+<span class="hljs-comment">/// x, y and z would be updated from 'foo' to 'y'</span>
+<span class="hljs-keyword">const</span> updates = [updateJunior];
+<span class="hljs-keyword">const</span> upsertFn = basicEqualityUpsertFn([<span class="hljs-string">'skill'</span>, <span class="hljs-string">'level'</span>]);
+
+<span class="hljs-keyword">await</span> xUpsertTxn(upsertFn, updates, dgraphClient);</code></pre>
+								<p>If no node matched both skill &#39;Javascript&#39; and level &#39;10&#39; a new node would be created</p>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -114,6 +145,7 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">(Anonymous function)</span></h4>
+							<p>A function that takes a node and returns dgraphQuery and nodeFoundFn. fn =&gt; {dgraphQuery, nodeFoundFn}</p>
 						</li>
 					</ul>
 				</section>
@@ -127,9 +159,14 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/vespertilian/dgraph-js-extras/blob/a9b6fc5/src/upsert-edge-list/upsert-edge-list.ts#L65">upsert-edge-list/upsert-edge-list.ts:65</a></li>
+									<li>Defined in <a href="https://github.com/vespertilian/dgraph-js-extras/blob/133dbda/src/upsert-edge-list/upsert-edge-list.ts#L72">upsert-edge-list/upsert-edge-list.ts:72</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>The same as <a href="upsert.html#xupsertedgelistcommittxn">xUpsertEdgeListCommitTxn</a> but you have to pass in your own transaction.</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -182,13 +219,17 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/vespertilian/dgraph-js-extras/blob/a9b6fc5/src/upsert-edge-list/upsert-edge-list.ts#L40">upsert-edge-list/upsert-edge-list.ts:40</a></li>
+									<li>Defined in <a href="https://github.com/vespertilian/dgraph-js-extras/blob/133dbda/src/upsert-edge-list/upsert-edge-list.ts#L42">upsert-edge-list/upsert-edge-list.ts:42</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Finds or creates new nodes on an edge replacing the old list with a new list.
-									No nodes are deleted</p>
+									<h4 id="replaces-an-existing-list-of-nodes-">Replaces an existing list of nodes.</h4>
+									<ul>
+										<li>Finds or creates new nodes on an edge.</li>
+										<li>Removes any nodes not listed from the edge.</li>
+										<li>No nodes are deleted, the link is just removed.</li>
+									</ul>
 								</div>
 								<p>Example</p>
 								<pre><code class="language-ts"><span class="hljs-comment">// upsert on streetName and postCode</span>
@@ -251,15 +292,38 @@
 					<a name="xupsertmaptxn" class="tsd-anchor"></a>
 					<h3>x<wbr>Upsert<wbr>Map<wbr>Txn</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
-						<li class="tsd-signature tsd-kind-icon">x<wbr>Upsert<wbr>Map<wbr>Txn<span class="tsd-signature-symbol">(</span>queryFn<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, data<span class="tsd-signature-symbol">: </span><a href="../interfaces/upsert.iobjectmap.html" class="tsd-signature-type">IObjectMap</a>, dgraphClient<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">DgraphClient</span>, _dgraph<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">&quot;/Users/vespertilian/Code/dgraph-js-extras/node_modules/dgraph-js/lib/index&quot;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/upsert.iuidmap.html" class="tsd-signature-type">IUidMap</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">x<wbr>Upsert<wbr>Map<wbr>Txn<span class="tsd-signature-symbol">(</span>queryFn<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, data<span class="tsd-signature-symbol">: </span><a href="../interfaces/upsert.iobjectmap.html" class="tsd-signature-type">IObjectMap</a>, dgraphClient<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">DgraphClient</span>, _dgraph<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/upsert.iuidmap.html" class="tsd-signature-type">IUidMap</a><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/vespertilian/dgraph-js-extras/blob/a9b6fc5/src/upsert-map/upsert-map.ts#L16">upsert-map/upsert-map.ts:16</a></li>
+									<li>Defined in <a href="https://github.com/vespertilian/dgraph-js-extras/blob/133dbda/src/upsert-map/upsert-map.ts#L41">upsert-map/upsert-map.ts:41</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<h4 id="upsert-an-object-which-has-keys-for-the-upsert-objects">Upsert an object which has keys for the upsert objects</h4>
+								</div>
+								<pre><code class="language-typescript"><span class="hljs-keyword">const</span> map = {
+   howard: { <span class="hljs-comment">// howard is an upsert key</span>
+      name: <span class="hljs-string">'Howard'</span>,
+      email: <span class="hljs-string">'hb@gmail.com'</span>
+   },
+   cameron: { <span class="hljs-comment">// so is cameron</span>
+      name: <span class="hljs-string">'Cameron B'</span>,
+      email: <span class="hljs-string">'cam@gmail.com'</span>
+   }
+};
+
+<span class="hljs-keyword">const</span> resultMap = <span class="hljs-keyword">await</span> xUpsertMapTxn(basicEqualityUpsertFn(<span class="hljs-string">'email'</span>), map, dgraphClient);
+
+<span class="hljs-comment">// returns an object that has the uid of the upserted values</span>
+<span class="hljs-keyword">const</span> expectedResult: IUidMap = {
+   cameron: cameronUid,
+   howard: howardUid
+};</code></pre>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -272,7 +336,7 @@
 									<h5>dgraphClient: <span class="tsd-signature-type">DgraphClient</span></h5>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> _dgraph: <span class="tsd-signature-type">&quot;/Users/vespertilian/Code/dgraph-js-extras/node_modules/dgraph-js/lib/index&quot;</span><span class="tsd-signature-symbol"> =&nbsp;dgraph</span></h5>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> _dgraph: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;dgraph</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/upsert.iuidmap.html" class="tsd-signature-type">IUidMap</a><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -289,7 +353,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/vespertilian/dgraph-js-extras/blob/a9b6fc5/src/upsert/upsert.ts#L84">upsert/upsert.ts:84</a></li>
+									<li>Defined in <a href="https://github.com/vespertilian/dgraph-js-extras/blob/133dbda/src/upsert/upsert.ts#L84">upsert/upsert.ts:84</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -337,7 +401,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/vespertilian/dgraph-js-extras/blob/a9b6fc5/src/upsert/upsert.ts#L20">upsert/upsert.ts:20</a></li>
+									<li>Defined in <a href="https://github.com/vespertilian/dgraph-js-extras/blob/133dbda/src/upsert/upsert.ts#L20">upsert/upsert.ts:20</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -378,7 +442,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/vespertilian/dgraph-js-extras/blob/a9b6fc5/src/upsert/upsert.ts#L21">upsert/upsert.ts:21</a></li>
+									<li>Defined in <a href="https://github.com/vespertilian/dgraph-js-extras/blob/133dbda/src/upsert/upsert.ts#L21">upsert/upsert.ts:21</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
