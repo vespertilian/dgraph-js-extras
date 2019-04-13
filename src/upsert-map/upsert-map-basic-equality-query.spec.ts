@@ -35,7 +35,7 @@ describe('xUpsertMapTxn with basic equality query', () => {
                 email: 'hb@gmail.com'
             },
             cameron: {
-                name: 'Cameron Batt',
+                name: 'Cameron B',
                 email: 'cam@gmail.com'
             }
         };
