@@ -1,8 +1,8 @@
 import {xSetupForTest} from '../test-helpers/setup';
-import {xSetupWithSchemaDataNowTxn} from '../test-helpers/setup';
-import {IUpsertFnReturnValues, xUpsertTxn} from './upsert';
+import {xSetupWithSchemaDataCommitTxn} from '../test-helpers/setup';
+import {IUpsertFnReturnValues, xUpsertCommitTxn} from './upsert';
 
-describe('xUpsertTxn', () => {
+describe('xUpsertCommitTxn', () => {
     it('rethrows any errors from the query function', async() => {
 
         const {dgraphClient} = await xSetupForTest();
@@ -14,7 +14,7 @@ describe('xUpsertTxn', () => {
 
         let error = null;
         try {
-            await xUpsertTxn(errorFn, data, dgraphClient)
+            await xUpsertCommitTxn(errorFn, data, dgraphClient)
         } catch (e) {
             error = e
         }
@@ -32,7 +32,7 @@ describe('xUpsertTxn', () => {
             name: 'cameron'
         };
 
-        const {dgraphClient} = await xSetupWithSchemaDataNowTxn({schema, data});
+        const {dgraphClient} = await xSetupWithSchemaDataCommitTxn({schema, data});
 
         const badQuery = (name: string) => (): IUpsertFnReturnValues => {
             // This query is missing parentheses around the name value
@@ -51,7 +51,7 @@ describe('xUpsertTxn', () => {
 
         let error = null;
         try {
-            await xUpsertTxn(badQuery("cameron"), {}, dgraphClient)
+            await xUpsertCommitTxn(badQuery("cameron"), {}, dgraphClient)
         } catch (e) {
             error = e;
         }

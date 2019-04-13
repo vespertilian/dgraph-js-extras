@@ -1,4 +1,4 @@
-import { xSetupWithSchemaDataNowTxn } from '../test-helpers/setup';
+import { xSetupWithSchemaDataCommitTxn } from '../test-helpers/setup';
 import { xExtractNamedUids } from '../extract-named-uid/extract-named-uids';
 import { basicEqualityUpsertFn, IUpsertFnReturnValues, xQueryTxn } from '..';
 import { IUpsertNode, xUpsertEdgeListCommitTxn } from './upsert-edge-list';
@@ -56,7 +56,7 @@ describe('xUpsertEdge', () => {
 
     const addresses = [cameronInitial, howardInitial];
 
-    const {dgraphClient, result} = await xSetupWithSchemaDataNowTxn({schema, data: addresses});
+    const {dgraphClient, result} = await xSetupWithSchemaDataCommitTxn({schema, data: addresses});
     const [cameronUid] = xExtractNamedUids(['cameron'], result);
 
     // check cameron has the addresses he should
@@ -143,7 +143,7 @@ describe('xUpsertEdge', () => {
           }
         ]
       };
-      const {dgraphClient, result} = await xSetupWithSchemaDataNowTxn({schema, data: cameronInitial});
+      const {dgraphClient, result} = await xSetupWithSchemaDataCommitTxn({schema, data: cameronInitial});
       const [cameronUid] = xExtractNamedUids(['cameron'], result);
 
       return {dgraphClient, cameronUid}

@@ -1,6 +1,6 @@
 import {xSetupForTest} from '../test-helpers/setup';
 import {xSetSchemaAlt} from '../set-schema/set-schema';
-import {xSetJSON, xSetJSONNow, xSetJSONNowTxn} from './set-json';
+import {xSetJSON, xSetJSONCommit, xSetJSONCommitTxn} from './set-json';
 import { xExtractFirstUid } from '../extract-uids/extract-uids';
 import { xQueryTxn } from '../query/query';
 
@@ -89,7 +89,7 @@ describe('xSetJSONCommitNow', () => {
         await xSetSchemaAlt(schema, dgraphClient);
         const data = { name: 'Cameron', age: 35 };
 
-        const setObject = xSetJSONNow(data);
+        const setObject = xSetJSONCommit(data);
 
         expect(setObject.getCommitNow()).toBe(true);
 
@@ -109,7 +109,7 @@ describe('xSetJSONCommitNow', () => {
 
 });
 
-describe('xSetJSONNow', () => {
+describe('xSetJSONCommit', () => {
   it('instantly persists js object data', async() => {
     const {dgraphClient} = await xSetupForTest();
 
@@ -122,7 +122,7 @@ describe('xSetJSONNow', () => {
     const data = { name: 'Cameron', age: 35 };
 
     // set data with one line
-    await xSetJSONNowTxn(data, dgraphClient);
+    await xSetJSONCommitTxn(data, dgraphClient);
 
     const predicateNameQuery = `{
             q(func: has(name)) {
@@ -182,7 +182,7 @@ describe('xSetJSONNow', () => {
       ],
     };
 
-    const uid = await xExtractFirstUid(xSetJSONNowTxn([person, person2], dgraphClient));
+    const uid = await xExtractFirstUid(xSetJSONCommitTxn([person, person2], dgraphClient));
 
     const personQuery = `{
             q(func: uid(${uid})) {

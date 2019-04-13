@@ -1,7 +1,7 @@
-import {xSetupWithSchemaDataNowTxn} from '../test-helpers/setup';
+import {xSetupWithSchemaDataCommitTxn} from '../test-helpers/setup';
 import {xExtractNamedUids} from '../extract-named-uid/extract-named-uids';
 import {xQueryWithVarsTxn} from '../query/query';
-import {xDeleteJSONNowTxn} from './delete-json';
+import {xDeleteJSONCommitTxn} from './delete-json';
 
 const schema = `
     name: string @index(exact) .
@@ -49,7 +49,7 @@ const queryAllAddresses = (prefix) => `{
 
 describe("delete-json", () => {
   it("lets you delete a node (address) and the link that node had to another node (user has addresses - delete link pointing to deleted address)", async() => {
-    const {result, dgraphClient} = await xSetupWithSchemaDataNowTxn({schema, data: sampleData});
+    const {result, dgraphClient} = await xSetupWithSchemaDataCommitTxn({schema, data: sampleData});
 
     const [userUid, address1Uid] = xExtractNamedUids(['user', 'address1', 'address2'],result);
 
@@ -79,7 +79,7 @@ describe("delete-json", () => {
       }
     ];
 
-    await xDeleteJSONNowTxn(delete_json, dgraphClient);
+    await xDeleteJSONCommitTxn(delete_json, dgraphClient);
 
     // still one user
     const {u2} = await xQueryWithVarsTxn({query: queryUsers('u2')}, dgraphClient);
@@ -108,7 +108,7 @@ describe("delete-json", () => {
   });
 
   it("lets you delete multiple nodes (2x addresses) and the links that those noes had to another node (user has addresses - delete two links pointing to addresses", async() => {
-    const {result, dgraphClient} = await xSetupWithSchemaDataNowTxn({schema, data: sampleData});
+    const {result, dgraphClient} = await xSetupWithSchemaDataCommitTxn({schema, data: sampleData});
     const [userUid, address1Uid, address2Uid] = xExtractNamedUids(['user', 'address1', 'address2', 'address3', 'address4'],result);
 
 
@@ -146,7 +146,7 @@ describe("delete-json", () => {
       }
     ];
 
-    await xDeleteJSONNowTxn(delete_json, dgraphClient);
+    await xDeleteJSONCommitTxn(delete_json, dgraphClient);
 
     // still one user
     const {u2} = await xQueryWithVarsTxn({query: queryUsers('u2')}, dgraphClient);

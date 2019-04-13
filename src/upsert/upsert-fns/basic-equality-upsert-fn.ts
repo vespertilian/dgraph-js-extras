@@ -36,7 +36,7 @@ import { INodeFoundFunction, IUpsertFnReturnValues } from '../upsert';
  * const updates = [updateJunior];
  * const upsertFn = basicEqualityUpsertFn(['skill', 'level']);
  *
- * await xUpsertTxn(upsertFn, updates, dgraphClient);
+ * await xUpsertCommitTxn(upsertFn, updates, dgraphClient);
  * ```
  *
  * If no node matched both skill 'Javascript' and level '10' a new node would be created
@@ -113,7 +113,7 @@ function queryFn(_searchPredicates: string | string[], node: object): IUpsertFnR
         if(others.length > 0) {
             const error = new Error(`
                     More than one node matches "${searchValues}" for the "${searchPredicates}" predicate.
-                    Aborting xUpsertNow. 
+                    Aborting xUpsert. 
                     Delete the extra values before tyring xUpsert again.`);
             throw error;
         }

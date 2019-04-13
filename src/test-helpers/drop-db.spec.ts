@@ -1,4 +1,4 @@
-import {xSetupWithSchemaDataNowTxn} from './setup';
+import {xSetupWithSchemaDataCommitTxn} from './setup';
 import {xGetSchemaMapTxn} from '..';
 import {xDropDBAlt} from './drob-db';
 
@@ -9,7 +9,7 @@ describe('xDropDBAlt', () => {
             name: string @index(hash) .
             email: string @index(hash) .`;
 
-        const {dgraphClient} = await xSetupWithSchemaDataNowTxn({schema});
+        const {dgraphClient} = await xSetupWithSchemaDataCommitTxn({schema});
 
         const schemaMap = await xGetSchemaMapTxn(dgraphClient);
         expect(schemaMap.name.getType()).toBe('string');

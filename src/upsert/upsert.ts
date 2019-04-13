@@ -17,17 +17,17 @@ export interface IUpsertFnReturnValues {
 }
 
 // overload function to always return a string array when an object array is passed in
-export async function xUpsertTxn(upsertFn: (input?: any) => IUpsertFnReturnValues, data: object[], dgraphClient: dgraph.DgraphClient, _dgraph?: any): Promise<string[]>
-export async function xUpsertTxn(upsertFn: (input?: any) => IUpsertFnReturnValues, data: object, dgraphClient: dgraph.DgraphClient, _dgraph?: any): Promise<string>
-export async function xUpsertTxn(upsertFn: (input?: any) => IUpsertFnReturnValues, data: object | object[], dgraphClient: dgraph.DgraphClient, _dgraph: any = dgraph): Promise<string | string[]> {
+export async function xUpsertCommitTxn(upsertFn: (input?: any) => IUpsertFnReturnValues, data: object[], dgraphClient: dgraph.DgraphClient, _dgraph?: any): Promise<string[]>
+export async function xUpsertCommitTxn(upsertFn: (input?: any) => IUpsertFnReturnValues, data: object, dgraphClient: dgraph.DgraphClient, _dgraph?: any): Promise<string>
+export async function xUpsertCommitTxn(upsertFn: (input?: any) => IUpsertFnReturnValues, data: object | object[], dgraphClient: dgraph.DgraphClient, _dgraph: any = dgraph): Promise<string | string[]> {
     if(Array.isArray(data)) {
-        return xUpsertArrayTxn(upsertFn, data, dgraphClient, _dgraph)
+        return xUpsertArrayCommitTxn(upsertFn, data, dgraphClient, _dgraph)
     } else {
-        return xUpsertObjectTxn(upsertFn, data, dgraphClient, _dgraph)
+        return xUpsertObjectCommitTxn(upsertFn, data, dgraphClient, _dgraph)
     }
 }
 
-async function xUpsertArrayTxn(upsertFn: (input?: any) => IUpsertFnReturnValues, nodes: object[], dgraphClient: dgraph.DgraphClient, _dgraph: any = dgraph): Promise<string[]> {
+async function xUpsertArrayCommitTxn(upsertFn: (input?: any) => IUpsertFnReturnValues, nodes: object[], dgraphClient: dgraph.DgraphClient, _dgraph: any = dgraph): Promise<string[]> {
     const results: string[] = [];
     const errors: Error[] = [];
     const transaction = dgraphClient.newTxn();
@@ -56,7 +56,7 @@ async function xUpsertArrayTxn(upsertFn: (input?: any) => IUpsertFnReturnValues,
     return results
 }
 
-async function xUpsertObjectTxn(upsertFn: (input?: any) => IUpsertFnReturnValues, node: object, dgraphClient: dgraph.DgraphClient, _dgraph: any = dgraph): Promise<string> {
+async function xUpsertObjectCommitTxn(upsertFn: (input?: any) => IUpsertFnReturnValues, node: object, dgraphClient: dgraph.DgraphClient, _dgraph: any = dgraph): Promise<string> {
     let uid = null;
     let error: Error | null = null;
     const transaction = dgraphClient.newTxn();
@@ -111,14 +111,14 @@ export async function xUpsertObject(upsertFn: (input?: any) => IUpsertFnReturnVa
 
         if(multipleNodes) {
             const errorMessage = `
-                The find functions for xUpsertNow should only return a single node.
+                The find functions for xUpsert should only return a single node.
                 That's how we know which node we need to update.
                 
-                Therefor xUpsertNow cannot support creating multiple new nodes.
+                Therefor xUpsert cannot support creating multiple new nodes.
                 It seems that you have passed in an object that requires the creation of multiple nodes.
                 
                 Update your upsert to only create a single node at a time .
-                xUpsertNow does accept an array of objects to upsert.
+                xUpsert does accept an array of objects to upsert.
                 
                 Failed for object: ${JSON.stringify(node)}
             `;

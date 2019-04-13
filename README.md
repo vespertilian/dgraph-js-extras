@@ -1,12 +1,11 @@
 #### DGraph JS Extras
 
-
 A library of helper functions to accompany the dgraph-js library. **Currently in an ALPHA state could break at any point**
 
-Functions with the postfix "txn" indicate they are transactions and can be awaited.
+Functions including "commit" indicate they will be set to "commitNow"
+Functions including "txn" indicate they create their own transactions and can be directly awaited.
 
 Other operations like JS set return a mutation that needs to be used in conjunction with a transaction.
-
 
 ## Workflow
 

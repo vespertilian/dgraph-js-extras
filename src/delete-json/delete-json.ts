@@ -12,13 +12,13 @@ export function xDeleteJSON(json, _dgraph: any = dgraph): Mutation {
   return mu
 }
 
-export function xDeleteJSONNow(json): Mutation {
+export function xDeleteJSONCommit(json): Mutation {
   const mu = xDeleteJSON(json);
   mu.setCommitNow(true);
   return mu
 }
 
-export async function xDeleteJSONNowTxn(json: object, dgraphClient: dgraph.DgraphClient): Promise<messages.Assigned> {
-  const mu = xDeleteJSONNow(json);
+export async function xDeleteJSONCommitTxn(json: object, dgraphClient: dgraph.DgraphClient): Promise<messages.Assigned> {
+  const mu = xDeleteJSONCommit(json);
   return dgraphClient.newTxn().mutate(mu);
 }

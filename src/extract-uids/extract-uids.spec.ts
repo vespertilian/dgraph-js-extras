@@ -1,7 +1,7 @@
 import {xSetupForTest} from '../test-helpers/setup';
 import {xExtractFirstUid, xExtractUids} from './extract-uids';
 import * as messages from "dgraph-js/generated/api_pb";
-import {xSetJSONNowTxn} from '../set-json/set-json';
+import {xSetJSONCommitTxn} from '../set-json/set-json';
 
 const users = [
   { username: 'user1' },
@@ -16,7 +16,7 @@ describe('xExtractUids', () => {
   describe('Promise as input', () => {
     it('returns the uids as an array', async() => {
       const {dgraphClient} = await xSetupForTest();
-      const ids = await xExtractUids(xSetJSONNowTxn(users, dgraphClient));
+      const ids = await xExtractUids(xSetJSONCommitTxn(users, dgraphClient));
       expect(ids.length).toEqual(5);
     });
   });
@@ -26,7 +26,7 @@ describe('xExtractUids', () => {
 
     beforeAll(async(done) => {
       const {dgraphClient} = await xSetupForTest();
-      mutationResult = await xSetJSONNowTxn(users, dgraphClient);
+      mutationResult = await xSetJSONCommitTxn(users, dgraphClient);
       done()
     });
 
@@ -82,13 +82,13 @@ describe('xExtractUids', () => {
 describe('xExtractFirstUid', () => {
   it('extracts only the first uid from the SetJSON result from a promise', async() => {
     const {dgraphClient} = await xSetupForTest();
-    const id = await xExtractFirstUid(xSetJSONNowTxn(users, dgraphClient));
+    const id = await xExtractFirstUid(xSetJSONCommitTxn(users, dgraphClient));
     expect(typeof id).toEqual('string')
   });
 
   it('extracts only the first uid from the SetJSON result from an existing result', async() => {
     const {dgraphClient} = await xSetupForTest();
-    const result = await xSetJSONNowTxn(users, dgraphClient);
+    const result = await xSetJSONCommitTxn(users, dgraphClient);
     const id = xExtractFirstUid(result);
     expect(typeof id).toEqual('string')
   })

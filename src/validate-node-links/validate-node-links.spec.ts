@@ -1,5 +1,5 @@
 import {xValidateNodeLinksTxn} from './validate-node-links';
-import {xSetupWithSchemaDataNowTxn} from '../test-helpers/setup';
+import {xSetupWithSchemaDataCommitTxn} from '../test-helpers/setup';
 import {xExtractNamedUids} from '../extract-named-uid/extract-named-uids';
 
 const users = [
@@ -31,7 +31,7 @@ describe('xValidateNodeLinksTxn', () => {
   let dgraphClient, user1Uid, user2Uid, user1AddressUid, user2AddressUid, user2Address2Uid;
 
   beforeAll(async(done) => {
-    const r = await xSetupWithSchemaDataNowTxn({data: users});
+    const r = await xSetupWithSchemaDataCommitTxn({data: users});
     dgraphClient = r.dgraphClient;
 
     const idsToExtract = ['user1', 'user2', 'user1Address1', 'user2Address1', 'user2Address2'];
