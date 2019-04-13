@@ -1,3 +1,6 @@
+/**
+ * @module Validate
+ */
 import * as dgraph from 'dgraph-js';
 import { Txn } from 'dgraph-js';
 export interface IValidateNodeLinks {

@@ -1,6 +1,9 @@
+/**
+ * @module Set
+ */
 import * as dgraph from 'dgraph-js';
 import * as messages from "dgraph-js/generated/api_pb";
 import { Mutation } from 'dgraph-js';
-export declare function xSetJSON(object: object, _dgraph?: typeof dgraph): Mutation;
-export declare function xSetJSONNow(object: object, _dgraph?: typeof dgraph): Mutation;
-export declare function xSetJSONNowTxn(object: object, dgraphClient: dgraph.DgraphClient, _dgraph?: typeof dgraph): Promise<messages.Assigned>;
+export declare function xSetJSON(object: object, _dgraph?: any): Mutation;
+export declare function xSetJSONCommit(object: object, _dgraph?: any): Mutation;
+export declare function xSetJSONCommitTxn(object: object, dgraphClient: dgraph.DgraphClient): Promise<messages.Assigned>;

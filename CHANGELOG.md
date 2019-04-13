@@ -1,3 +1,18 @@
+<a name="0.8.0"></a>
+# [0.8.0](https://github.com/vespertilian/dgraph-js-extras/compare/v0.7.0...v0.8.0) (2019-04-13)
+
+
+### Features
+
+* **src/*:** change now in function names to commit ([5cab3f4](https://github.com/vespertilian/dgraph-js-extras/commit/5cab3f4)), closes [#11](https://github.com/vespertilian/dgraph-js-extras/issues/11)
+
+
+### BREAKING CHANGES
+
+* **src/*:** Any function that previously had the word now, has the word commit in it instead.
+
+
+
 <a name="0.7.0"></a>
 # [0.7.0](https://github.com/vespertilian/dgraph-js-extras/compare/v0.6.4...v0.7.0) (2019-01-28)
 
