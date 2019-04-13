@@ -12,12 +12,12 @@ export function xSetJSON(object: object, _dgraph: any = dgraph): Mutation  {
     return mu;
 }
 
-export function xSetJSONNow(object: object, _dgraph: any = dgraph): Mutation {
+export function xSetJSONCommit(object: object, _dgraph: any = dgraph): Mutation {
    const mu = xSetJSON(object, _dgraph);
    mu.setCommitNow(true);
    return mu
 }
 
-export async function xSetJSONNowTxn(object: object, dgraphClient: dgraph.DgraphClient): Promise<messages.Assigned> {
-  return dgraphClient.newTxn().mutate(xSetJSONNow(object));
+export async function xSetJSONCommitTxn(object: object, dgraphClient: dgraph.DgraphClient): Promise<messages.Assigned> {
+  return dgraphClient.newTxn().mutate(xSetJSONCommit(object));
 }

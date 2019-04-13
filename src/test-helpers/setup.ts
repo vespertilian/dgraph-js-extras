@@ -7,7 +7,7 @@ import * as messages from "dgraph-js/generated/api_pb";
 import {ICreateDgraphClientConfig, xCreateDgraphClient} from '../create-client/create-dgraph-client';
 import {xSetSchemaAlt} from '..';
 import {xDropDBAlt} from './drob-db';
-import {xSetJSONNowTxn} from '../set-json/set-json';
+import {xSetJSONCommitTxn} from '../set-json/set-json';
 
 export interface ISetupReturnValue {
     dgraphClient: dgraph.DgraphClient,
@@ -36,7 +36,7 @@ export interface ISetupWithParams {
     debugDgraphClient?: boolean
 }
 
-export async function xSetupWithSchemaDataNowTxn(params: ISetupWithParams): Promise<ISetupReturnValue> {
+export async function xSetupWithSchemaDataCommitTxn(params: ISetupWithParams): Promise<ISetupReturnValue> {
     const defaultParams: ISetupWithParams = {
         schema: null,
         data: null,
@@ -53,7 +53,7 @@ export async function xSetupWithSchemaDataNowTxn(params: ISetupWithParams): Prom
 
     let result = null;
     if (data) {
-        result = await xSetJSONNowTxn(data, dgraphClient)
+        result = await xSetJSONCommitTxn(data, dgraphClient)
     }
 
     return {dgraphClient, dgraphClientStub, result}

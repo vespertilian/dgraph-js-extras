@@ -1,4 +1,4 @@
-import {xSetupWithSchemaDataNowTxn} from '../test-helpers/setup';
+import {xSetupWithSchemaDataCommitTxn} from '../test-helpers/setup';
 import {xExtractUids}  from '../extract-uids/extract-uids';
 import {xValidateNodeExistsTxn} from './validate-node-exists';
 
@@ -10,7 +10,7 @@ const users = [
 describe('xValidateNodeExistsTxn', () => {
   let user1uid, user2uid, dgraphClient;
   beforeAll(async(done) => {
-    const r = await xSetupWithSchemaDataNowTxn({data: users});
+    const r = await xSetupWithSchemaDataCommitTxn({data: users});
     const uids = await xExtractUids(r.result);
 
     dgraphClient = r.dgraphClient;

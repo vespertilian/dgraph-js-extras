@@ -64,7 +64,8 @@
 			<div class="tsd-panel tsd-typography">
 				<h4 id="dgraph-js-extras">DGraph JS Extras</h4>
 				<p>A library of helper functions to accompany the dgraph-js library. <strong>Currently in an ALPHA state could break at any point</strong></p>
-				<p>Functions with the postfix &quot;txn&quot; indicate they are transactions and can be awaited.</p>
+				<p>Functions including &quot;commit&quot; indicate they will be set to &quot;commitNow&quot;
+				Functions including &quot;txn&quot; indicate they create their own transactions and can be directly awaited.</p>
 				<p>Other operations like JS set return a mutation that needs to be used in conjunction with a transaction.</p>
 				<h2 id="workflow">Workflow</h2>
 				<ol>

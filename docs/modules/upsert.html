@@ -82,11 +82,11 @@
 							<h3>Functions</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="upsert.html#basicequalityupsertfn" class="tsd-kind-icon">basic<wbr>Equality<wbr>Upsert<wbr>Fn</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="upsert.html#xupsertcommittxn" class="tsd-kind-icon">x<wbr>Upsert<wbr>Commit<wbr>Txn</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="upsert.html#xupsertedgelist" class="tsd-kind-icon">x<wbr>Upsert<wbr>Edge<wbr>List</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="upsert.html#xupsertedgelistcommittxn" class="tsd-kind-icon">x<wbr>Upsert<wbr>Edge<wbr>List<wbr>Commit<wbr>Txn</a></li>
-								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="upsert.html#xupsertmaptxn" class="tsd-kind-icon">x<wbr>Upsert<wbr>Map<wbr>Txn</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="upsert.html#xupsertmapcommittxn" class="tsd-kind-icon">x<wbr>Upsert<wbr>Map<wbr>Commit<wbr>Txn</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="upsert.html#xupsertobject" class="tsd-kind-icon">x<wbr>Upsert<wbr>Object</a></li>
-								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="upsert.html#xupserttxn" class="tsd-kind-icon">x<wbr>Upsert<wbr>Txn</a></li>
 							</ul>
 						</section>
 					</div>
@@ -104,7 +104,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/vespertilian/dgraph-js-extras/blob/133dbda/src/upsert/upsert-fns/basic-equality-upsert-fn.ts#L47">upsert/upsert-fns/basic-equality-upsert-fn.ts:47</a></li>
+									<li>Defined in <a href="https://github.com/vespertilian/dgraph-js-extras/blob/5c6b40c/src/upsert/upsert-fns/basic-equality-upsert-fn.ts#L47">upsert/upsert-fns/basic-equality-upsert-fn.ts:47</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -135,7 +135,7 @@
 <span class="hljs-keyword">const</span> updates = [updateJunior];
 <span class="hljs-keyword">const</span> upsertFn = basicEqualityUpsertFn([<span class="hljs-string">'skill'</span>, <span class="hljs-string">'level'</span>]);
 
-<span class="hljs-keyword">await</span> xUpsertTxn(upsertFn, updates, dgraphClient);</code></pre>
+<span class="hljs-keyword">await</span> xUpsertCommitTxn(upsertFn, updates, dgraphClient);</code></pre>
 								<p>If no node matched both skill &#39;Javascript&#39; and level &#39;10&#39; a new node would be created</p>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -150,6 +150,98 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
+					<a name="xupsertcommittxn" class="tsd-anchor"></a>
+					<h3>x<wbr>Upsert<wbr>Commit<wbr>Txn</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
+						<li class="tsd-signature tsd-kind-icon">x<wbr>Upsert<wbr>Commit<wbr>Txn<span class="tsd-signature-symbol">(</span>upsertFn<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">function</span>, data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">[]</span>, dgraphClient<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">DgraphClient</span>, _dgraph<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">x<wbr>Upsert<wbr>Commit<wbr>Txn<span class="tsd-signature-symbol">(</span>upsertFn<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">function</span>, data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span>, dgraphClient<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">DgraphClient</span>, _dgraph<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/vespertilian/dgraph-js-extras/blob/5c6b40c/src/upsert/upsert.ts#L20">upsert/upsert.ts:20</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>upsertFn: <span class="tsd-signature-type">function</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter-siganture">
+											<ul class="tsd-signatures tsd-kind-type-literal tsd-is-not-exported">
+												<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>input<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/upsert.iupsertfnreturnvalues.html" class="tsd-signature-type">IUpsertFnReturnValues</a></li>
+											</ul>
+											<ul class="tsd-descriptions">
+												<li class="tsd-description">
+													<h4 class="tsd-parameters-title">Parameters</h4>
+													<ul class="tsd-parameters">
+														<li>
+															<h5><span class="tsd-flag ts-flagOptional">Optional</span> input: <span class="tsd-signature-type">any</span></h5>
+														</li>
+													</ul>
+													<h4 class="tsd-returns-title">Returns <a href="../interfaces/upsert.iupsertfnreturnvalues.html" class="tsd-signature-type">IUpsertFnReturnValues</a></h4>
+												</li>
+											</ul>
+										</li>
+									</ul>
+								</li>
+								<li>
+									<h5>data: <span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">[]</span></h5>
+								</li>
+								<li>
+									<h5>dgraphClient: <span class="tsd-signature-type">DgraphClient</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> _dgraph: <span class="tsd-signature-type">any</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/vespertilian/dgraph-js-extras/blob/5c6b40c/src/upsert/upsert.ts#L21">upsert/upsert.ts:21</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>upsertFn: <span class="tsd-signature-type">function</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter-siganture">
+											<ul class="tsd-signatures tsd-kind-type-literal tsd-is-not-exported">
+												<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>input<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/upsert.iupsertfnreturnvalues.html" class="tsd-signature-type">IUpsertFnReturnValues</a></li>
+											</ul>
+											<ul class="tsd-descriptions">
+												<li class="tsd-description">
+													<h4 class="tsd-parameters-title">Parameters</h4>
+													<ul class="tsd-parameters">
+														<li>
+															<h5><span class="tsd-flag ts-flagOptional">Optional</span> input: <span class="tsd-signature-type">any</span></h5>
+														</li>
+													</ul>
+													<h4 class="tsd-returns-title">Returns <a href="../interfaces/upsert.iupsertfnreturnvalues.html" class="tsd-signature-type">IUpsertFnReturnValues</a></h4>
+												</li>
+											</ul>
+										</li>
+									</ul>
+								</li>
+								<li>
+									<h5>data: <span class="tsd-signature-type">object</span></h5>
+								</li>
+								<li>
+									<h5>dgraphClient: <span class="tsd-signature-type">DgraphClient</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> _dgraph: <span class="tsd-signature-type">any</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
 					<a name="xupsertedgelist" class="tsd-anchor"></a>
 					<h3>x<wbr>Upsert<wbr>Edge<wbr>List</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
@@ -159,7 +251,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/vespertilian/dgraph-js-extras/blob/133dbda/src/upsert-edge-list/upsert-edge-list.ts#L72">upsert-edge-list/upsert-edge-list.ts:72</a></li>
+									<li>Defined in <a href="https://github.com/vespertilian/dgraph-js-extras/blob/5c6b40c/src/upsert-edge-list/upsert-edge-list.ts#L72">upsert-edge-list/upsert-edge-list.ts:72</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -219,7 +311,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/vespertilian/dgraph-js-extras/blob/133dbda/src/upsert-edge-list/upsert-edge-list.ts#L42">upsert-edge-list/upsert-edge-list.ts:42</a></li>
+									<li>Defined in <a href="https://github.com/vespertilian/dgraph-js-extras/blob/5c6b40c/src/upsert-edge-list/upsert-edge-list.ts#L42">upsert-edge-list/upsert-edge-list.ts:42</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -289,16 +381,16 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
-					<a name="xupsertmaptxn" class="tsd-anchor"></a>
-					<h3>x<wbr>Upsert<wbr>Map<wbr>Txn</h3>
+					<a name="xupsertmapcommittxn" class="tsd-anchor"></a>
+					<h3>x<wbr>Upsert<wbr>Map<wbr>Commit<wbr>Txn</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
-						<li class="tsd-signature tsd-kind-icon">x<wbr>Upsert<wbr>Map<wbr>Txn<span class="tsd-signature-symbol">(</span>queryFn<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, data<span class="tsd-signature-symbol">: </span><a href="../interfaces/upsert.iobjectmap.html" class="tsd-signature-type">IObjectMap</a>, dgraphClient<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">DgraphClient</span>, _dgraph<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/upsert.iuidmap.html" class="tsd-signature-type">IUidMap</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">x<wbr>Upsert<wbr>Map<wbr>Commit<wbr>Txn<span class="tsd-signature-symbol">(</span>queryFn<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, data<span class="tsd-signature-symbol">: </span><a href="../interfaces/upsert.iobjectmap.html" class="tsd-signature-type">IObjectMap</a>, dgraphClient<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">DgraphClient</span>, _dgraph<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/upsert.iuidmap.html" class="tsd-signature-type">IUidMap</a><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/vespertilian/dgraph-js-extras/blob/133dbda/src/upsert-map/upsert-map.ts#L41">upsert-map/upsert-map.ts:41</a></li>
+									<li>Defined in <a href="https://github.com/vespertilian/dgraph-js-extras/blob/5c6b40c/src/upsert-map/upsert-map.ts#L41">upsert-map/upsert-map.ts:41</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -316,7 +408,7 @@
    }
 };
 
-<span class="hljs-keyword">const</span> resultMap = <span class="hljs-keyword">await</span> xUpsertMapTxn(basicEqualityUpsertFn(<span class="hljs-string">'email'</span>), map, dgraphClient);
+<span class="hljs-keyword">const</span> resultMap = <span class="hljs-keyword">await</span> xUpsertMapCommitTxn(basicEqualityUpsertFn(<span class="hljs-string">'email'</span>), map, dgraphClient);
 
 <span class="hljs-comment">// returns an object that has the uid of the upserted values</span>
 <span class="hljs-keyword">const</span> expectedResult: IUidMap = {
@@ -353,7 +445,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/vespertilian/dgraph-js-extras/blob/133dbda/src/upsert/upsert.ts#L84">upsert/upsert.ts:84</a></li>
+									<li>Defined in <a href="https://github.com/vespertilian/dgraph-js-extras/blob/5c6b40c/src/upsert/upsert.ts#L84">upsert/upsert.ts:84</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -387,98 +479,6 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">&gt;</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
-					<a name="xupserttxn" class="tsd-anchor"></a>
-					<h3>x<wbr>Upsert<wbr>Txn</h3>
-					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
-						<li class="tsd-signature tsd-kind-icon">x<wbr>Upsert<wbr>Txn<span class="tsd-signature-symbol">(</span>upsertFn<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">function</span>, data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">[]</span>, dgraphClient<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">DgraphClient</span>, _dgraph<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
-						<li class="tsd-signature tsd-kind-icon">x<wbr>Upsert<wbr>Txn<span class="tsd-signature-symbol">(</span>upsertFn<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">function</span>, data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span>, dgraphClient<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">DgraphClient</span>, _dgraph<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/vespertilian/dgraph-js-extras/blob/133dbda/src/upsert/upsert.ts#L20">upsert/upsert.ts:20</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>upsertFn: <span class="tsd-signature-type">function</span></h5>
-									<ul class="tsd-parameters">
-										<li class="tsd-parameter-siganture">
-											<ul class="tsd-signatures tsd-kind-type-literal tsd-is-not-exported">
-												<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>input<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/upsert.iupsertfnreturnvalues.html" class="tsd-signature-type">IUpsertFnReturnValues</a></li>
-											</ul>
-											<ul class="tsd-descriptions">
-												<li class="tsd-description">
-													<h4 class="tsd-parameters-title">Parameters</h4>
-													<ul class="tsd-parameters">
-														<li>
-															<h5><span class="tsd-flag ts-flagOptional">Optional</span> input: <span class="tsd-signature-type">any</span></h5>
-														</li>
-													</ul>
-													<h4 class="tsd-returns-title">Returns <a href="../interfaces/upsert.iupsertfnreturnvalues.html" class="tsd-signature-type">IUpsertFnReturnValues</a></h4>
-												</li>
-											</ul>
-										</li>
-									</ul>
-								</li>
-								<li>
-									<h5>data: <span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">[]</span></h5>
-								</li>
-								<li>
-									<h5>dgraphClient: <span class="tsd-signature-type">DgraphClient</span></h5>
-								</li>
-								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> _dgraph: <span class="tsd-signature-type">any</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
-						</li>
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/vespertilian/dgraph-js-extras/blob/133dbda/src/upsert/upsert.ts#L21">upsert/upsert.ts:21</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>upsertFn: <span class="tsd-signature-type">function</span></h5>
-									<ul class="tsd-parameters">
-										<li class="tsd-parameter-siganture">
-											<ul class="tsd-signatures tsd-kind-type-literal tsd-is-not-exported">
-												<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>input<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/upsert.iupsertfnreturnvalues.html" class="tsd-signature-type">IUpsertFnReturnValues</a></li>
-											</ul>
-											<ul class="tsd-descriptions">
-												<li class="tsd-description">
-													<h4 class="tsd-parameters-title">Parameters</h4>
-													<ul class="tsd-parameters">
-														<li>
-															<h5><span class="tsd-flag ts-flagOptional">Optional</span> input: <span class="tsd-signature-type">any</span></h5>
-														</li>
-													</ul>
-													<h4 class="tsd-returns-title">Returns <a href="../interfaces/upsert.iupsertfnreturnvalues.html" class="tsd-signature-type">IUpsertFnReturnValues</a></h4>
-												</li>
-											</ul>
-										</li>
-									</ul>
-								</li>
-								<li>
-									<h5>data: <span class="tsd-signature-type">object</span></h5>
-								</li>
-								<li>
-									<h5>dgraphClient: <span class="tsd-signature-type">DgraphClient</span></h5>
-								</li>
-								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> _dgraph: <span class="tsd-signature-type">any</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -540,19 +540,19 @@
 						<a href="upsert.html#basicequalityupsertfn" class="tsd-kind-icon">basic<wbr>Equality<wbr>Upsert<wbr>Fn</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="upsert.html#xupsertcommittxn" class="tsd-kind-icon">x<wbr>Upsert<wbr>Commit<wbr>Txn</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
 						<a href="upsert.html#xupsertedgelist" class="tsd-kind-icon">x<wbr>Upsert<wbr>Edge<wbr>List</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module">
 						<a href="upsert.html#xupsertedgelistcommittxn" class="tsd-kind-icon">x<wbr>Upsert<wbr>Edge<wbr>List<wbr>Commit<wbr>Txn</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module">
-						<a href="upsert.html#xupsertmaptxn" class="tsd-kind-icon">x<wbr>Upsert<wbr>Map<wbr>Txn</a>
+						<a href="upsert.html#xupsertmapcommittxn" class="tsd-kind-icon">x<wbr>Upsert<wbr>Map<wbr>Commit<wbr>Txn</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module">
 						<a href="upsert.html#xupsertobject" class="tsd-kind-icon">x<wbr>Upsert<wbr>Object</a>
-					</li>
-					<li class=" tsd-kind-function tsd-parent-kind-external-module">
-						<a href="upsert.html#xupserttxn" class="tsd-kind-icon">x<wbr>Upsert<wbr>Txn</a>
 					</li>
 				</ul>
 			</nav>
