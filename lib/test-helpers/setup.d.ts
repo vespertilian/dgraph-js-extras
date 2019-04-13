@@ -1,3 +1,6 @@
+/**
+ * @module TestHelpers
+ */
 import * as dgraph from 'dgraph-js';
 import * as messages from "dgraph-js/generated/api_pb";
 import { ICreateDgraphClientConfig, xCreateDgraphClient } from '../create-client/create-dgraph-client';
@@ -13,4 +16,4 @@ export interface ISetupWithParams {
     data?: object | null;
     debugDgraphClient?: boolean;
 }
-export declare function xSetupWithSchemaDataNowTxn(params: ISetupWithParams): Promise<ISetupReturnValue>;
+export declare function xSetupWithSchemaDataCommitTxn(params: ISetupWithParams): Promise<ISetupReturnValue>;
