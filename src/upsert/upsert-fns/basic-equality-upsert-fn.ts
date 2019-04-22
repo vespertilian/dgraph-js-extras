@@ -8,11 +8,6 @@ import { INodeFoundFunction, IUpsertFnReturnValues } from '../upsert';
 /**
  * #### Return a dgraph query and a node found function
  *
- * The dgraph query is just a generic dgraph query that has been constructed with string concatenation.
- * The node found function is used by upsertFunctions to understand how to extract the uid from the query.
- *
- *
- *
  * The basicEqualityUpsertFn below will find any nodes that has skill and level predicates.
  * ```ts
  * const updateJunior = {
