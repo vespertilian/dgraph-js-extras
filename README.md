@@ -5,11 +5,23 @@
 - **0 dependencies** just `dgraph-js` and `grpc` are needed as peer dependencies.
 - **100%** test coverage.
 - Written in **Typescript** just like the DGraph library so you get IntelliSense.
+- Write one line statements to persist data that would take multiple lines with the base library
 
 Functions including "commit" indicate they will be set to "commitNow"
 Functions including "txn" indicate they create their own transactions and can be directly awaited.
 
 This library is pre 1.0 and there might be some small API changes, that said everything is a small function so you could always ctrl-c ctrl-v it out of the repo if things change. 
+
+## Example: persist two new nodes, return the node ids
+
+```ts
+ const users = [
+    { username: 'foo' }
+    { username: 'bar' }
+ ]
+ 
+ const id1 = await xExtractFirstUid(xSetJSONCommitTxn(users, dgraphClient));
+```
 
 ## Example: upsert helper function
 
@@ -41,13 +53,14 @@ const upsertFn = basicEqualityUpsertFn(['skill', 'level']);
 
 // If no node matched both skill 'Javascript' and level '10' a new node would be created.
 // We can await this direclty as it includes commit and txn postfix. 
-await xUpsertCommitTxn(upsertFn, updates, dgraphClient);
+const [uid] = await xUpsertCommitTxn(upsertFn, updates, dgraphClient);
 
-If you want it as part of a bigger transaction there is also a xUpsertObject function you could use. 
+// It returns the uids of the found or created nodes.
+
+// If you want it as part of a bigger transaction there is also a xUpsertObject function you could use. 
 ```
 
 Checkout all the functions in [API documentation](https://vespertilian.github.io/dgraph-js-extras/index.html)
-
 
 ## Contribute?
 
