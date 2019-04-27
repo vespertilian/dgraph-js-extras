@@ -46,7 +46,7 @@ export async function xUpsertEdgeListCommitTxn(upsertFn: (input?: any) => IUpser
 
   try {
     result = await xUpsertEdgeList(upsertFn, upsertNode, nodes, transaction, _dgraph);
-    transaction.commit();
+    await transaction.commit();
   }
   catch(e) {
     error = e;
