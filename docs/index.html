@@ -62,12 +62,64 @@
 	<div class="row">
 		<div class="col-8 col-content">
 			<div class="tsd-panel tsd-typography">
-				<h4 id="dgraph-js-extras">DGraph JS Extras</h4>
-				<p>A library of helper functions to accompany the dgraph-js library. <strong>Currently in an ALPHA state could break at any point</strong></p>
+				<h1 id="dgraph-js-extras">DGraph JS Extras</h1>
+				<h4 id="a-library-of-helper-functions-to-accompany-the-dgraph-js-library-">A library of helper functions to accompany the dgraph-js library.</h4>
+				<ul>
+					<li><strong>0 dependencies</strong> just <code>dgraph-js</code> and <code>grpc</code> are needed as peer dependencies.</li>
+					<li><strong>100%</strong> test coverage.</li>
+					<li>Written in <strong>Typescript</strong> just like the DGraph library so you get IntelliSense.</li>
+					<li>Write one line statements to persist data that would take multiple lines with the base library.</li>
+				</ul>
 				<p>Functions including &quot;commit&quot; indicate they will be set to &quot;commitNow&quot;
 				Functions including &quot;txn&quot; indicate they create their own transactions and can be directly awaited.</p>
-				<p>Other operations like JS set return a mutation that needs to be used in conjunction with a transaction.</p>
-				<h2 id="workflow">Workflow</h2>
+				<p>This library is pre 1.0 and there might be some small API changes, that said everything is a small function so you could always ctrl-c ctrl-v it out of the repo if things change. </p>
+				<h2 id="example-persist-two-new-nodes-return-the-node-ids">Example: persist two new nodes, return the node ids</h2>
+				<pre><code class="language-ts"> <span class="hljs-keyword">const</span> users = [
+    { username: <span class="hljs-string">'foo'</span> }
+    { username: <span class="hljs-string">'bar'</span> }
+ ]
+
+ <span class="hljs-keyword">const</span> id1 = <span class="hljs-keyword">await</span> xExtractUids(xSetJSONCommitTxn(users, dgraphClient));</code></pre>
+				<h2 id="example-upsert-helper-function">Example: upsert helper function</h2>
+				<pre><code class="language-ts"><span class="hljs-keyword">const</span> updateJunior = {
+    skill: <span class="hljs-string">'Javascript'</span>,
+    level: <span class="hljs-number">10</span>,
+    x: <span class="hljs-string">'y'</span>,
+    y: <span class="hljs-string">'y'</span>,
+    z: <span class="hljs-string">'y'</span>
+};
+
+<span class="hljs-comment">// If you already had a node in the db that looks like:</span>
+<span class="hljs-keyword">const</span> existingNode = {
+    skill: <span class="hljs-string">'Javascript'</span>,
+    level: <span class="hljs-number">10</span>,
+    x: <span class="hljs-string">'foo'</span>,
+    y: <span class="hljs-string">'foo'</span>,
+    z: <span class="hljs-string">'foo'</span>
+};
+
+<span class="hljs-comment">// You can pass an array of values to update, or just an object.</span>
+<span class="hljs-keyword">const</span> updates = [updateJunior];
+
+<span class="hljs-comment">// The basicEqualityUpsertFn below will find any nodes that has both skill and level predicates.</span>
+<span class="hljs-keyword">const</span> upsertFn = basicEqualityUpsertFn([<span class="hljs-string">'skill'</span>, <span class="hljs-string">'level'</span>]);
+
+<span class="hljs-comment">// x, y and z will be updated from 'foo' to 'y', because both skill and level match.</span>
+
+<span class="hljs-comment">// If no node matched both skill 'Javascript' and level '10' a new node would be created.</span>
+<span class="hljs-comment">// We can await this direclty as it includes commit and txn postfix. </span>
+<span class="hljs-keyword">const</span> [uid] = <span class="hljs-keyword">await</span> xUpsertCommitTxn(upsertFn, updates, dgraphClient);
+
+<span class="hljs-comment">// It returns the uids of the found or created nodes.</span>
+<span class="hljs-comment">// If you want it as part of a bigger transaction there is also a xUpsertObject function you could use. </span></code></pre>
+				<p>Checkout all the functions in <a href="https://vespertilian.github.io/dgraph-js-extras/index.html">API documentation</a></p>
+				<h2 id="contribute-">Contribute?</h2>
+				<p>Please do feel free to submit a PR.</p>
+				<h4 id="testing">Testing</h4>
+				<p>Install docker then run <code>yarn run dgraph-test-db-up</code>
+				Now just call <code>yarn run test</code></p>
+				<p>You can also setup <a href="https://wallabyjs.com">Wallaby JS</a> as a test runner. I am a fan. </p>
+				<h4 id="deploy-workflow">Deploy workflow</h4>
 				<ol>
 					<li>Make changes</li>
 					<li>Commit those changes <code>yarn run commit</code></li>
@@ -88,7 +140,13 @@
 						<a href="globals.html"><em>Globals</em></a>
 					</li>
 					<li class=" tsd-kind-external-module">
+						<a href="modules/createclient.html">Create<wbr>Client</a>
+					</li>
+					<li class=" tsd-kind-external-module">
 						<a href="modules/delete.html">Delete</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/dropdb.html">DropDB</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/extractuids.html">Extract<wbr>Uids</a>
@@ -107,9 +165,6 @@
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/upsert.html">Upsert</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/util.html">Util</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/validate.html">Validate</a>

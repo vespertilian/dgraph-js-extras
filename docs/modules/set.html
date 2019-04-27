@@ -91,9 +91,17 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/vespertilian/dgraph-js-extras/blob/5c6b40c/src/set-json/set-json.ts#L9">set-json/set-json.ts:9</a></li>
+									<li>Defined in <a href="https://github.com/vespertilian/dgraph-js-extras/blob/6412b39/src/set-json/set-json.ts#L18">set-json/set-json.ts:18</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>xSetJSON is shorthand for:</p>
+								</div>
+								<pre><code class="language-ts"><span class="hljs-keyword">const</span> mu = <span class="hljs-keyword">new</span> _dgraph.Mutation();
+mu.setSetJson(object);
+<span class="hljs-keyword">return</span> mu;</code></pre>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -117,9 +125,18 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/vespertilian/dgraph-js-extras/blob/5c6b40c/src/set-json/set-json.ts#L15">set-json/set-json.ts:15</a></li>
+									<li>Defined in <a href="https://github.com/vespertilian/dgraph-js-extras/blob/6412b39/src/set-json/set-json.ts#L34">set-json/set-json.ts:34</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>xSetJSONCommit is shorthand for:</p>
+								</div>
+								<pre><code class="language-ts"><span class="hljs-keyword">const</span> mu = <span class="hljs-keyword">new</span> _dgraph.Mutation();
+mu.setSetJson(object);
+mu.setCommitNow(<span class="hljs-literal">true</span>);
+<span class="hljs-keyword">return</span> mu;</code></pre>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -143,9 +160,18 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/vespertilian/dgraph-js-extras/blob/5c6b40c/src/set-json/set-json.ts#L21">set-json/set-json.ts:21</a></li>
+									<li>Defined in <a href="https://github.com/vespertilian/dgraph-js-extras/blob/6412b39/src/set-json/set-json.ts#L50">set-json/set-json.ts:50</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>xSetJSONCommitTxn is shorthand for:</p>
+								</div>
+								<pre><code class="language-ts"><span class="hljs-keyword">const</span> mu = <span class="hljs-keyword">new</span> _dgraph.Mutation();
+mu.setSetJson(object);
+mu.setCommitNow(<span class="hljs-literal">true</span>);
+<span class="hljs-keyword">return</span> dgraphClient.newTxn().mutate(mu);</code></pre>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -168,7 +194,13 @@
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
 					<li class=" tsd-kind-external-module">
+						<a href="createclient.html">Create<wbr>Client</a>
+					</li>
+					<li class=" tsd-kind-external-module">
 						<a href="delete.html">Delete</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="dropdb.html">DropDB</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="extractuids.html">Extract<wbr>Uids</a>
@@ -187,9 +219,6 @@
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="upsert.html">Upsert</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="util.html">Util</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="validate.html">Validate</a>

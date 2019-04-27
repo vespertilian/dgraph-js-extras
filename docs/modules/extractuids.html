@@ -92,9 +92,22 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/vespertilian/dgraph-js-extras/blob/5c6b40c/src/extract-uids/extract-uids.ts#L54">extract-uids/extract-uids.ts:54</a></li>
+									<li>Defined in <a href="https://github.com/vespertilian/dgraph-js-extras/blob/6412b39/src/extract-uids/extract-uids.ts#L86">extract-uids/extract-uids.ts:86</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>xExtractFirstUid is useful when you expect only one value and dont want to destructure the returned array.
+									It&#39;s effectively just <a href="extractuids.html#xextractuids">xExtractUids</a> limited to one result</p>
+								</div>
+								<pre><code class="language-ts"><span class="hljs-keyword">const</span> users = [
+ { username: <span class="hljs-string">'foo'</span> }
+ { username: <span class="hljs-string">'bar'</span> }
+]
+
+<span class="hljs-comment">// Wrapping the xSetJSONCommitTxn promise. Nice.</span>
+<span class="hljs-keyword">const</span> id1 = <span class="hljs-keyword">await</span> xExtractFirstUid(xSetJSONCommitTxn(users, dgraphClient));</code></pre>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -106,7 +119,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/vespertilian/dgraph-js-extras/blob/5c6b40c/src/extract-uids/extract-uids.ts#L55">extract-uids/extract-uids.ts:55</a></li>
+									<li>Defined in <a href="https://github.com/vespertilian/dgraph-js-extras/blob/6412b39/src/extract-uids/extract-uids.ts#L87">extract-uids/extract-uids.ts:87</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -130,9 +143,27 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/vespertilian/dgraph-js-extras/blob/5c6b40c/src/extract-named-uid/extract-named-uids.ts#L18">extract-named-uid/extract-named-uids.ts:18</a></li>
+									<li>Defined in <a href="https://github.com/vespertilian/dgraph-js-extras/blob/6412b39/src/extract-named-uid/extract-named-uids.ts#L40">extract-named-uid/extract-named-uids.ts:40</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>xExtractNamedUids lets you wrap any of the set commands that return a dgraph assigned value or a <strong>promise</strong> that returns a dgraph assigned value</p>
+								</div>
+								<pre><code class="language-ts"><span class="hljs-keyword">const</span> sampleData = {
+uid: <span class="hljs-string">"_:user"</span>,
+name: <span class="hljs-string">"cameron"</span>,
+username: <span class="hljs-string">"vespertilian"</span>,
+ address: {
+  uid: <span class="hljs-string">"_:address"</span>,
+  street: <span class="hljs-string">'William'</span>,
+  postCode: <span class="hljs-number">2000</span>
+ }
+};
+
+<span class="hljs-comment">// Wrapping the xSetJSONCommitTxn promise. Nice.</span>
+<span class="hljs-keyword">const</span> [userId, addressId] = <span class="hljs-keyword">await</span> xExtractNamedUids([<span class="hljs-string">'user'</span>, <span class="hljs-string">'address'</span>], xSetJSONCommitTxn(sampleData, dgraphClient))</code></pre>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -147,7 +178,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/vespertilian/dgraph-js-extras/blob/5c6b40c/src/extract-named-uid/extract-named-uids.ts#L19">extract-named-uid/extract-named-uids.ts:19</a></li>
+									<li>Defined in <a href="https://github.com/vespertilian/dgraph-js-extras/blob/6412b39/src/extract-named-uid/extract-named-uids.ts#L41">extract-named-uid/extract-named-uids.ts:41</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -174,9 +205,21 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/vespertilian/dgraph-js-extras/blob/5c6b40c/src/extract-uids/extract-uids.ts#L21">extract-uids/extract-uids.ts:21</a></li>
+									<li>Defined in <a href="https://github.com/vespertilian/dgraph-js-extras/blob/6412b39/src/extract-uids/extract-uids.ts#L37">extract-uids/extract-uids.ts:37</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>xExtractUids lets you wrap any of the set commands that return a dgraph assigned value or a <strong>promise</strong> that returns a dgraph assigned value</p>
+								</div>
+								<pre><code class="language-ts"><span class="hljs-keyword">const</span> users = [
+ { username: <span class="hljs-string">'foo'</span> }
+ { username: <span class="hljs-string">'bar'</span> }
+]
+
+<span class="hljs-comment">// Wrapping the xSetJSONCommitTxn promise. Nice.</span>
+<span class="hljs-keyword">const</span> [id1, id2] = <span class="hljs-keyword">await</span> xExtractUids(xSetJSONCommitTxn(users, dgraphClient));</code></pre>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -191,7 +234,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/vespertilian/dgraph-js-extras/blob/5c6b40c/src/extract-uids/extract-uids.ts#L22">extract-uids/extract-uids.ts:22</a></li>
+									<li>Defined in <a href="https://github.com/vespertilian/dgraph-js-extras/blob/6412b39/src/extract-uids/extract-uids.ts#L38">extract-uids/extract-uids.ts:38</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -216,7 +259,13 @@
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
 					<li class=" tsd-kind-external-module">
+						<a href="createclient.html">Create<wbr>Client</a>
+					</li>
+					<li class=" tsd-kind-external-module">
 						<a href="delete.html">Delete</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="dropdb.html">DropDB</a>
 					</li>
 					<li class="current tsd-kind-external-module">
 						<a href="extractuids.html">Extract<wbr>Uids</a>
@@ -235,9 +284,6 @@
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="upsert.html">Upsert</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="util.html">Util</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="validate.html">Validate</a>

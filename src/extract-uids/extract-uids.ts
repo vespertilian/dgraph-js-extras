@@ -17,6 +17,22 @@ function extractUids(mutation: Assigned, limitTo: number | null = null): string[
     return uids;
 }
 
+/**
+ *
+ * xExtractUids lets you wrap any of the set commands that return a dgraph assigned value or a **promise** that returns a dgraph assigned value
+ *
+ * ```ts
+ * const users = [
+ *  { username: 'foo' }
+ *  { username: 'bar' }
+ * ]
+ *
+ * // Wrapping the xSetJSONCommitTxn promise. Nice.
+ * const [id1, id2] = await xExtractUids(xSetJSONCommitTxn(users, dgraphClient));
+ * ```
+ *
+ */
+
 // fancy way to let us use this function with an existing Async function (promise) or existing mutation
 export function xExtractUids(mutation: Promise<Assigned>, limitTo?: number): Promise<string[]>
 export function xExtractUids(mutation: Assigned, limitTo?: number): string[]
@@ -51,6 +67,22 @@ export function xExtractUids(mutation: Promise<Assigned> | Assigned, limitTo?: n
     return result;
 }
 
+/**
+ *
+ * xExtractFirstUid is useful when you expect only one value and dont want to destructure the returned array.
+ * It's effectively just {@link xExtractUids} limited to one result
+ *
+ * ```ts
+ * const users = [
+ *  { username: 'foo' }
+ *  { username: 'bar' }
+ * ]
+ *
+ * // Wrapping the xSetJSONCommitTxn promise. Nice.
+ * const id1 = await xExtractFirstUid(xSetJSONCommitTxn(users, dgraphClient));
+ * ```
+ *
+ */
 export function xExtractFirstUid(mutation: Promise<Assigned>): Promise<string>
 export function xExtractFirstUid(mutation: Assigned): string
 export function xExtractFirstUid(mutation: Promise<Assigned> | Assigned): Promise<string> | string {

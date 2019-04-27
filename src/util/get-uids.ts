@@ -1,5 +1,7 @@
 import * as messages from "dgraph-js/generated/api_pb";
 
+// used by upsert functions
+/** * @ignore */
 export function getUids(params: {numberOfIdsToGet: number, result: messages.Assigned}): string[] {
     let uids = [];
     for(let i=0; i < params.numberOfIdsToGet; i++) {

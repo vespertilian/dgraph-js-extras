@@ -3,14 +3,14 @@
  */
 
 import * as dgraph from 'dgraph-js'
-import {xUpsertCommitTxn} from '../upsert/upsert';
+import { uid, xUpsertCommitTxn } from '../upsert/upsert';
 
 export interface IObjectMap {
    [key: string]: object
 }
 
 export interface IUidMap {
-   [key: string]: string
+   [key: string]: uid
 }
 
 /**
@@ -36,6 +36,8 @@ export interface IUidMap {
  *    howard: howardUid
  * };
  * ```
+ *
+ * **Not sure if this function adds enough value to be kept in the lib. Please do comment in the issues**
  */
 
 export async function xUpsertMapCommitTxn(queryFn, data: IObjectMap, dgraphClient: dgraph.DgraphClient, _dgraph: any = dgraph) {

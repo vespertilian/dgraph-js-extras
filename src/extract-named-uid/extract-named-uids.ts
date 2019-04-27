@@ -14,6 +14,28 @@ function extractNamedUids(mutation: Assigned, names: string[]): string[] {
   })
 }
 
+
+/**
+ *
+ * xExtractNamedUids lets you wrap any of the set commands that return a dgraph assigned value or a **promise** that returns a dgraph assigned value
+ *
+ * ```ts
+ * const sampleData = {
+ * uid: "_:user",
+ * name: "cameron",
+ * username: "vespertilian",
+ *  address: {
+ *   uid: "_:address",
+ *   street: 'William',
+ *   postCode: 2000
+ *  }
+ * };
+ *
+ * // Wrapping the xSetJSONCommitTxn promise. Nice.
+ * const [userId, addressId] = await xExtractNamedUids(['user', 'address'], xSetJSONCommitTxn(sampleData, dgraphClient))
+ * ```
+ */
+
 // fancy way to let us use this function with an existing Async function (promise) or existing mutation
 export function xExtractNamedUids(names: string[], mutation: Promise<Assigned>): Promise<string[]>
 export function xExtractNamedUids(names: string[], mutation: Assigned): string[]

@@ -92,15 +92,22 @@
 					<a name="xquery" class="tsd-anchor"></a>
 					<h3>x<wbr>Query</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
-						<li class="tsd-signature tsd-kind-icon">x<wbr>Query<span class="tsd-signature-symbol">(</span>query<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, txn<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Txn</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">x<wbr>Query<span class="tsd-signature-symbol">(</span>query<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, txn<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Txn</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">getJSON</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/vespertilian/dgraph-js-extras/blob/5c6b40c/src/query/query.ts#L14">query/query.ts:14</a></li>
+									<li>Defined in <a href="https://github.com/vespertilian/dgraph-js-extras/blob/6412b39/src/query/query.ts#L23">query/query.ts:23</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>xQuery is shorthand for:</p>
+								</div>
+								<pre><code class="language-ts"><span class="hljs-keyword">const</span> res = <span class="hljs-keyword">await</span> txn.query(query);
+<span class="hljs-keyword">return</span> res.getJson();</code></pre>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -110,7 +117,7 @@
 									<h5>txn: <span class="tsd-signature-type">Txn</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">getJSON</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -118,15 +125,23 @@
 					<a name="xquerytxn" class="tsd-anchor"></a>
 					<h3>x<wbr>Query<wbr>Txn</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
-						<li class="tsd-signature tsd-kind-icon">x<wbr>Query<wbr>Txn<span class="tsd-signature-symbol">(</span>query<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, dgraphClient<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">DgraphClient</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">x<wbr>Query<wbr>Txn<span class="tsd-signature-symbol">(</span>query<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, dgraphClient<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">DgraphClient</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">getJSON</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/vespertilian/dgraph-js-extras/blob/5c6b40c/src/query/query.ts#L19">query/query.ts:19</a></li>
+									<li>Defined in <a href="https://github.com/vespertilian/dgraph-js-extras/blob/6412b39/src/query/query.ts#L37">query/query.ts:37</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>xQueryTxn is shorthand for:</p>
+								</div>
+								<pre><code class="language-ts"><span class="hljs-keyword">const</span> txn = dgraphClient.newTxn();
+<span class="hljs-keyword">const</span> res = <span class="hljs-keyword">await</span> txn.query(query);
+res.getJson();</code></pre>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -136,7 +151,7 @@
 									<h5>dgraphClient: <span class="tsd-signature-type">DgraphClient</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">getJSON</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -144,15 +159,22 @@
 					<a name="xquerywithvars" class="tsd-anchor"></a>
 					<h3>x<wbr>Query<wbr>With<wbr>Vars</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
-						<li class="tsd-signature tsd-kind-icon">x<wbr>Query<wbr>With<wbr>Vars<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span>, txn<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Txn</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">x<wbr>Query<wbr>With<wbr>Vars<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span>, txn<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Txn</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">getJSON</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/vespertilian/dgraph-js-extras/blob/5c6b40c/src/query/query.ts#L24">query/query.ts:24</a></li>
+									<li>Defined in <a href="https://github.com/vespertilian/dgraph-js-extras/blob/6412b39/src/query/query.ts#L50">query/query.ts:50</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>xQueryWithVars is shorthand for:</p>
+								</div>
+								<pre><code class="language-ts"><span class="hljs-keyword">const</span> res = <span class="hljs-keyword">await</span> txn.queryWithVars(query, vars);
+<span class="hljs-keyword">return</span> res.getJson();</code></pre>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -164,7 +186,7 @@
 									<h5>txn: <span class="tsd-signature-type">Txn</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">getJSON</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -172,15 +194,23 @@
 					<a name="xquerywithvarstxn" class="tsd-anchor"></a>
 					<h3>x<wbr>Query<wbr>With<wbr>Vars<wbr>Txn</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
-						<li class="tsd-signature tsd-kind-icon">x<wbr>Query<wbr>With<wbr>Vars<wbr>Txn<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span>, dgraphClient<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">DgraphClient</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">x<wbr>Query<wbr>With<wbr>Vars<wbr>Txn<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span>, dgraphClient<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">DgraphClient</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">getJSON</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/vespertilian/dgraph-js-extras/blob/5c6b40c/src/query/query.ts#L29">query/query.ts:29</a></li>
+									<li>Defined in <a href="https://github.com/vespertilian/dgraph-js-extras/blob/6412b39/src/query/query.ts#L64">query/query.ts:64</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>xQueryWithVarsTxn is shorthand for:</p>
+								</div>
+								<pre><code class="language-ts"><span class="hljs-keyword">const</span> txn = dgraphClient.newTxn();
+<span class="hljs-keyword">const</span> res = <span class="hljs-keyword">await</span> txn.queryWithVars(query, vars);
+<span class="hljs-keyword">return</span> res.getJson();</code></pre>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -192,7 +222,7 @@
 									<h5>dgraphClient: <span class="tsd-signature-type">DgraphClient</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">getJSON</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -205,7 +235,13 @@
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
 					<li class=" tsd-kind-external-module">
+						<a href="createclient.html">Create<wbr>Client</a>
+					</li>
+					<li class=" tsd-kind-external-module">
 						<a href="delete.html">Delete</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="dropdb.html">DropDB</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="extractuids.html">Extract<wbr>Uids</a>
@@ -224,9 +260,6 @@
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="upsert.html">Upsert</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="util.html">Util</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="validate.html">Validate</a>
