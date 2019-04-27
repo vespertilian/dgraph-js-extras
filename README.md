@@ -5,7 +5,7 @@
 - **0 dependencies** just `dgraph-js` and `grpc` are needed as peer dependencies.
 - **100%** test coverage.
 - Written in **Typescript** just like the DGraph library so you get IntelliSense.
-- Write one line statements to persist data that would take multiple lines with the base library
+- Write one line statements to persist data that would take multiple lines with the base library.
 
 Functions including "commit" indicate they will be set to "commitNow"
 Functions including "txn" indicate they create their own transactions and can be directly awaited.
@@ -20,7 +20,7 @@ This library is pre 1.0 and there might be some small API changes, that said eve
     { username: 'bar' }
  ]
  
- const id1 = await xExtractFirstUid(xSetJSONCommitTxn(users, dgraphClient));
+ const id1 = await xExtractUids(xSetJSONCommitTxn(users, dgraphClient));
 ```
 
 ## Example: upsert helper function
@@ -56,7 +56,6 @@ const upsertFn = basicEqualityUpsertFn(['skill', 'level']);
 const [uid] = await xUpsertCommitTxn(upsertFn, updates, dgraphClient);
 
 // It returns the uids of the found or created nodes.
-
 // If you want it as part of a bigger transaction there is also a xUpsertObject function you could use. 
 ```
 

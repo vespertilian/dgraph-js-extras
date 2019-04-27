@@ -6,7 +6,7 @@ import { Txn } from 'dgraph-js';
 import { IUpsertFnReturnValues, xDeleteJSON, xSetJSON } from '..';
 import { isString } from '../util/is-string';
 import { xValidateNodeExists } from '../validate-node-exists/validate-node-exists';
-import { xUpsertObject } from '../upsert/upsert';
+import { uid, xUpsertObject } from '../upsert/upsert';
 
 export interface IUpsertNode {
   uid: string
@@ -39,7 +39,7 @@ export interface IUpsertNode {
 * ```
 */
 
-export async function xUpsertEdgeListCommitTxn(upsertFn: (input?: any) => IUpsertFnReturnValues, upsertNode: IUpsertNode, nodes: object[], dgraphClient: dgraph.DgraphClient, _dgraph: any = dgraph) {
+export async function xUpsertEdgeListCommitTxn(upsertFn: (input?: any) => IUpsertFnReturnValues, upsertNode: IUpsertNode, nodes: object[], dgraphClient: dgraph.DgraphClient, _dgraph: any = dgraph): Promise<uid[]> {
   const transaction = dgraphClient.newTxn();
   let result;
   let error: null | Error = null;
@@ -66,11 +66,11 @@ export async function xUpsertEdgeListCommitTxn(upsertFn: (input?: any) => IUpser
 
 
 /**
- * The same as {@link xUpsertEdgeListCommitTxn} but you have to pass in your own transaction.
+ * **The same as {@link xUpsertEdgeListCommitTxn} but you have to pass in your own transaction.**
  */
 
-export async function xUpsertEdgeList(upsertFn: (input?: any) => IUpsertFnReturnValues, {uid, predicate}: IUpsertNode, nodes: object[], transaction: Txn, _dgraph: any = dgraph) {
-  const upsertedNodes: string[] = [];
+export async function xUpsertEdgeList(upsertFn: (input?: any) => IUpsertFnReturnValues, {uid, predicate}: IUpsertNode, nodes: object[], transaction: Txn, _dgraph: any = dgraph): Promise<uid[]> {
+  const upsertedNodes: uid[] = [];
 
   if(!Array.isArray(nodes)) {
     throw new Error('You must pass nodes as an array of objects')

@@ -1,7 +1,7 @@
 {
   "mode": "modules",
   "out": "docs",
-  "exclude": "**/*+(index|get-uids|.spec).ts",
+  "exclude": "**/*+(index|get-uids|is-promise|is-string|path-or|.spec).ts",
   "excludePrivate": true,
   "excludeNotExported": true,
   "theme": "default"

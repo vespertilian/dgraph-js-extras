@@ -6,6 +6,8 @@ import * as dgraph from 'dgraph-js'
 import {xSetJSON} from '../set-json/set-json';
 import {Txn} from 'dgraph-js';
 
+export type uid = string;
+
 export interface INodeFoundFunction {
     existingUid: string | null
     newNodeFn?: (node: any) => object
@@ -16,10 +18,43 @@ export interface IUpsertFnReturnValues {
     nodeFoundFn: (queryResult: dgraph.Response) => INodeFoundFunction
 }
 
+/**
+ * #### Return a dgraph query and a node found function
+ *
+ * The basicEqualityUpsertFn below will find any nodes that has skill and level predicates.
+ * ```ts
+ * const updateJunior = {
+ *   skill: 'Javascript',
+ *   level: 10,
+ *   x: 'y',
+ *   y: 'y',
+ *   z: 'y'
+ * };
+ *
+ * // So if you already had a node in the db that looks like:
+ * const existingNode = {
+ *   skill: 'Javascript',
+ *   level: 10,
+ *   x: 'foo',
+ *   y: 'foo',
+ *   z: 'foo'
+ * };
+ *
+ * /// x, y and z would be updated from 'foo' to 'y'
+ * const updates = [updateJunior];
+ * const upsertFn = basicEqualityUpsertFn(['skill', 'level']);
+ *
+ * // takes a upsertFn as well as an array or single object returns a uid or an array of uids
+ * await xUpsertCommitTxn(upsertFn, updates, dgraphClient);
+ * ```
+ *
+ * If no node matched both skill 'Javascript' and level '10' a new node would be created
+ */
+
 // overload function to always return a string array when an object array is passed in
-export async function xUpsertCommitTxn(upsertFn: (input?: any) => IUpsertFnReturnValues, data: object[], dgraphClient: dgraph.DgraphClient, _dgraph?: any): Promise<string[]>
-export async function xUpsertCommitTxn(upsertFn: (input?: any) => IUpsertFnReturnValues, data: object, dgraphClient: dgraph.DgraphClient, _dgraph?: any): Promise<string>
-export async function xUpsertCommitTxn(upsertFn: (input?: any) => IUpsertFnReturnValues, data: object | object[], dgraphClient: dgraph.DgraphClient, _dgraph: any = dgraph): Promise<string | string[]> {
+export async function xUpsertCommitTxn(upsertFn: (input?: any) => IUpsertFnReturnValues, data: object[], dgraphClient: dgraph.DgraphClient, _dgraph?: any): Promise<uid[]>
+export async function xUpsertCommitTxn(upsertFn: (input?: any) => IUpsertFnReturnValues, data: object, dgraphClient: dgraph.DgraphClient, _dgraph?: any): Promise<uid>
+export async function xUpsertCommitTxn(upsertFn: (input?: any) => IUpsertFnReturnValues, data: object | object[], dgraphClient: dgraph.DgraphClient, _dgraph: any = dgraph): Promise<uid | uid[]> {
     if(Array.isArray(data)) {
         return xUpsertArrayCommitTxn(upsertFn, data, dgraphClient, _dgraph)
     } else {
@@ -27,7 +62,7 @@ export async function xUpsertCommitTxn(upsertFn: (input?: any) => IUpsertFnRetur
     }
 }
 
-async function xUpsertArrayCommitTxn(upsertFn: (input?: any) => IUpsertFnReturnValues, nodes: object[], dgraphClient: dgraph.DgraphClient, _dgraph: any = dgraph): Promise<string[]> {
+async function xUpsertArrayCommitTxn(upsertFn: (input?: any) => IUpsertFnReturnValues, nodes: object[], dgraphClient: dgraph.DgraphClient, _dgraph: any = dgraph): Promise<uid[]> {
     const results: string[] = [];
     const errors: Error[] = [];
     const transaction = dgraphClient.newTxn();
@@ -56,7 +91,7 @@ async function xUpsertArrayCommitTxn(upsertFn: (input?: any) => IUpsertFnReturnV
     return results
 }
 
-async function xUpsertObjectCommitTxn(upsertFn: (input?: any) => IUpsertFnReturnValues, node: object, dgraphClient: dgraph.DgraphClient, _dgraph: any = dgraph): Promise<string> {
+async function xUpsertObjectCommitTxn(upsertFn: (input?: any) => IUpsertFnReturnValues, node: object, dgraphClient: dgraph.DgraphClient, _dgraph: any = dgraph): Promise<uid> {
     let uid = null;
     let error: Error | null = null;
     const transaction = dgraphClient.newTxn();
@@ -81,7 +116,9 @@ async function xUpsertObjectCommitTxn(upsertFn: (input?: any) => IUpsertFnReturn
     return uid;
 }
 
-export async function xUpsertObject(upsertFn: (input?: any) => IUpsertFnReturnValues, node: object, transaction: Txn): Promise<string | null> {
+// this function is only exported to be used internally
+/** * @ignore */
+export async function xUpsertObject(upsertFn: (input?: any) => IUpsertFnReturnValues, node: object, transaction: Txn): Promise<uid | null> {
     let result = null;
 
     const {dgraphQuery, nodeFoundFn} = upsertFn(node);

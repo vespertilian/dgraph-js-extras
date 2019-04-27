@@ -1,5 +1,5 @@
 import {xSetupWithSchemaDataCommitTxn} from '../test-helpers/setup';
-import {getUids} from '../test-helpers/get-uids';
+import {getUids} from '../util/get-uids';
 import {xUpsertCommitTxn} from './upsert';
 import {basicEqualityUpsertFn} from './upsert-fns/basic-equality-upsert-fn';
 

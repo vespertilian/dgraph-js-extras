@@ -101,7 +101,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/vespertilian/dgraph-js-extras/blob/5c6b40c/src/validate-node-exists/validate-node-exists.ts#L14">validate-node-exists/validate-node-exists.ts:14</a></li>
+									<li>Defined in <a href="https://github.com/vespertilian/dgraph-js-extras/blob/6412b39/src/validate-node-exists/validate-node-exists.ts#L14">validate-node-exists/validate-node-exists.ts:14</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -127,7 +127,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/vespertilian/dgraph-js-extras/blob/5c6b40c/src/validate-node-exists/validate-node-exists.ts#L9">validate-node-exists/validate-node-exists.ts:9</a></li>
+									<li>Defined in <a href="https://github.com/vespertilian/dgraph-js-extras/blob/6412b39/src/validate-node-exists/validate-node-exists.ts#L9">validate-node-exists/validate-node-exists.ts:9</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -153,9 +153,44 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/vespertilian/dgraph-js-extras/blob/5c6b40c/src/validate-node-links/validate-node-links.ts#L21">validate-node-links/validate-node-links.ts:21</a></li>
+									<li>Defined in <a href="https://github.com/vespertilian/dgraph-js-extras/blob/6412b39/src/validate-node-links/validate-node-links.ts#L62">validate-node-links/validate-node-links.ts:62</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Validates nodeA is linked to the specified edge name on nodeB</p>
+								</div>
+								<pre><code class="language-ts"><span class="hljs-keyword">const</span> users = [
+{
+  uid: <span class="hljs-string">'_:user1'</span>,
+  username: <span class="hljs-string">'user1'</span>,
+  addresses: [{
+    uid: <span class="hljs-string">'_:user1address1'</span>,
+    postcode: <span class="hljs-number">2444</span>
+  }]
+},
+{
+  uid: <span class="hljs-string">'_:user2'</span>,
+  username: <span class="hljs-string">'user2'</span>,
+  addresses: [
+    {
+      uid: <span class="hljs-string">'_:user2address1'</span>,
+      postcode: <span class="hljs-number">2000</span>
+    },
+    {
+      uid: <span class="hljs-string">'_:user2address2'</span>,
+      postcode: <span class="hljs-number">2000</span>
+    }
+  ]
+}];
+<span class="hljs-keyword">const</span> params = {
+ node: user1uid,
+ edgename: <span class="hljs-string">'addresses'</span>,
+ linkednodesuids: [user1addressuid]
+};
+<span class="hljs-comment">// this will return true as user1 does have address 1</span>
+<span class="hljs-keyword">const</span> result = <span class="hljs-keyword">await</span> xvalidatenodelinkstxn(params, dgraphclient);</code></pre>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -179,9 +214,14 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/vespertilian/dgraph-js-extras/blob/5c6b40c/src/validate-node-links/validate-node-links.ts#L16">validate-node-links/validate-node-links.ts:16</a></li>
+									<li>Defined in <a href="https://github.com/vespertilian/dgraph-js-extras/blob/6412b39/src/validate-node-links/validate-node-links.ts#L19">validate-node-links/validate-node-links.ts:19</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Same as <a href="validate.html#xvalidatenodelinks">xValidateNodeLinks</a> but it creates it&#39;s own transaction</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -205,9 +245,25 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/vespertilian/dgraph-js-extras/blob/5c6b40c/src/validate-node-predicates/validate-node-predicates.ts#L20">validate-node-predicates/validate-node-predicates.ts:20</a></li>
+									<li>Defined in <a href="https://github.com/vespertilian/dgraph-js-extras/blob/6412b39/src/validate-node-predicates/validate-node-predicates.ts#L40">validate-node-predicates/validate-node-predicates.ts:40</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Validates a node has the specified attributes</p>
+								</div>
+								<pre><code class="language-ts"><span class="hljs-keyword">const</span> users = [
+ { username: <span class="hljs-string">'user1'</span>, age: <span class="hljs-number">33</span>, street: <span class="hljs-string">'123 state'</span>},
+ { username: <span class="hljs-string">'user2'</span>, age: <span class="hljs-number">35</span>},
+ { username: <span class="hljs-string">'user3'</span>}
+];
+
+<span class="hljs-comment">// will return true username is a predicate for every user</span>
+<span class="hljs-keyword">const</span> result = <span class="hljs-keyword">await</span> xValidateNodePredicatesTxn({
+    nodes: userUids,
+    predicates: [<span class="hljs-string">'username'</span>]
+}, dgraphClient);</code></pre>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -231,9 +287,14 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/vespertilian/dgraph-js-extras/blob/5c6b40c/src/validate-node-predicates/validate-node-predicates.ts#L15">validate-node-predicates/validate-node-predicates.ts:15</a></li>
+									<li>Defined in <a href="https://github.com/vespertilian/dgraph-js-extras/blob/6412b39/src/validate-node-predicates/validate-node-predicates.ts#L18">validate-node-predicates/validate-node-predicates.ts:18</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Same as <a href="validate.html#xvalidatenodepredicates">xValidateNodePredicates</a> but it creates it&#39;s own transaction</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -256,7 +317,13 @@
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
 					<li class=" tsd-kind-external-module">
+						<a href="createclient.html">Create<wbr>Client</a>
+					</li>
+					<li class=" tsd-kind-external-module">
 						<a href="delete.html">Delete</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="dropdb.html">DropDB</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="extractuids.html">Extract<wbr>Uids</a>
@@ -275,9 +342,6 @@
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="upsert.html">Upsert</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="util.html">Util</a>
 					</li>
 					<li class="current tsd-kind-external-module">
 						<a href="validate.html">Validate</a>

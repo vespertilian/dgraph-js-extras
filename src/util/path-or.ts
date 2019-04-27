@@ -1,9 +1,7 @@
-/**
- * @module Util
- */
-
 // this function has been copied by Ramda
 // just didn't want and dependencies
+
+/** * @ignore */
 export function pathOr(defaultValue ,_path, obj) {
   return defaultTo(defaultValue, path(_path, obj))
 }

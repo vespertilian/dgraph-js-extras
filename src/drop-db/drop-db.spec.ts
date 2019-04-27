@@ -1,4 +1,4 @@
-import {xSetupWithSchemaDataCommitTxn} from './setup';
+import {xSetupWithSchemaDataCommitTxn} from '../test-helpers/setup';
 import {xGetSchemaMapTxn} from '..';
 import {xDropDBAlt} from './drob-db';
 

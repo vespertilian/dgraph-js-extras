@@ -1,5 +1,5 @@
 import {IUidMap, xUpsertMapCommitTxn} from './upsert-map';
-import {getUids} from '../test-helpers/get-uids';
+import {getUids} from '../util/get-uids';
 import {xSetupWithSchemaDataCommitTxn} from '../test-helpers/setup';
 import {basicEqualityUpsertFn} from '../upsert/upsert-fns/basic-equality-upsert-fn';
 

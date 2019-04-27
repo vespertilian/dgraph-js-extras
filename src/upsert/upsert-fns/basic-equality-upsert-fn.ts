@@ -14,8 +14,6 @@ import { INodeFoundFunction, IUpsertFnReturnValues } from '../upsert';
  *   skill: 'Javascript',
  *   level: 10,
  *   x: 'y',
- *   y: 'y',
- *   z: 'y'
  * };
  *
  * // So if you already had a node in the db that looks like:
@@ -23,18 +21,13 @@ import { INodeFoundFunction, IUpsertFnReturnValues } from '../upsert';
  *   skill: 'Javascript',
  *   level: 10,
  *   x: 'foo',
- *   y: 'foo',
- *   z: 'foo'
  * };
  *
- * /// x, y and z would be updated from 'foo' to 'y'
+ * /// update will match the existing node as skill and level match
  * const updates = [updateJunior];
  * const upsertFn = basicEqualityUpsertFn(['skill', 'level']);
- *
- * await xUpsertCommitTxn(upsertFn, updates, dgraphClient);
  * ```
- *
- * If no node matched both skill 'Javascript' and level '10' a new node would be created
+ * See {@link xUpsertCommitTxn}
  *
  * @returns A function that takes a node and returns dgraphQuery and nodeFoundFn. fn => {dgraphQuery, nodeFoundFn}
  */
