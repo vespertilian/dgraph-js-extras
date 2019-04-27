@@ -4,6 +4,7 @@
 import * as dgraph from 'dgraph-js';
 import { Txn } from 'dgraph-js';
 import { IUpsertFnReturnValues } from '..';
+import { uid } from '../upsert/upsert';
 export interface IUpsertNode {
     uid: string;
     predicate: string;
@@ -33,8 +34,8 @@ export interface IUpsertNode {
 * await xUpsertEdgeListCommitTxn(addressUpsert, upsertNode, newAddresses, dgraphClient);
 * ```
 */
-export declare function xUpsertEdgeListCommitTxn(upsertFn: (input?: any) => IUpsertFnReturnValues, upsertNode: IUpsertNode, nodes: object[], dgraphClient: dgraph.DgraphClient, _dgraph?: any): Promise<any>;
+export declare function xUpsertEdgeListCommitTxn(upsertFn: (input?: any) => IUpsertFnReturnValues, upsertNode: IUpsertNode, nodes: object[], dgraphClient: dgraph.DgraphClient, _dgraph?: any): Promise<uid[]>;
 /**
- * The same as {@link xUpsertEdgeListCommitTxn} but you have to pass in your own transaction.
+ * **The same as {@link xUpsertEdgeListCommitTxn} but you have to pass in your own transaction.**
  */
-export declare function xUpsertEdgeList(upsertFn: (input?: any) => IUpsertFnReturnValues, { uid, predicate }: IUpsertNode, nodes: object[], transaction: Txn, _dgraph?: any): Promise<string[]>;
+export declare function xUpsertEdgeList(upsertFn: (input?: any) => IUpsertFnReturnValues, { uid, predicate }: IUpsertNode, nodes: object[], transaction: Txn, _dgraph?: any): Promise<uid[]>;

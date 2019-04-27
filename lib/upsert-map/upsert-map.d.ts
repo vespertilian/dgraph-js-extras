@@ -2,11 +2,12 @@
  * @module Upsert
  */
 import * as dgraph from 'dgraph-js';
+import { uid } from '../upsert/upsert';
 export interface IObjectMap {
     [key: string]: object;
 }
 export interface IUidMap {
-    [key: string]: string;
+    [key: string]: uid;
 }
 /**
  * #### Upsert an object which has keys for the upsert objects
@@ -31,5 +32,7 @@ export interface IUidMap {
  *    howard: howardUid
  * };
  * ```
+ *
+ * **Not sure if this function adds enough value to be kept in the lib. Please do comment in the issues**
  */
 export declare function xUpsertMapCommitTxn(queryFn: any, data: IObjectMap, dgraphClient: dgraph.DgraphClient, _dgraph?: any): Promise<IUidMap>;

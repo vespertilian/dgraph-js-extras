@@ -9,7 +9,7 @@ export { xUpsertMapCommitTxn } from './upsert-map/upsert-map';
 export { xGetSchemaMapTxn } from './get-schema-map/get-schema-map';
 export { xSetJSON, xSetJSONCommit, xSetJSONCommitTxn } from './set-json/set-json';
 export { xSetSchemaAlt } from './set-schema/set-schema';
-export { xDropDBAlt } from './test-helpers/drob-db';
+export { xDropDBAlt } from './drop-db/drob-db';
 export { xDeleteJSONCommitTxn, xDeleteJSONCommit, xDeleteJSON } from './delete-json/delete-json';
 export { xSetupForTest } from './test-helpers/setup';
 export { xSetupWithSchemaDataCommitTxn } from './test-helpers/setup';

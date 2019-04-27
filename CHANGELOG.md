@@ -1,10 +1,20 @@
+<a name="0.8.1"></a>
+## [0.8.1](https://github.com/vespertilian/dgraph-js-extras/compare/v0.8.0...v0.8.1) (2019-04-27)
+
+
+### Bug Fixes
+
+* **upsert-edge-list:** await the transaction.commit ([55b4286](https://github.com/vespertilian/dgraph-js-extras/commit/55b4286))
+
+
+
 <a name="0.8.0"></a>
 # [0.8.0](https://github.com/vespertilian/dgraph-js-extras/compare/v0.7.0...v0.8.0) (2019-04-13)
 
 
 ### Features
 
-* **src/*:** change now in function names to commit ([5cab3f4](https://github.com/vespertilian/dgraph-js-extras/commit/5cab3f4)), closes [#11](https://github.com/vespertilian/dgraph-js-extras/issues/11)
+* **src/*:** change now in function names to commit ([2f66e99](https://github.com/vespertilian/dgraph-js-extras/commit/2f66e99)), closes [#11](https://github.com/vespertilian/dgraph-js-extras/issues/11)
 
 
 ### BREAKING CHANGES
