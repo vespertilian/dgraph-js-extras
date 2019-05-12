@@ -160,49 +160,25 @@ describe('xSetJSONCommit', () => {
       ],
     };
 
-    const person2 = {
-      name: "Bob",
-      age: 24,
-      loc: "Riley Street",
-      married: true,
-      schools: [
-        {
-          name: "Crown Public School",
-        },
-      ],
-      friends: [
-        {
-          name: "Alice",
-          age: 26,
-        },
-        {
-          name: "Charlie",
-          age: 29,
-        },
-      ],
-    };
-
-    const uid = await xExtractFirstUid(xSetJSONCommitTxn([person, person2], dgraphClient));
+    const uid = await xExtractFirstUid(xSetJSONCommitTxn([person], dgraphClient));
 
     const personQuery = `{
             q(func: uid(${uid})) {
-                uid
                 name
                 age
                 loc
                 married
                 friends {
-                    uid
                     name
                     age
                 }
                 schools {
-                    uid
                     name
                 }
             }
         }`;
 
-    const result = await xQueryTxn(personQuery, dgraphClient);
+    const {q} = await xQueryTxn(personQuery, dgraphClient);
+    expect(q[0]).toEqual(person)
   })
 });
