@@ -152,6 +152,12 @@ describe('xSetJSONCommit', () => {
         {
           name: "Bob",
           age: 24,
+          pets: [
+            {
+              name: "Bertie",
+              type: 'Dog'
+            }
+          ]
         },
         {
           name: "Charlie",
@@ -171,6 +177,10 @@ describe('xSetJSONCommit', () => {
                 friends {
                     name
                     age
+                    pets {
+                      name
+                      type
+                    }
                 }
                 schools {
                     name
